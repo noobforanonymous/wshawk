@@ -91,11 +91,11 @@ class WSHawkV2:
         Logger.info(f"Starting learning phase ({duration}s)...")
         Logger.info("Listening to understand message structure...")
         
-        start = time.time()
+        start = time.monotonic()
         samples = []
         
         try:
-            while time.time() - start < duration:
+            while time.monotonic() - start < duration:
                 try:
                     # Set timeout for receiving
                     message = await asyncio.wait_for(ws.recv(), timeout=1.0)
