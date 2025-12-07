@@ -38,7 +38,7 @@ wshawk = "wshawk:main"
 wshawk-interactive = "wshawk_interactive:main"
 
 [tool.setuptools]
-packages = ["."]
+py-modules = ["wshawk", "wshawk_interactive"]
 include-package-data = true
 
 [tool.setuptools.package-data]
