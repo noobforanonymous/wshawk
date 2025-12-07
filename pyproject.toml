@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wshawk"
-version = "1.0.4"
+version = "1.0.5"
 authors = [
     {name = "Regaan"}
 ]
@@ -34,12 +34,12 @@ Homepage = "https://github.com/noobforanonymous/wshawk"
 Source = "https://github.com/noobforanonymous/wshawk"
 
 [project.scripts]
-wshawk = "wshawk:cli"
-wshawk-interactive = "wshawk_interactive:cli"
+wshawk = "wshawk.__main__:cli"
+wshawk-interactive = "wshawk.interactive:cli"
 
 [tool.setuptools]
-py-modules = ["wshawk", "wshawk_interactive"]
+packages = ["wshawk"]
 include-package-data = true
 
-[tool.setuptools.data-files]
-"payloads" = ["payloads/*.txt"]
+[tool.setuptools.package-data]
+"wshawk" = ["payloads/*.txt"]

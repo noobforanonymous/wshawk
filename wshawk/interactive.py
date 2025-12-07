@@ -4,7 +4,7 @@ WSHawk Interactive Menu
 """
 
 import asyncio
-from wshawk import WSHawk, Logger, Colors
+from .__main__ import WSHawk, Logger, Colors
 
 def show_banner():
     Logger.banner()
