@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "wshawk"
 version = "1.0.0"
 authors = [
-    {name = "Regaan", email = "webdevelopment123.0.0.1@gmail.com"}
+    {name = "Regaan"}
 ]
 description = "Advanced WebSocket security scanner with 22,000+ attack payloads"
 readme = "README.md"
