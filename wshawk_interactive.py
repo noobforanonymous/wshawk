@@ -152,10 +152,16 @@ async def main():
     print(f"Medium: {report['summary']['medium']}")
     print("="*60)
 
-if __name__ == "__main__":
+
+def cli():
+    """Entry point for pip-installed command"""
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         print(f"\n{Colors.YELLOW}[!] Scan interrupted by user{Colors.END}")
     except Exception as e:
         print(f"{Colors.RED}[-] Fatal error: {e}{Colors.END}")
+
+
+if __name__ == "__main__":
+    cli()
