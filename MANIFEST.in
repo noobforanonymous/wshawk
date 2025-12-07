@@ -1,4 +1,6 @@
 include README.md
 include requirements.txt
 include LICENSE
+include MANIFEST.in
 recursive-include payloads *.txt
+global-include payloads/*.txt
