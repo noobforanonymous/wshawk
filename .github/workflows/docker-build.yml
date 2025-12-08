@@ -13,7 +13,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: wshawk/wshawk
+  IMAGE_NAME: rothackers/wshawk
 
 jobs:
   build-and-push:
