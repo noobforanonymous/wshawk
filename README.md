@@ -146,6 +146,13 @@ wshawk-defensive ws://your-server.com
 - Validates CSRF token requirements
 - Critical for preventing session hijacking
 
+**4. WSS Protocol Security Validation**
+- TLS version validation (detects deprecated SSLv2/v3, TLS 1.0/1.1)
+- Weak cipher suite detection (RC4, DES, 3DES)
+- Certificate validation (expiration, self-signed, chain integrity)
+- Forward secrecy verification (ECDHE, DHE)
+- Prevents MITM and protocol downgrade attacks
+
 ### Use Cases
 
 - Validate security controls before production deployment

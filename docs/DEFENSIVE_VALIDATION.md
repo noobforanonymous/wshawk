@@ -85,6 +85,37 @@ Tests if WebSocket connections properly validate Origin headers.
 
 ---
 
+### 4. WSS Protocol Security Validation
+
+Tests TLS/SSL configuration for secure WebSocket (wss://) connections.
+
+**Attack Scenario:**
+- Protocol downgrade attacks (POODLE, BEAST)
+- Weak cipher exploitation
+- Man-in-the-Middle (MITM) attacks
+- Certificate forgery
+
+**Defensive Goal:**
+- Ensure only modern TLS versions are supported (TLS 1.2+)
+- Validate strong cipher suites with forward secrecy
+- Verify certificate validity and chain integrity
+- Prevent protocol downgrade attacks
+
+**Tests Performed:**
+- TLS version support (SSLv2, SSLv3, TLS 1.0, TLS 1.1 detection)
+- Weak cipher suite detection (RC4, DES, 3DES, MD5, NULL, EXPORT)
+- Certificate validation (expiration, self-signed, signature algorithm)
+- Certificate chain integrity
+- Forward secrecy verification (ECDHE, DHE)
+- TLS renegotiation security
+
+**CVSS Scores:**
+- CRITICAL (9.8) for deprecated TLS versions
+- HIGH (7.5) for weak ciphers or certificate issues
+- MEDIUM (5.3) for missing forward secrecy
+
+---
+
 ## Installation
 
 The defensive validation module is included with WSHawk v2.0.4+.

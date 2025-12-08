@@ -9,6 +9,12 @@ All notable changes to WSHawk will be documented in this file.
   - DNS Exfiltration Prevention Test - Validates egress filtering effectiveness
   - Bot Detection Validation Test - Tests anti-bot measure effectiveness  
   - CSWSH (Cross-Site WebSocket Hijacking) Test - Validates Origin header enforcement
+  - **WSS Protocol Security Validation** - Tests TLS/SSL configuration for secure WebSocket connections
+    - TLS version validation (detects SSLv2/v3, TLS 1.0/1.1)
+    - Weak cipher suite detection (RC4, DES, 3DES, etc.)
+    - Certificate validation (expiration, self-signed, chain integrity)
+    - Forward secrecy verification
+    - TLS renegotiation security
 - New CLI command: `wshawk-defensive` for running defensive validation tests
 - 216+ malicious origin payloads for comprehensive CSWSH testing
 - Comprehensive documentation in `docs/DEFENSIVE_VALIDATION.md`

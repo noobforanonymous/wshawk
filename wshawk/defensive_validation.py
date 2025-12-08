@@ -14,6 +14,7 @@ Modules:
 1. DNS Exfiltration Prevention Test
 2. Bot Detection Validation Test  
 3. CSWSH (Cross-Site WebSocket Hijacking) Test
+4. WSS Protocol Security Validation Test
 """
 
 import asyncio
@@ -517,6 +518,18 @@ async def run_defensive_validation(target_url: str):
         all_findings.extend(cswsh_test.findings)
     except Exception as e:
         print(f"[!] CSWSH test error: {e}")
+    
+    # 4. WSS Protocol Security Validation (only for wss:// URLs)
+    if target_url.startswith('wss://'):
+        try:
+            from .wss_security_validator import WSSSecurityValidator
+            wss_test = WSSSecurityValidator(target_url)
+            wss_test.run_all_tests()
+            all_findings.extend(wss_test.findings)
+        except Exception as e:
+            print(f"[!] WSS security test error: {e}")
+    else:
+        print("[*] Skipping WSS security tests (requires wss:// URL)")
     
     # Print summary
     print("\n" + "=" * 70)
