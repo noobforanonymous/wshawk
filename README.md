@@ -46,14 +46,17 @@ playwright install chromium
 ### Option 2: Docker
 
 ```bash
-# Pull from Docker Hub
-docker pull wshawk/wshawk:latest
+# From Docker Hub
+docker pull rothackers/wshawk:latest
+
+# Or from GitHub Container Registry
+docker pull ghcr.io/noobforanonymous/wshawk:latest
 
 # Run WSHawk
-docker run --rm wshawk/wshawk ws://target.com
+docker run --rm rothackers/wshawk ws://target.com
 
 # Defensive validation
-docker run --rm wshawk/wshawk wshawk-defensive ws://target.com
+docker run --rm rothackers/wshawk wshawk-defensive ws://target.com
 ```
 
 See [Docker Guide](docs/DOCKER.md) for detailed usage.

@@ -52,10 +52,14 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 ENTRYPOINT ["wshawk"]
 CMD ["--help"]
 
-# Labels
+# Labels (OpenContainers standard for GitHub Container Registry)
 LABEL maintainer="Regaan"
 LABEL description="WSHawk - Professional WebSocket Security Scanner with Defensive Validation"
 LABEL version="2.0.5"
 LABEL org.opencontainers.image.source="https://github.com/noobforanonymous/wshawk"
-LABEL org.opencontainers.image.documentation="https://github.com/noobforanonymous/wshawk/blob/main/README.md"
+LABEL org.opencontainers.image.description="Professional WebSocket security scanner with real vulnerability verification, defensive validation, and CVSS scoring"
 LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.title="WSHawk"
+LABEL org.opencontainers.image.vendor="Regaan"
+LABEL org.opencontainers.image.url="https://github.com/noobforanonymous/wshawk"
+LABEL org.opencontainers.image.documentation="https://github.com/noobforanonymous/wshawk/blob/main/README.md"
