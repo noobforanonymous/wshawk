@@ -130,7 +130,7 @@ Use the GitHub issue tracker: https://github.com/noobforanonymous/wshawk/issues
 
 **Do not** report security vulnerabilities in public issues.
 
-Instead, email: [Your security contact email]
+Instead, email: security@rothackers.com
 
 ## Code of Conduct
 
