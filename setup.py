@@ -5,9 +5,13 @@ import os
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-# Read requirements
-with open("requirements.txt", "r", encoding="utf-8") as fh:
-    requirements = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
+# Define requirements inline (same as pyproject.toml)
+requirements = [
+    "websockets>=12.0",
+    "playwright>=1.40.0",
+    "aiohttp>=3.9.0",
+    "PyYAML>=6.0",
+]
 
 setup(
     name="wshawk",

@@ -53,8 +53,8 @@ ENTRYPOINT ["wshawk"]
 CMD ["--help"]
 
 # Labels
-LABEL maintainer="Regaan <regaan48@gmail.com>"
-LABEL description="WSHawk - WebSocket Security Scanner with Defensive Validation"
+LABEL maintainer="Regaan"
+LABEL description="WSHawk - Professional WebSocket Security Scanner with Defensive Validation"
 LABEL version="2.0.5"
 LABEL org.opencontainers.image.source="https://github.com/noobforanonymous/wshawk"
 LABEL org.opencontainers.image.documentation="https://github.com/noobforanonymous/wshawk/blob/main/README.md"
