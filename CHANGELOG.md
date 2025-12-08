@@ -2,6 +2,12 @@
 
 All notable changes to WSHawk will be documented in this file.
 
+## [2.0.5] - 2025-12-08
+
+### Fixed
+- CSWSH test compatibility with newer websockets library (use `additional_headers` instead of `extra_headers`)
+- Defensive validation now correctly detects Origin header vulnerabilities
+
 ## [2.0.4] - 2025-12-08
 
 ### Added
