@@ -1,14 +1,12 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: " Report a bug in wshawk"
 title: ''
-labels: ''
+labels: bug
 assignees: ''
 
 ---
 
-name: Bug Report
-description: Report a bug in wshawk
 title: "[BUG] "
 labels: ["bug"]
 body:
