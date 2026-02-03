@@ -1,5 +1,18 @@
 # WSHawk v2.0 - Professional WebSocket Security Scanner
 
+# ⚠️ SECURITY WARNING: FAKE VERSIONS CIRCULATING
+
+> **PLEASE READ CAREFULLY:**  
+> Fake versions of WSHawk are being distributed on third-party download sites and linked in social media posts (e.g., LinkedIn). These versions may contain **MALWARE**.  
+>  
+> **OFFICIAL SOURCES ONLY:**  
+> - **GitHub:** [`https://github.com/noobforanonymous/wshawk`](https://github.com/noobforanonymous/wshawk)  
+> - **PyPI:** `pip install wshawk`  
+> - **Docker:** `docker pull rothackers/wshawk` or `ghcr.io/noobforanonymous/wshawk`  
+>  
+> **DO NOT DOWNLOAD** from any other website. If you see "WSHawk" on a "software download" site, it is likely fake/malicious.
+
+
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyPI version](https://badge.fury.io/py/wshawk.svg)](https://badge.fury.io/py/wshawk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
