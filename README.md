@@ -243,6 +243,16 @@ MIT License - see [LICENSE](LICENSE) file
 
 Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md)
 
+## ⚖️ Legal Disclaimer
+
+**WSHawk is designed for security professionals, researchers, and developers for authorized testing only.**
+
+- **Usage:** You must have explicit permission from the system owner before scanning.
+- **Liability:** The author (Regaan) is **NOT** responsible for any damage caused by the misuse of this tool.
+- **Malware:** WSHawk is a security scanner, NOT malware. Any repackaged version found on third-party sites containing malicious code is **NOT** associated with this project.
+
+By using WSHawk, you agree to these terms and use it at your own risk.
+
 ## Support
 
 - **Issues:** [GitHub Issues](https://github.com/noobforanonymous/wshawk/issues)
