@@ -12,8 +12,8 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY: docker.io
-  IMAGE_NAME: rothackers/wshawk
+  DOCKERHUB_REPO: rothackers/wshawk
+  GHCR_REPO: ghcr.io/${{ github.repository }}
 
 jobs:
   build-and-push:
@@ -26,6 +26,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -36,11 +39,21 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Log in to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: |
+            ${{ env.DOCKERHUB_REPO }}
+            ${{ env.GHCR_REPO }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -63,5 +76,7 @@ jobs:
       - name: Test Docker image
         if: github.event_name != 'pull_request'
         run: |
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --help
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest wshawk-defensive --help || true
+          docker pull ${{ env.GHCR_REPO }}:latest
+          docker run --rm ${{ env.GHCR_REPO }}:latest --help
+          docker run --rm --entrypoint wshawk-defensive ${{ env.GHCR_REPO }}:latest --help
+
