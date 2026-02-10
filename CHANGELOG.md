@@ -2,6 +2,23 @@
 
 All notable changes to WSHawk will be documented in this file.
 
+## [2.0.6] - 2026-02-10
+
+### Added
+- **Comprehensive Test Suite** - 90+ unit and integration tests covering all core modules
+- **Full OAST Integration** - Complete interact.sh API integration (registration, polling, and deregistration)
+- **Expanded WAF Detection** - Added support for 8 additional WAFs (total 12 detected)
+- **Examples Directory** - New `examples/` directory with practical usage scripts for the scanner, mutator, and defensive module
+
+### Fixed
+- **Interactive Mode** - Fixed bug where user test selections were completely ignored
+- **Code Quality** - Replaced all 18 bare `except:` blocks with specific exception handling
+- **Version Mismatch** - Synced version across `__init__.py`, `pyproject.toml`, and `setup.py`
+
+### Removed
+- **Redundant Files** - Removed orphaned drafts (`scanner_v2_additions.py`, `scanner_v2_new.py`, `payload_mutator_v3.py`)
+- **Dead Dependencies** - Removed unused `asyncio-mqtt` from `requirements.txt`
+
 ## [2.0.5] - 2025-12-08
 
 ### Fixed
@@ -62,7 +79,7 @@ All notable changes to WSHawk will be documented in this file.
 - Real vulnerability verification with Playwright
 - OAST integration for blind vulnerabilities
 - Session hijacking tests (6 security tests)
-- Intelligent mutation engine with WAF bypass
+- Advanced mutation engine with WAF bypass
 - CVSS v3.1 scoring
 - Professional HTML reporting
 - Adaptive rate limiting

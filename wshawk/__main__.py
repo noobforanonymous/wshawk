@@ -807,7 +807,7 @@ class WSHawk:
                 try:
                     await ws.send(message)
                     messages_sent += 1
-                except:
+                except (websockets.exceptions.WebSocketException, ConnectionError, OSError):
                     break
             
             elapsed = time.time() - start_time
@@ -1034,7 +1034,7 @@ class WSHawk:
 <body>
     <div class="container">
         <div class="header">
-            <h1>🦅 WSHawk Security Report</h1>
+            <h1>WSHawk Security Report</h1>
             <div class="subtitle">WebSocket Vulnerability Assessment</div>
         </div>
         
@@ -1130,8 +1130,8 @@ async def main():
     scanner.use_headless_browser = False  # Disable by default (requires playwright install)
     scanner.use_oast = True
     
-    # Run intelligent scan
-    await scanner.run_intelligent_scan()
+    # Run heuristic scan
+    await scanner.run_heuristic_scan()
 
 
 

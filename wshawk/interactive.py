@@ -115,8 +115,20 @@ async def main():
     scanner.use_headless_browser = False  # Disable by default
     scanner.use_oast = True
     
-    # Run intelligent scan (includes all v1.0 tests + v2.0 features)
-    await scanner.run_intelligent_scan()
+    # Run selected tests or full heuristic scan
+    if '99' in choices:
+        # Full scan: use the heuristic scan pipeline (all v2.0 features)
+        await scanner.run_heuristic_scan()
+    else:
+        # Individual tests: connect and run only what the user selected
+        Logger.info(f"Running selected tests: {', '.join(choices)}")
+        try:
+            import websockets
+            async with websockets.connect(url) as ws:
+                await run_selected_tests(scanner, choices)
+        except Exception as e:
+            Logger.error(f"Connection failed: {e}")
+            return
     
     Logger.success("Scan complete!")
     Logger.info(f"Vulnerabilities found: {len(scanner.vulnerabilities)}")

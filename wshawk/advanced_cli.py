@@ -71,7 +71,7 @@ Examples:
     print()
     
     # Run scan
-    await scanner.run_intelligent_scan()
+    await scanner.run_heuristic_scan()
     
     Logger.success("Scan complete!")
 

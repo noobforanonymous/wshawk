@@ -2,7 +2,6 @@
 
 # Core dependencies
 websockets>=12.0
-asyncio-mqtt>=0.16.0
 PyYAML>=6.0
 
 # Playwright for XSS verification

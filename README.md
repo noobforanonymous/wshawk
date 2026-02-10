@@ -1,11 +1,12 @@
 # WSHawk v2.0 - Professional WebSocket Security Scanner
 
-# ⚠️ SECURITY WARNING: FAKE VERSIONS CIRCULATING
+# SECURITY WARNING: FAKE VERSIONS CIRCULATING
 
 > **PLEASE READ CAREFULLY:**  
 > Fake versions of WSHawk are being distributed on third-party download sites and linked in social media posts (e.g., LinkedIn). These versions may contain **MALWARE**.  
 >  
 > **OFFICIAL SOURCES ONLY:**  
+> - **Official Website:** [`https://wshawk.rothackers.com`](https://wshawk.rothackers.com)
 > - **GitHub:** [`https://github.com/noobforanonymous/wshawk`](https://github.com/noobforanonymous/wshawk)  
 > - **PyPI:** `pip install wshawk`  
 > - **Docker:** `docker pull rothackers/wshawk` or `ghcr.io/noobforanonymous/wshawk`  
@@ -19,7 +20,7 @@
 [![Playwright](https://img.shields.io/badge/Playwright-Supported-green.svg)](https://playwright.dev/)
 [![Status: Production](https://img.shields.io/badge/status-production-green.svg)](https://github.com/noobforanonymous/wshawk)
 
-**WSHawk v2.0** is a production-grade WebSocket security scanner with advanced features including real vulnerability verification, intelligent mutation, and comprehensive session security testing.
+**WSHawk v2.0** is a production-grade WebSocket security scanner with advanced features including real vulnerability verification, dynamic mutation, and comprehensive session security testing.
 
 ## Why WSHawk?
 
@@ -27,20 +28,20 @@ WSHawk is the only open-source WebSocket scanner that provides:
 - **Real browser XSS verification** (Playwright) - Not just pattern matching
 - **Blind vulnerability detection** via OAST - Finds XXE, SSRF that others miss
 - **Session hijacking analysis** - 6 advanced session security tests
-- **WAF-aware payload mutation** - Intelligent evasion techniques
+- **WAF-aware payload mutation** - Dynamic evasion techniques
 - **CVSS-based professional reporting** - Industry-standard risk assessment
 
 ## Features
 
-- ✅ **22,000+ Attack Payloads** - Comprehensive vulnerability coverage
-- ✅ **Real Vulnerability Verification** - Confirms exploitability, not just reflection
-- ✅ **Playwright XSS Verification** - Actual browser-based script execution testing
-- ✅ **OAST Integration** - Detects blind vulnerabilities (XXE, SSRF)
-- ✅ **Session Hijacking Tests** - Token reuse, impersonation, privilege escalation
-- ✅ **Intelligent Mutation Engine** - WAF bypass with 8+ evasion strategies
-- ✅ **CVSS v3.1 Scoring** - Automatic vulnerability risk assessment
-- ✅ **Professional HTML Reports** - Screenshots, replay sequences, traffic logs
-- ✅ **Adaptive Rate Limiting** - Server-friendly scanning
+- **22,000+ Attack Payloads** - Comprehensive vulnerability coverage
+- **Real Vulnerability Verification** - Confirms exploitability, not just reflection
+- **Playwright XSS Verification** - Actual browser-based script execution testing
+- **OAST Integration** - Detects blind vulnerabilities (XXE, SSRF)
+- **Session Hijacking Tests** - Token reuse, impersonation, privilege escalation
+- **Advanced Mutation Engine** - WAF bypass with 8+ evasion strategies
+- **CVSS v3.1 Scoring** - Automatic vulnerability risk assessment
+- **Professional HTML Reports** - Screenshots, replay sequences, traffic logs
+- **Adaptive Rate Limiting** - Server-friendly scanning
 
 ### Vulnerability Detection
 SQL Injection • XSS • Command Injection • XXE • SSRF • NoSQL Injection • Path Traversal • LDAP Injection • SSTI • Open Redirect • Session Security Issues
@@ -109,11 +110,11 @@ wshawk-advanced ws://target.com --full
 
 | Feature | `wshawk` | `wshawk-interactive` | `wshawk-advanced` |
 |---------|----------|----------------------|-------------------|
-| Ease of Use | ★★★ | ★★★ | ★★ |
-| Flexibility | ★ | ★★ | ★★★ |
-| All Features | ✓ | ✓ | ✓ |
-| Menu Selection | ✗ | ✓ | ✗ |
-| CLI Options | ✗ | ✗ | ✓ |
+| Ease of Use | High | High | Medium |
+| Flexibility | Low | Medium | High |
+| All Features | Yes | Yes | Yes |
+| Menu Selection | No | Yes | No |
+| CLI Options | No | No | Yes |
 | Best For | Automation | Learning | Advanced Users |
 
 ## What You Get
@@ -121,7 +122,7 @@ wshawk-advanced ws://target.com --full
 All methods include:
 - Real vulnerability verification (not just pattern matching)
 - 22,000+ attack payloads
-- Intelligent mutation engine with WAF bypass
+- Advanced mutation engine with WAF bypass
 - CVSS v3.1 scoring for all findings
 - Session hijacking tests (6 security tests)
 - Professional HTML reports
@@ -216,7 +217,7 @@ from wshawk.scanner_v2 import WSHawkV2
 scanner = WSHawkV2("ws://target.com")
 scanner.use_headless_browser = True
 scanner.use_oast = True
-asyncio.run(scanner.run_intelligent_scan())
+asyncio.run(scanner.run_heuristic_scan())
 ```
 
 See [Advanced Usage](docs/advanced_usage.md) for more examples.
@@ -224,10 +225,10 @@ See [Advanced Usage](docs/advanced_usage.md) for more examples.
 ## Responsible Disclosure
 
 WSHawk is designed for:
-- ✓ Authorized penetration testing
-- ✓ Bug bounty programs
-- ✓ Security research
-- ✓ Educational purposes
+- Authorized penetration testing
+- Bug bounty programs
+- Security research
+- Educational purposes
 
 **Always obtain proper authorization before testing.**
 
@@ -243,7 +244,7 @@ MIT License - see [LICENSE](LICENSE) file
 
 Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md)
 
-## ⚖️ Legal Disclaimer
+## Legal Disclaimer
 
 **WSHawk is designed for security professionals, researchers, and developers for authorized testing only.**
 

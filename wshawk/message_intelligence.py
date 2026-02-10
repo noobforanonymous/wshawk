@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-WSHawk Message Intelligence Module
-Handles message format detection and smart payload injection
+WSHawk Message Analyzer Module
+Handles message format detection and automated payload injection
 """
 
 import json
@@ -19,9 +19,9 @@ class MessageFormat(Enum):
     PROTOBUF = "protobuf"
     MSGPACK = "msgpack"
 
-class MessageIntelligence:
+class MessageAnalyzer:
     """
-    Intelligent message format detection and payload injection
+    Automated message format detection and payload injection
     """
     
     def __init__(self):
@@ -38,7 +38,7 @@ class MessageIntelligence:
         try:
             json.loads(message)
             return MessageFormat.JSON
-        except:
+        except (json.JSONDecodeError, ValueError):
             pass
         
         # Check for XML
@@ -53,9 +53,9 @@ class MessageIntelligence:
                 try:
                     json.loads(decoded)
                     return MessageFormat.BASE64
-                except:
+                except (json.JSONDecodeError, ValueError):
                     pass
-        except:
+        except (ValueError, TypeError):
             pass
         
         # Check for binary (non-printable characters)
@@ -67,7 +67,7 @@ class MessageIntelligence:
     
     def learn_from_messages(self, messages: List[str]) -> None:
         """
-        Learn message structure from samples (5-20 messages)
+        Heuristic message structure learning from samples (5-20 messages)
         """
         self.sample_messages = messages[:20]
         
@@ -89,7 +89,7 @@ class MessageIntelligence:
             try:
                 data = json.loads(msg)
                 self._walk_json(data, field_occurrences)
-            except:
+            except (json.JSONDecodeError, ValueError):
                 continue
         
         # Store schema
@@ -147,7 +147,7 @@ class MessageIntelligence:
         """
         try:
             data = json.loads(message)
-        except:
+        except (json.JSONDecodeError, ValueError):
             return [payload]
         
         mutated_messages = []
@@ -195,7 +195,7 @@ class MessageIntelligence:
                 current[final_key] = value
             
             return obj
-        except:
+        except (KeyError, TypeError, IndexError):
             return None
     
     def _inject_into_xml(self, message: str, payload: str) -> List[str]:

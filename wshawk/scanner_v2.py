@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-WSHawk v2.0 - Intelligent WebSocket Security Scanner
-Integrated with all intelligence modules
+WSHawk v2.0 - Advanced WebSocket Security Scanner
+Integrated with all analyzer modules
 """
 
 import asyncio
@@ -11,8 +11,8 @@ import time
 from typing import List, Dict, Optional
 from datetime import datetime
 
-# Import new intelligence modules
-from .message_intelligence import MessageIntelligence, MessageFormat
+# Import analysis modules
+from .message_intelligence import MessageAnalyzer, MessageFormat
 from .vulnerability_verifier import VulnerabilityVerifier, ConfidenceLevel
 from .server_fingerprint import ServerFingerprinter
 from .state_machine import SessionStateMachine, SessionState
@@ -27,7 +27,7 @@ from .__main__ import WSPayloads, Logger, Colors
 
 class WSHawkV2:
     """
-    Enhanced WebSocket Security Scanner with Intelligence
+    Enhanced WebSocket Security Scanner with Heuristic Analysis
     """
     
     def __init__(self, url: str, headers: Optional[Dict] = None, 
@@ -37,8 +37,8 @@ class WSHawkV2:
         self.headers = headers or {}
         self.vulnerabilities = []
         
-        # Initialize intelligence modules
-        self.message_intel = MessageIntelligence()
+        # Initialize analysis modules
+        self.message_analyzer = MessageAnalyzer()
         self.verifier = VulnerabilityVerifier()
         self.fingerprinter = ServerFingerprinter()
         self.state_machine = SessionStateMachine()
@@ -86,10 +86,10 @@ class WSHawkV2:
     
     async def learning_phase(self, ws, duration: int = 5):
         """
-        Learning phase: collect sample messages to understand protocol
+        Learning phase: collect sample messages to understand protocol heuristics
         """
         Logger.info(f"Starting learning phase ({duration}s)...")
-        Logger.info("Listening to understand message structure...")
+        Logger.info("Listening to identify message patterns...")
         
         start = time.monotonic()
         samples = []
@@ -118,11 +118,11 @@ class WSHawkV2:
         
         # Learn from collected samples
         if samples:
-            self.message_intel.learn_from_messages(samples)
+            self.message_analyzer.learn_from_messages(samples)
             self.sample_messages = samples
             
             # Get format info
-            format_info = self.message_intel.get_format_info()
+            format_info = self.message_analyzer.get_format_info()
             Logger.success(f"Detected format: {format_info['format']}")
             
             if format_info['injectable_fields']:
@@ -142,9 +142,9 @@ class WSHawkV2:
     
     async def test_sql_injection_v2(self, ws) -> List[Dict]:
         """
-        Enhanced SQL injection testing with intelligence
+        Enhanced SQL injection testing with automated verification
         """
-        Logger.info("Testing SQL injection with intelligent verification...")
+        Logger.info("Testing SQL injection with heuristic verification...")
         
         results = []
         payloads = WSPayloads.get_sql_injection()[:100]  # Use subset for speed
@@ -162,9 +162,9 @@ class WSHawkV2:
         
         for payload in payloads:
             try:
-                # Smart injection into message structure
-                if self.learning_complete and self.message_intel.detected_format == MessageFormat.JSON:
-                    injected_messages = self.message_intel.inject_payload_into_message(
+                # Automated injection into message structure
+                if self.learning_complete and self.message_analyzer.detected_format == MessageFormat.JSON:
+                    injected_messages = self.message_analyzer.inject_payload_into_message(
                         base_message, payload
                     )
                 else:
@@ -178,10 +178,7 @@ class WSHawkV2:
                         response = await asyncio.wait_for(ws.recv(), timeout=2.0)
                         self.messages_received += 1
                         
-                        # Add to fingerprinter
-                        self.fingerprinter.add_response(response)
-                        
-                        # REAL VERIFICATION - not just reflection
+                        # Automated verification - not just reflection
                         is_vuln, confidence, description = self.verifier.verify_sql_injection(
                             response, payload
                         )
@@ -225,8 +222,8 @@ class WSHawkV2:
         
         for payload in payloads:
             try:
-                if self.learning_complete and self.message_intel.detected_format == MessageFormat.JSON:
-                    injected_messages = self.message_intel.inject_payload_into_message(
+                if self.learning_complete and self.message_analyzer.detected_format == MessageFormat.JSON:
+                    injected_messages = self.message_analyzer.inject_payload_into_message(
                         base_message, payload
                     )
                 else:
@@ -240,7 +237,7 @@ class WSHawkV2:
                         response = await asyncio.wait_for(ws.recv(), timeout=2.0)
                         self.messages_received += 1
                         
-                        # REAL VERIFICATION with context analysis
+                        # Automated verification with context analysis
                         is_vuln, confidence, description = self.verifier.verify_xss(
                             response, payload
                         )
@@ -262,7 +259,7 @@ class WSHawkV2:
                                         browser_verified = True
                                         confidence = ConfidenceLevel.CRITICAL
                                         description = f"REAL EXECUTION: {evidence}"
-                                except Exception as e:
+                                  except Exception as e:
                                     Logger.error(f"Browser verification failed: {e}")
                             
                             Logger.vuln(f"XSS [{confidence.value}]: {description}")
@@ -313,8 +310,8 @@ class WSHawkV2:
         
         for payload in payloads:
             try:
-                if self.learning_complete and self.message_intel.detected_format == MessageFormat.JSON:
-                    injected_messages = self.message_intel.inject_payload_into_message(
+                if self.learning_complete and self.message_analyzer.detected_format == MessageFormat.JSON:
+                    injected_messages = self.message_analyzer.inject_payload_into_message(
                         base_message, payload
                     )
                 else:
@@ -328,7 +325,7 @@ class WSHawkV2:
                         response = await asyncio.wait_for(ws.recv(), timeout=2.0)
                         self.messages_received += 1
                         
-                        # REAL VERIFICATION
+                        # Automated verification
                         is_vuln, confidence, description = self.verifier.verify_command_injection(
                             response, payload
                         )
@@ -542,14 +539,14 @@ class WSHawkV2:
         
         return results
     
-    async def run_intelligent_scan(self):
+    async def run_heuristic_scan(self):
         """
-        Run full intelligent scan with all modules
+        Run full heuristic scan with all modules
         """
         self.start_time = datetime.now()
         Logger.banner()
         Logger.info(f"Target: {self.url}")
-        Logger.info("Starting intelligent scan with rate limiting...")
+        Logger.info("Starting automated scan with rate limiting...")
         print()
         
         # Connect
@@ -564,7 +561,7 @@ class WSHawkV2:
         await self.learning_phase(ws, duration=5)
         print()
         
-        # Run ALL tests with intelligence and rate limiting
+        # Run ALL tests with heuristics and rate limiting
         await self.test_sql_injection_v2(ws)
         print()
         
@@ -615,7 +612,7 @@ class WSHawkV2:
         except Exception as e:
             Logger.error(f"Session hijacking tests failed: {e}")
         
-        # Cleanup advanced verification resources
+        # Cleanup verification resources
         if self.headless_verifier:
             try:
                 await self.headless_verifier.stop()

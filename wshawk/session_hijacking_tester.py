@@ -460,7 +460,7 @@ class SessionHijackingTester:
         try:
             data = json.loads(response)
             return data.get('token') or data.get('auth_token') or data.get('session_token')
-        except:
+        except (json.JSONDecodeError, ValueError):
             # Try regex extraction
             match = re.search(r'"token":\s*"([^"]+)"', response)
             return match.group(1) if match else None
@@ -470,14 +470,14 @@ class SessionHijackingTester:
         try:
             data = json.loads(response)
             return data.get('user_id') or data.get('id') or data.get('uid')
-        except:
+        except (json.JSONDecodeError, ValueError):
             return None
     
     def _extract_session_data(self, response: str) -> Dict:
         """Extract session data from response"""
         try:
             return json.loads(response)
-        except:
+        except (json.JSONDecodeError, ValueError):
             return {}
     
     def _is_auth_success(self, response: str) -> bool:

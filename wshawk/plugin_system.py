@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 WSHawk Production-Grade Plugin System
-Lazy loading, sandboxing, validation, and intelligent caching
+Lazy loading, sandboxing, validation, and advanced caching
 """
 
 import importlib
@@ -239,7 +239,7 @@ class PluginManager:
         try:
             parts = version.split('.')
             return len(parts) == 3 and all(p.isdigit() for p in parts)
-        except:
+        except (ValueError, AttributeError):
             return False
     
     def _is_compatible_version(self, required: str, current: str) -> bool:
@@ -257,7 +257,7 @@ class PluginManager:
                 return False
             
             return True
-        except:
+        except (ValueError, AttributeError, IndexError):
             return False
     
     def _register_plugin_internal(self, plugin: PluginBase) -> bool:

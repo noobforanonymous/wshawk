@@ -206,7 +206,7 @@ docker run --rm -v /absolute/path/reports:/app/reports wshawk/wshawk ws://target
 
 1. **Always use specific version tags**
    ```bash
-   docker pull wshawk/wshawk:2.0.5
+   docker pull wshawk/wshawk:2.0.6
    ```
 
 2. **Run as non-root user** (default)

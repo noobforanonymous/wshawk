@@ -13,7 +13,7 @@ from pathlib import Path
 # Import CVSS calculator
 try:
     from .cvss_calculator import CVSSCalculator
-except:
+except ImportError:
     from cvss_calculator import CVSSCalculator
 
 class EnhancedHTMLReporter:
@@ -127,7 +127,7 @@ class EnhancedHTMLReporter:
                 screenshot_path = screenshots.get(vuln_id) or vuln.get('screenshot')
                 screenshot_html = f"""
                 <div class="screenshot-section">
-                    <strong>📸 Screenshot Evidence:</strong>
+                    <strong>Screenshot Evidence:</strong>
                     <img src="{screenshot_path}" alt="Vulnerability Screenshot" class="screenshot">
                 </div>
                 """
@@ -168,14 +168,14 @@ class EnhancedHTMLReporter:
                     {screenshot_html}
                     
                     <div class="reproduction">
-                        <strong>🔄 Reproduction Steps:</strong>
+                        <strong>Reproduction Steps:</strong>
                         {reproduction}
                     </div>
                     
                     {replay}
                     
                     <div class="recommendation">
-                        <strong>💡 Recommendation:</strong>
+                        <strong>Recommendation:</strong>
                         <p>{vuln.get('recommendation', 'Review and fix this vulnerability')}</p>
                     </div>
                 </div>
@@ -217,7 +217,7 @@ class EnhancedHTMLReporter:
         
         return f"""
         <div class="replay-section">
-            <strong>📝 Message Replay Sequence:</strong>
+            <strong>Message Replay Sequence:</strong>
             <div class="replay-container">
                 {''.join(messages)}
             </div>
@@ -228,7 +228,7 @@ class EnhancedHTMLReporter:
         """Generate server fingerprint section"""
         return f"""
         <div class="fingerprint-section">
-            <h2>🔍 Server Fingerprint</h2>
+            <h2>Server Fingerprint</h2>
             <div class="fingerprint-grid">
                 <div class="fingerprint-item">
                     <strong>Language:</strong> {fingerprint.get('language', 'Unknown')}
@@ -264,7 +264,7 @@ class EnhancedHTMLReporter:
         
         return f"""
         <div class="traffic-logs">
-            <h2>📡 Traffic Logs</h2>
+            <h2>Traffic Logs</h2>
             <div class="logs-container">
                 {''.join(log_entries)}
             </div>
@@ -467,7 +467,7 @@ class EnhancedHTMLReporter:
 <body>
     <div class="container">
         <div class="header">
-            <h1>🦅 WSHawk Security Scan Report</h1>
+            <h1>WSHawk Security Scan Report</h1>
             <p class="subtitle">WebSocket Vulnerability Assessment</p>
             <p style="margin-top: 10px;">Generated: {scan_date}</p>
         </div>
@@ -492,14 +492,14 @@ class EnhancedHTMLReporter:
         </div>
         
         <div class="content">
-            <h2 style="margin-bottom: 20px;">📋 Target Information</h2>
+            <h2 style="margin-bottom: 20px;">Target Information</h2>
             <div class="code-block">
                 <strong>URL:</strong> {target_url}
             </div>
             
             {fingerprint_section}
             
-            <h2 style="margin: 30px 0 20px 0;">🔴 Vulnerabilities Found</h2>
+            <h2 style="margin: 30px 0 20px 0;">Vulnerabilities Found</h2>
             {vulnerability_cards}
             
             {traffic_logs}
@@ -514,36 +514,6 @@ class EnhancedHTMLReporter:
 </html>
         """
 
-
-# Test
 if __name__ == "__main__":
     reporter = EnhancedHTMLReporter()
-    
-    test_vulns = [
-        {
-            'type': 'SQL Injection',
-            'confidence': 'HIGH',
-            'description': 'SQL error detected in response',
-            'payload': "' OR '1'='1",
-            'response_snippet': 'SQL Error: syntax error near...',
-            'recommendation': 'Use parameterized queries',
-            'replay_sequence': [
-                {'direction': 'sent', 'content': '{"action": "login", "user": "\' OR \'1\'=\'1"}'},
-                {'direction': 'received', 'content': 'SQL Error: syntax error'}
-            ]
-        }
-    ]
-    
-    scan_info = {
-        'target': 'ws://localhost:9999',
-        'duration': 45.2,
-        'messages_sent': 250,
-        'messages_received': 248
-    }
-    
-    report = reporter.generate_report(test_vulns, scan_info)
-    
-    with open('/tmp/test_report_v2.html', 'w') as f:
-        f.write(report)
-    
-    print("✓ Enhanced HTML report v2 generated: /tmp/test_report_v2.html")
+    print("Enhanced HTML report generator loaded.")

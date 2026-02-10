@@ -187,7 +187,7 @@ class SessionStateMachine:
                         'field': key,
                         'message': data
                     }
-        except:
+        except (json.JSONDecodeError, ValueError):
             pass
         
         return None

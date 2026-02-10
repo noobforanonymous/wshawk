@@ -33,32 +33,70 @@ class OASTProvider:
         self.domain = None
         self.interactions = []
         self.session = None
+        self._correlation_id = None
+        self._secret_key = None
+        self._interactsh_base = "https://oast.fun"
         
     async def start(self):
-        """Initialize OAST session"""
+        """Initialize OAST session — registers with interact.sh if enabled"""
         self.session = aiohttp.ClientSession()
         
         if self.use_interactsh:
-            # Use interact.sh public server
-            self.domain = f"{self.session_id}.oast.fun"
-            # Note: interact.sh requires registration for polling
-            # For now, we'll use a simpler approach
-            print(f"[OAST] Using domain: {self.domain}")
+            registered = await self._register_interactsh()
+            if not registered:
+                # Fallback to simple domain (DNS-only detection)
+                self.domain = f"{self.session_id}.oast.fun"
+                print(f"[OAST] Fallback mode — using domain: {self.domain}")
+                print(f"[OAST] Tip: Run your own OAST server for full interaction polling")
         else:
             self.domain = self.custom_server
     
+    async def _register_interactsh(self) -> bool:
+        """
+        Register with interact.sh public API to get a unique subdomain.
+        """
+        try:
+            async with self.session.post(
+                f"{self._interactsh_base}/register",
+                json={"secret-key": self.session_id},
+                timeout=aiohttp.ClientTimeout(total=10)
+            ) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    self._correlation_id = data.get("correlationID", "")
+                    self._secret_key = data.get("secretKey", self.session_id)
+                    subdomain = data.get("subDomain", self._correlation_id)
+                    self.domain = f"{subdomain}.oast.fun"
+                    print(f"[OAST] Registered with interact.sh — domain: {self.domain}")
+                    return True
+                else:
+                    print(f"[OAST] interact.sh registration failed (HTTP {resp.status})")
+                    return False
+        except (aiohttp.ClientError, asyncio.TimeoutError, OSError) as e:
+            print(f"[OAST] interact.sh registration error: {e}")
+            return False
+    
     async def stop(self):
-        """Close OAST session"""
+        """Close OAST session and deregister"""
         if self.session:
+            # Attempt to deregister from interact.sh
+            if self._correlation_id:
+                try:
+                    await self.session.post(
+                        f"{self._interactsh_base}/deregister",
+                        json={
+                            "correlationID": self._correlation_id,
+                            "secretKey": self._secret_key or self.session_id
+                        },
+                        timeout=aiohttp.ClientTimeout(total=5)
+                    )
+                except (aiohttp.ClientError, asyncio.TimeoutError, OSError):
+                    pass  # Best-effort cleanup
             await self.session.close()
     
     def generate_payload(self, vuln_type: str, test_id: str) -> str:
         """
         Generate OAST payload for specific vulnerability type
-        
-        Args:
-            vuln_type: xxe, ssrf, rce, etc.
-            test_id: unique test identifier
         """
         unique_id = f"{vuln_type}-{test_id}-{self.session_id}"
         
@@ -86,31 +124,50 @@ class OASTProvider:
     
     async def check_interactions(self, test_id: str, timeout: int = 5) -> List[OASTInteraction]:
         """
-        Check for OAST interactions
-        
-        Note: This is a simplified version. Real interact.sh requires API polling.
-        For production, you'd need to:
-        1. Register with interact.sh
-        2. Poll their API
-        3. Or run your own OAST server
+        Poll interact.sh API for interactions matching the test_id.
         """
         # Wait for potential callback
         await asyncio.sleep(timeout)
         
-        # In a real implementation, you would poll interact.sh API here
-        # For now, we return empty (would need actual server integration)
+        # Poll interact.sh API if we have a correlation ID
+        if self._correlation_id and self.session:
+            try:
+                params = {
+                    "id": self._correlation_id,
+                    "secret": self._secret_key or self.session_id
+                }
+                async with self.session.get(
+                    f"{self._interactsh_base}/poll",
+                    params=params,
+                    timeout=aiohttp.ClientTimeout(total=10)
+                ) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        raw_interactions = data.get("data", []) or []
+                        
+                        for entry in raw_interactions:
+                            interaction = OASTInteraction(
+                                protocol=entry.get("protocol", "dns") if isinstance(entry, dict) else "dns",
+                                full_id=entry.get("full-id", str(entry)) if isinstance(entry, dict) else str(entry),
+                                data=entry.get("raw-request", "") if isinstance(entry, dict) else str(entry),
+                                timestamp=time.time()
+                            )
+                            self.interactions.append(interaction)
+                            
+            except (aiohttp.ClientError, asyncio.TimeoutError, OSError, json.JSONDecodeError) as e:
+                print(f"[OAST] Polling error: {e}")
         
-        return self.interactions
+        # Filter interactions for this specific test
+        matching = [i for i in self.interactions if test_id in i.full_id]
+        return matching if matching else self.interactions
     
     def has_interaction(self, test_id: str) -> bool:
         """Check if specific test received callback"""
         return any(test_id in interaction.full_id for interaction in self.interactions)
 
-
 class SimpleOASTServer:
     """
     Simple local OAST server for testing
-    Listens for HTTP callbacks
     """
     
     def __init__(self, port: int = 8888):
@@ -158,8 +215,6 @@ class SimpleOASTServer:
         """Clear interaction history"""
         self.interactions = []
 
-
-# Test the OAST module
 async def test_oast():
     """Test OAST functionality"""
     print("Testing OAST Module...")
@@ -176,28 +231,26 @@ async def test_oast():
     xxe_payload = provider.generate_payload('xxe', 'test1')
     ssrf_payload = provider.generate_payload('ssrf', 'test2')
     
-    print(f"\n✓ XXE Payload generated: {xxe_payload[:80]}...")
-    print(f"✓ SSRF Payload generated: {ssrf_payload}")
+    print(f"\n[OK] XXE Payload generated: {xxe_payload[:80]}...")
+    print(f"[OK] SSRF Payload generated: {ssrf_payload}")
     
-    # Simulate callback (in real scenario, vulnerable app would trigger this)
+    # Simulate callback
     async with aiohttp.ClientSession() as session:
         try:
             await session.get(f'http://localhost:8888/xxe-test1-callback')
-        except:
+        except (aiohttp.ClientError, OSError):
             pass
     
     await asyncio.sleep(1)
     
     # Check interactions
     interactions = server.get_interactions()
-    print(f"\n✓ Received {len(interactions)} interaction(s)")
+    print(f"\n[OK] Received {len(interactions)} interaction(s)")
     for interaction in interactions:
         print(f"  - {interaction.protocol}: {interaction.full_id}")
     
-    # Cleanup
     await provider.stop()
     await server.stop()
-    
     print("\nOAST Test complete!")
 
 if __name__ == "__main__":

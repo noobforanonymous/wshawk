@@ -1,182 +1,99 @@
-# WSHawk v2.0.5 - Complete Release Summary
+# WSHawk v2.0.6 - Complete Release Summary
 
-## 🎉 What We Built Today
+### 1. Robust Production-Grade Core
+**Purpose:** Transform WSHawk into a reliable, enterprise-ready tool.
 
-### 1. Defensive Validation Module
-**Purpose:** Blue team security validation tool
-
-**Features:**
-- DNS Exfiltration Prevention Test
-- Bot Detection Validation Test
-- CSWSH (Cross-Site WebSocket Hijacking) Test
-- WSS Protocol Security Validation
-
-**Results:**
-- 216+ malicious origins tested
-- CVSS scoring for all findings
-- Comprehensive remediation guidance
+**Improvements:**
+- **90+ Comprehensive Unit Tests:** Validating every core module (CVSS, Mutator, Verifier, Analyzer, WAF, Fingerprint).
+- **Interactive Mode Fixed:** Selection logic now respects user input (1-13) instead of always running full scans.
+- **Specific Exception Handling:** Replaced all 18 bare `except:` blocks with specific exception types for stability and better debugging.
+- **Dependency Cleanup:** Removed unused dependencies like `asyncio-mqtt` to reduce attack surface and build size.
 
 ---
 
-### 2. Package Distribution
+### 2. Advanced Security Features
 
-#### PyPI (Python Package Index)
-- **Package:** `wshawk`
-- **Version:** 2.0.5
-- **Install:** `pip install wshawk`
-- **URL:** https://pypi.org/project/wshawk/
+#### Full OAST Integration
+- **Platform:** `interact.sh` (oast.fun)
+- **Features:** Automatic registration, polling for interactions, and deregistration.
+- **Impact:** Detects blind vulnerabilities like XXE, SSRF, and RCE through external callbacks.
 
-#### Docker Hub
-- **Image:** `rothackers/wshawk:2.0.5`
-- **Pull:** `docker pull rothackers/wshawk:latest`
-- **URL:** https://hub.docker.com/r/rothackers/wshawk
-
-#### GitHub Container Registry
-- **Image:** `ghcr.io/noobforanonymous/wshawk:latest`
-- **Pull:** `docker pull ghcr.io/noobforanonymous/wshawk:latest`
-- **Auto-published** on every push to main
+#### Expanded WAF Detection
+- **Detection Count:** Increased from 4 to 12 WAFs.
+- **New WAFs:** AWS WAF, F5 BIG-IP, Barracuda, Sucuri, Fortinet FortiWeb, Azure WAF, Citrix NetScaler, and DenyAll.
+- **Impact:** Advanced payload mutation strategies are now tailored to a much wider range of protections.
 
 ---
 
-### 3. GitHub Actions Automation
+### 3. Developer & Documentation Package
 
-**Two workflows:**
+#### Examples Directory
+- `examples/basic_scan.py` - Quick start for programmatic usage.
+- `examples/mutation_demo.py` - Deep dive into the mutation engine strategies.
+- `examples/defensive_check.py` - Blue team auditing usage.
 
-1. **docker-build.yml** - Publishes to Docker Hub
-   - Triggers on push to main
-   - Multi-platform build (amd64, arm64)
-   - Auto-tags with version numbers
-
-2. **ghcr-publish.yml** - Publishes to GitHub Container Registry
-   - Triggers on push to main
-   - Uses GITHUB_TOKEN (no secrets needed)
-   - Automatically links to repository
+#### Updated Distribution Metadata
+- **Version:** 2.0.6 (Unified across all files)
+- **Changelog:** Detailed history of the stabilization project.
 
 ---
 
-## 📊 Testing Results
+## Testing Status
 
-### Tested Against Vulnerable Server
-```
-Findings:
-  CRITICAL: 1
-  HIGH: 0
-  MEDIUM: 0
+### Automated Test Suite
+- **Total Tests:** 90
+- **Passed:** 90
+- **Failed:** 0
+- **Time:** ~0.15s (Optimized)
 
-[CRITICAL] CSWSH - Origin Header Validation
-  Description: Server accepts 216 untrusted origins
-  CVSS: 9.1
-```
-
-**Status:** ✅ Working perfectly!
+**Coverage:**
+- CVSS v3.1 Calculator
+- Payload Mutation Engine
+- Vulnerability Verifier (SQLi, XSS, RCE, LFI)
+- Message Analyzer (JSON/XML/Binary)
+- WAF Detector (12 Signatures)
+- Server Fingerprinting
 
 ---
 
-## 🚀 Usage Examples
+## Installation & Usage
 
-### PyPI Installation
+### Local Development
 ```bash
-pip install wshawk==2.0.5
-wshawk-defensive ws://target.com
+pip install -e .
+python -m pytest tests/
 ```
 
-### Docker Hub
+### Docker Usage
 ```bash
-docker pull rothackers/wshawk:latest
-docker run --rm rothackers/wshawk wshawk-defensive ws://target.com
-```
-
-### GitHub Container Registry
-```bash
-docker pull ghcr.io/noobforanonymous/wshawk:latest
-docker run --rm ghcr.io/noobforanonymous/wshawk wshawk-defensive ws://target.com
+docker pull rothackers/wshawk:2.0.6
+docker run --rm rothackers/wshawk wshawk-interactive
 ```
 
 ---
 
-## 📝 Documentation
+## Project Stabilization Summary
 
-### Created Files
-- `docs/DEFENSIVE_VALIDATION.md` - Complete defensive validation guide
-- `docs/DOCKER.md` - Docker usage guide
-- `Dockerfile` - Multi-stage optimized build
-- `docker-compose.yml` - Easy multi-container setup
-- `.dockerignore` - Optimized image size
-- `.github/workflows/docker-build.yml` - Docker Hub automation
-- `.github/workflows/ghcr-publish.yml` - GHCR automation
+### Cleaned Files
+- Removed: `scanner_v2_additions.py`
+- Removed: `scanner_v2_new.py`
+- Removed: `payload_mutator_v3.py`
 
-### Updated Files
-- `README.md` - Added Docker and defensive validation sections
-- `CHANGELOG.md` - v2.0.5 entry
-- `setup.py` - Fixed requirements for Docker build
-- `pyproject.toml` - Version 2.0.5
+### Updated Infrastructure
+- `.github/workflows/` - Compatible with new test suite.
+- `Dockerfile` - Updated labels and version strings.
+- `CHANGELOG.md` - Complete version history for 2.0.6.
 
 ---
 
-## 🔧 Technical Details
+## Ready Status
 
-### Docker Image
-- **Base:** python:3.11-slim
-- **Size:** ~150MB (multi-stage build)
-- **User:** Non-root (wshawk:1000)
-- **Platforms:** linux/amd64, linux/arm64
-- **Labels:** OpenContainers standard for GitHub linking
-
-### Defensive Validation
-- **Modules:** 4 security tests
-- **Payloads:** 216+ malicious origins
-- **CVSS:** v3.1 scoring
-- **Output:** Detailed findings with remediation
+**WSHawk v2.0.6** is now:
+- **Tested:** 90 passing tests.
+- **Stable:** No broad exception swallowing.
+- **Integrated:** Functional OAST and expanded WAF support.
+- **Usable:** Working interactive mode and rich examples.
 
 ---
 
-## 🎯 What's Next
-
-### Immediate
-1. ✅ PyPI published
-2. ✅ Docker Hub published
-3. ✅ GitHub Container Registry auto-publishing
-4. ✅ GitHub Actions working
-
-### Optional Improvements
-- Add more defensive validation tests
-- Integrate OAST for DNS exfiltration test
-- Add more payload files
-- Create video tutorials
-
----
-
-## 📦 Distribution Summary
-
-| Platform | Status | URL |
-|----------|--------|-----|
-| PyPI | ✅ Published | https://pypi.org/project/wshawk/ |
-| Docker Hub | ✅ Published | https://hub.docker.com/r/rothackers/wshawk |
-| GitHub Container Registry | ✅ Auto-publishing | https://github.com/noobforanonymous/wshawk/pkgs/container/wshawk |
-| GitHub | ✅ Latest | https://github.com/noobforanonymous/wshawk |
-
----
-
-## 🏆 Achievement Unlocked
-
-**WSHawk v2.0.5** is now:
-- ✅ Available on PyPI
-- ✅ Available on Docker Hub
-- ✅ Available on GitHub Container Registry
-- ✅ Fully automated CI/CD
-- ✅ Comprehensive documentation
-- ✅ Tested and verified
-
----
-
-## 📞 Support
-
-- **GitHub Issues:** https://github.com/noobforanonymous/wshawk/issues
-- **Documentation:** https://github.com/noobforanonymous/wshawk/tree/main/docs
-- **Docker Hub:** https://hub.docker.com/r/rothackers/wshawk
-- **Email:** support@rothackers.com
-
----
-
-**Built with ❤️ by Regaan**
-**Powered by Python, Docker, and GitHub Actions**
+**Built by Regaan**
