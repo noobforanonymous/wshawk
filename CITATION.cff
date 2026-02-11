@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Regaan"
+  given-names: "Regaan"
+  alias: "noobforanonymous"
+title: "WSHawk"
+version: 2.0.6
+date-released: 2026-02-11
+url: "https://github.com/noobforanonymous/wshawk"
+repository-code: "https://github.com/noobforanonymous/wshawk"
+keywords:
+  - websocket
+  - security
+  - scanner
+  - penetration-testing
+  - vulnerability-scanning
+license: MIT

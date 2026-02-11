@@ -20,7 +20,7 @@ class PluginMetadata:
     name: str
     version: str
     description: str
-    author: str = "Unknown"
+    author: str = "Regaan"
     requires: List[str] = None
     min_wshawk_version: str = "2.0.0"
     checksum: str = ""

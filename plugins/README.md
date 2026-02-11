@@ -20,7 +20,7 @@ class MyCustomPlugin(PayloadPlugin):
         super().__init__(
             name="my_plugin",
             version="1.0.0",
-            author="Your Name"
+            author="Regaan"
         )
     
     def get_payloads(self, vuln_type: str):
