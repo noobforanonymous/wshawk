@@ -259,7 +259,7 @@ class WSHawkV2:
                                         browser_verified = True
                                         confidence = ConfidenceLevel.CRITICAL
                                         description = f"REAL EXECUTION: {evidence}"
-                                  except Exception as e:
+                                except Exception as e:
                                     Logger.error(f"Browser verification failed: {e}")
                             
                             Logger.vuln(f"XSS [{confidence.value}]: {description}")
