@@ -1094,13 +1094,39 @@ class WSHawk:
 
 async def main():
     """
-    Main entry point - uses advanced scanner_v2
+    Main entry point - handles CLI arguments and starts scanner or web GUI
     """
+    import argparse
     import sys
-    
-    if len(sys.argv) > 1:
-        target_url = sys.argv[1]
-    else:
+    from .__init__ import __version__
+
+    parser = argparse.ArgumentParser(description=f"WSHawk v{__version__} - Professional WebSocket Security Scanner")
+    parser.add_argument("target", nargs="?", help="Target WebSocket URL (ws:// or wss://)")
+    parser.add_argument("--version", action="store_true", help="Show version information")
+    parser.add_argument("--web", action="store_true", help="Launch the Web Management Dashboard")
+    parser.add_argument("--port", type=int, default=5000, help="Web dashboard port (default: 5000)")
+    parser.add_argument("--host", default="0.0.0.0", help="Web dashboard host (default: 0.0.0.0)")
+
+    args = parser.parse_args()
+
+    # Handle Version
+    if args.version:
+        Logger.banner()
+        print(f"WSHawk Version: {__version__}")
+        return
+
+    # Handle Web GUI
+    if args.web:
+        try:
+            from .web.app import run_web
+            run_web(host=args.host, port=args.port)
+        except ImportError:
+            Logger.error("Flask required for Web GUI. Install: pip install flask")
+        return
+
+    # Handle URL Scan (Positional or Interactive)
+    target_url = args.target
+    if not target_url:
         Logger.banner()
         print(f"{Colors.CYAN}Enter WebSocket URL (e.g., ws://example.com or wss://example.com):{Colors.END}")
         target_url = input(f"{Colors.YELLOW}> {Colors.END}").strip()
@@ -1117,23 +1143,28 @@ async def main():
     # Use advanced scanner_v2
     from .scanner_v2 import WSHawkV2
     
-    Logger.info("Using WSHawk v2.0 Advanced Scanner")
+    Logger.info(f"Using WSHawk v{__version__} Advanced Scanner")
     scanner = WSHawkV2(target_url, max_rps=10)
     
-    # Enable all features
-    scanner.use_headless_browser = False  # Disable by default (requires playwright install)
+    # Enable defaults for quick scan
+    scanner.use_headless_browser = False
     scanner.use_oast = True
     
     # Run heuristic scan
     await scanner.run_heuristic_scan()
 
 
-
-
 def cli():
     """Entry point for pip-installed command"""
     try:
-        asyncio.run(main())
+        # Use a new loop to avoid "RuntimeError: This event loop is already running" 
+        # when called from other async contexts
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            loop.run_until_complete(main())
+        finally:
+            loop.close()
     except KeyboardInterrupt:
         print(f"\n{Colors.YELLOW}[!] Scan interrupted by user{Colors.END}")
     except Exception as e:
