@@ -5,17 +5,17 @@ import os
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-# Define requirements inline (same as pyproject.toml)
+# Define requirements 
 requirements = [
     "websockets>=12.0",
-    "playwright>=1.40.0",
     "aiohttp>=3.9.0",
     "PyYAML>=6.0",
+    "flask>=3.0.0",
 ]
 
 setup(
     name="wshawk",
-    version="2.0.6",
+    version="2.0.7",
     author="Regaan",
     description="Professional WebSocket security scanner with real vulnerability verification, session hijacking tests, and CVSS scoring",
     long_description=long_description,
@@ -51,6 +51,8 @@ setup(
         "wshawk": [
             "payloads/*.txt",
             "payloads/**/*.json",
+            "web/templates/*.html",
+            "web/static/*",
         ],
     },
     keywords="websocket security scanner penetration-testing bug-bounty vulnerability xss sqli session-hijacking cvss playwright oast waf-bypass",

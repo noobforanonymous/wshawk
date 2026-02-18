@@ -55,7 +55,7 @@ CMD ["--help"]
 # Labels (OpenContainers standard for GitHub Container Registry)
 LABEL maintainer="Regaan"
 LABEL description="WSHawk - Professional WebSocket Security Scanner with Defensive Validation"
-LABEL version="2.0.6"
+LABEL version="2.0.7"
 LABEL org.opencontainers.image.source="https://github.com/noobforanonymous/wshawk"
 LABEL org.opencontainers.image.description="Professional WebSocket security scanner with real vulnerability verification, defensive validation, and CVSS scoring"
 LABEL org.opencontainers.image.licenses="MIT"

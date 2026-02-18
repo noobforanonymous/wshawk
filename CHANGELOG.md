@@ -2,6 +2,21 @@
 
 All notable changes to WSHawk will be documented in this file.
 
+## [2.0.7] - 2026-02-18
+
+### Added
+- **Production-Grade Resilience Layer** - Integrated `ResilientSession` with Exponential Backoff and Circuit Breakers for all integrations
+- **Smart Payload Evolution** - New adaptive learning phase that evolves payloads based on server feedback loops
+- **Persistent Web Dashboard** - SQLite-backed GUI with scan history and professional user management
+- **Hardened Web Authentication** - Secure login system with SHA-256 hashing and API key support
+- **Enterprise Integrations** - Multi-platform support for Jira, DefectDojo, and Webhooks (Slack, Discord, Teams)
+- **Hierarchical Configuration** - Professional `wshawk.yaml` with environment variable secret resolution
+
+### Improved
+- **Professional Logging** - Centralized logging system with persistent file logs and custom security log levels
+- **Endpoint Discovery** - Resilient crawler for finding hidden WebSocket endpoints behind hardened targets
+- **Refined Reporting** - Support for SARIF, JSON, and CSV exports for SOC/CI-CD integration
+
 ## [2.0.6] - 2026-02-10
 
 ### Added

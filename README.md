@@ -20,11 +20,15 @@
 [![Playwright](https://img.shields.io/badge/Playwright-Supported-green.svg)](https://playwright.dev/)
 [![Status: Production](https://img.shields.io/badge/status-production-green.svg)](https://github.com/noobforanonymous/wshawk)
 
-**WSHawk v2.0** is a production-grade WebSocket security scanner with advanced features including real vulnerability verification, dynamic mutation, and comprehensive session security testing.
+**WSHawk v2.0** is a production-grade WebSocket security scanner with advanced features including real vulnerability verification, dynamic mutation, and comprehensive session security testing. It also includes a **Persistent Web GUI** for dashboarding and history.
 
 ## Why WSHawk?
 
 WSHawk is the only open-source WebSocket scanner that provides:
+- **Smart Payload Evolution** - Adaptive feedback-driven mutation engine
+- **Hierarchical Configuration** - `wshawk.yaml` with env var secret resolution
+- **Persistent Web GUI** - Dashboard with SQLite history and password auth
+- **Enterprise Integrations** - Auto-push to **Jira**, **DefectDojo**, and **Webhooks**
 - **Real browser XSS verification** (Playwright) - Not just pattern matching
 - **Blind vulnerability detection** via OAST - Finds XXE, SSRF that others miss
 - **Session hijacking analysis** - 6 advanced session security tests
@@ -77,45 +81,83 @@ See [Docker Guide](docs/DOCKER.md) for detailed usage.
 
 ## Quick Start
 
-WSHawk provides **3 easy ways** to scan WebSocket applications:
+WSHawk provides **4 easy ways** to scan WebSocket applications:
 
 ### Method 1: Quick Scan (Fastest)
 ```bash
 wshawk ws://target.com
 ```
-Perfect for CI/CD pipelines and quick security assessments.
 
 ### Method 2: Interactive Menu (User-Friendly)
 ```bash
 wshawk-interactive
 ```
-Shows interactive menu to select specific tests. Best for learning and manual testing.
 
 ### Method 3: Advanced CLI (Full Control)
 ```bash
 # Basic scan
 wshawk-advanced ws://target.com
 
-# With Playwright XSS verification
-wshawk-advanced ws://target.com --playwright
+# With Smart Payloads and Playwright verification
+wshawk-advanced ws://target.com --smart-payloads --playwright --full
+```
 
-# Custom rate limiting
-wshawk-advanced ws://target.com --rate 5
+### Method 4: Web Management Dashboard (GUI)
+```bash
+# Launch the persistent web dashboard
+wshawk --web
+```
+Best for teams requiring scan history, visual progress tracking, and professional report management.
 
-# All features enabled
-wshawk-advanced ws://target.com --full
+## 🖥️ Web Management Dashboard
+
+WSHawk v2.0 introduces a persistent, secure web-based dashboard for managing all your WebSocket security assessments.
+
+### Launching the GUI
+```bash
+wshawk --web --port 5000 --host 0.0.0.0
+```
+
+### Authentication
+For production security, the Web GUI is protected by a password. Set it using an environment variable:
+```bash
+export WSHAWK_WEB_PASSWORD='your-strong-password'
+wshawk --web
+```
+*Note: If no password is set, the dashboard will run in open mode (only recommended for local testing).*
+
+### Features
+| Feature | Description |
+|---------|-------------|
+| **Persistent History** | All scans are saved to a local SQLite database (`scans.db`). |
+| **Visual Progress** | Real-time scan status and vulnerability counters. |
+| **Interactive Reports** | View, delete, and manage comprehensive HTML reports in-browser. |
+| **API Key Support** | Programmatic access via `--api-key` or `WSHAWK_API_KEY`. |
+
+## ⚙️ Hierarchical Configuration (`wshawk.yaml`)
+
+WSHawk now supports a professional configuration system. Generate a template to get started:
+```bash
+python3 -m wshawk.config --generate
+```
+
+Rename `wshawk.yaml.example` to `wshawk.yaml`. You can resolve secrets from environment variables or files:
+```yaml
+integrations:
+  jira:
+    api_token: "env:JIRA_TOKEN"  # Fetched from environment
+    project: "SEC"
 ```
 
 ## Command Comparison
 
-| Feature | `wshawk` | `wshawk-interactive` | `wshawk-advanced` |
-|---------|----------|----------------------|-------------------|
-| Ease of Use | High | High | Medium |
-| Flexibility | Low | Medium | High |
-| All Features | Yes | Yes | Yes |
-| Menu Selection | No | Yes | No |
-| CLI Options | No | No | Yes |
-| Best For | Automation | Learning | Advanced Users |
+| Feature | `wshawk` | `wshawk-interactive` | `wshawk-advanced` | `wshawk --web` |
+|---------|----------|----------------------|-------------------|----------------|
+| Ease of Use | High | High | Medium | **Highest** |
+| Persistence | No | No | No | **Yes (SQLite)** |
+| Auth Support | No | No | No | **Yes (SHA-256)** |
+| Best For | Automation | Learning | Power Users | **Teams / SOC** |
+
 
 ## What You Get
 

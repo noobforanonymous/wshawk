@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WSHawk Dashboard</title>
+    <meta name="description" content="WSHawk WebSocket Security Scanner - Scan Dashboard">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo">🦅</span>
+            <span class="brand-text">WSHawk</span>
+            <span class="version">v2.0.7</span>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="nav-link active">Dashboard</a>
+            <a href="/scan" class="nav-link">New Scan</a>
+            <a href="https://github.com/noobforanonymous/wshawk" target="_blank" class="nav-link">GitHub</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🔍</div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ total_scans }}</div>
+                    <div class="stat-label">Total Scans</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚠️</div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ total_vulns }}</div>
+                    <div class="stat-label">Vulnerabilities</div>
+                </div>
+            </div>
+            <div class="stat-card critical">
+                <div class="stat-icon">🔴</div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ critical_count }}</div>
+                    <div class="stat-label">Critical/High</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🚀</div>
+                <div class="stat-content">
+                    <a href="/scan" class="btn btn-primary">New Scan</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scan History -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Scan History</h2>
+            </div>
+            <div class="card-body">
+                {% if scans %}
+                <table class="table" id="scans-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Target</th>
+                            <th>Status</th>
+                            <th>Findings</th>
+                            <th>Duration</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for scan in scans %}
+                        <tr>
+                            <td><code>{{ scan.id }}</code></td>
+                            <td class="target-cell">{{ scan.target }}</td>
+                            <td>
+                                <span class="badge badge-{{ scan.status }}">
+                                    {{ scan.status }}
+                                </span>
+                            </td>
+                            <td>
+                                {% set vuln_count = scan.vulnerabilities|length %}
+                                {% if vuln_count > 0 %}
+                                <span class="badge badge-danger">{{ vuln_count }}</span>
+                                {% else %}
+                                <span class="badge badge-success">0</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ "%.1f"|format(scan.duration) }}s</td>
+                            <td>{{ scan.created_at[:16] }}</td>
+                            <td class="actions-cell">
+                                <a href="/scan/{{ scan.id }}" class="btn btn-sm btn-outline">View</a>
+                                <form method="POST" action="/scan/{{ scan.id }}/delete" style="display:inline">
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Delete this scan?')">🗑</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">🦅</div>
+                    <h3>No scans yet</h3>
+                    <p>Start your first WebSocket security scan</p>
+                    <a href="/scan" class="btn btn-primary">Launch Scan</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>WSHawk v2.0.7 by <a href="https://github.com/noobforanonymous">Regaan</a> | WebSocket Security Scanner</p>
+    </footer>
+
+    <script>
+        // Auto-refresh running scans
+        const runningScans = document.querySelectorAll('.badge-running, .badge-queued');
+        if (runningScans.length > 0) {
+            setInterval(() => location.reload(), 5000);
+        }
+    </script>
+</body>
+
+</html>

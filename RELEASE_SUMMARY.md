@@ -1,4 +1,4 @@
-# WSHawk v2.0.6 - Complete Release Summary
+# WSHawk v2.0.7 - Complete Release Summary
 
 ### 1. Robust Production-Grade Core
 **Purpose:** Transform WSHawk into a reliable, enterprise-ready tool.
@@ -33,7 +33,7 @@
 - `examples/defensive_check.py` - Blue team auditing usage.
 
 #### Updated Distribution Metadata
-- **Version:** 2.0.6 (Unified across all files)
+- **Version:** 2.0.7 (Unified across all files)
 - **Changelog:** Detailed history of the stabilization project.
 
 ---
@@ -66,7 +66,7 @@ python -m pytest tests/
 
 ### Docker Usage
 ```bash
-docker pull rothackers/wshawk:2.0.6
+docker pull rothackers/wshawk:2.0.7
 docker run --rm rothackers/wshawk wshawk-interactive
 ```
 
@@ -82,13 +82,13 @@ docker run --rm rothackers/wshawk wshawk-interactive
 ### Updated Infrastructure
 - `.github/workflows/` - Compatible with new test suite.
 - `Dockerfile` - Updated labels and version strings.
-- `CHANGELOG.md` - Complete version history for 2.0.6.
+- `CHANGELOG.md` - Complete version history for 2.0.7.
 
 ---
 
 ## Ready Status
 
-**WSHawk v2.0.6** is now:
+**WSHawk v2.0.7** is now:
 - **Tested:** 90 passing tests.
 - **Stable:** No broad exception swallowing.
 - **Integrated:** Functional OAST and expanded WAF support.

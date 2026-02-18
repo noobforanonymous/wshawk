@@ -206,7 +206,7 @@ docker run --rm -v /absolute/path/reports:/app/reports rothackers/wshawk ws://ta
 
 1. **Always use specific version tags**
    ```bash
-   docker pull rothackers/wshawk:2.0.6
+   docker pull rothackers/wshawk:2.0.7
    ```
 
 2. **Run as non-root user** (default)

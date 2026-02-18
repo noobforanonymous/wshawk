@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - WSHawk</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <main class="container" style="display:flex;justify-content:center;align-items:center;min-height:90vh">
+        <div class="card scan-form-card" style="max-width:420px;width:100%">
+            <div class="card-header" style="justify-content:center">
+                <div style="text-align:center">
+                    <span class="logo" style="font-size:2.5rem;display:block;margin-bottom:0.5rem">🦅</span>
+                    <h2><span class="brand-text">WSHawk</span></h2>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if error %}
+                <div class="alert alert-error">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST" action="/login">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" class="form-input" required
+                            autocomplete="username" placeholder="admin">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-input" required
+                            autocomplete="current-password" placeholder="••••••••">
+                    </div>
+                    <div class="form-actions" style="justify-content:center">
+                        <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                            🔐 Sign In
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

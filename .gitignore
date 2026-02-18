@@ -49,7 +49,8 @@ logs/
 
 # Reports (generated during scans)
 wshawk_report_*.html
-*.html
+reports/
+!wshawk/web/templates/*.html
 
 # Temporary files
 *.tmp
@@ -85,7 +86,21 @@ scan_results/
 *.pem
 *.crt
 secrets.json
-config.secret.json
+# WSHawk Production
+scans.db
+scans.db-wal
+scans.db-shm
+wshawk.yaml
+wshawk.yaml.example
+.env
+.wshawk/
+
+# Exported formats
+*.json
+*.csv
+*.sarif
+!pyproject.toml
+!package.json
 
 # Documentation builds
 docs/_build/

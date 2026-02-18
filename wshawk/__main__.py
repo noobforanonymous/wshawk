@@ -17,16 +17,10 @@ from typing import List, Dict, Optional, Any
 from urllib.parse import urlparse
 import ssl
 
-# Color codes for terminal
-class Colors:
-    HEADER = '\033[95m'
-    BLUE = '\033[94m'
-    CYAN = '\033[96m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    END = '\033[0m'
-    BOLD = '\033[1m'
+from .logger import setup_logging, get_logger, VULN_LEVEL, SUCCESS_LEVEL, Colors
+
+# Initialize logging on import
+logger = setup_logging()
 
 class Logger:
     @staticmethod
@@ -37,7 +31,7 @@ class Logger:
 ║║║╚═╗╠═╣╠═╣║║║╠╩╗
 ╚╩╝╚═╝╩ ╩╩ ╩╚╩╝╩ ╩
 {Colors.END}
-{Colors.YELLOW}WebSocket Security Scanner v2.0.6{Colors.END}
+{Colors.YELLOW}WebSocket Security Scanner v2.0.7{Colors.END}
 {Colors.CYAN}Created by: Regaan (@noobforanonymous){Colors.END}
 {Colors.BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Colors.END}
 """
@@ -45,23 +39,23 @@ class Logger:
     
     @staticmethod
     def info(msg):
-        print(f"{Colors.BLUE}[*]{Colors.END} {msg}")
+        get_logger().info(msg)
     
     @staticmethod
     def success(msg):
-        print(f"{Colors.GREEN}[+]{Colors.END} {msg}")
+        get_logger().log(SUCCESS_LEVEL, msg)
     
     @staticmethod
     def warning(msg):
-        print(f"{Colors.YELLOW}[!]{Colors.END} {msg}")
+        get_logger().warning(msg)
     
     @staticmethod
     def error(msg):
-        print(f"{Colors.RED}[-]{Colors.END} {msg}")
+        get_logger().error(msg)
     
     @staticmethod
     def vuln(msg):
-        print(f"{Colors.RED}{Colors.BOLD}[VULN]{Colors.END} {msg}")
+        get_logger().log(VULN_LEVEL, msg)
 
 
 class WSPayloads:

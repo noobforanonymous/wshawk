@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Report - WSHawk</title>
+    <meta name="description" content="WSHawk scan results and vulnerability report">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo">🦅</span>
+            <span class="brand-text">WSHawk</span>
+            <span class="version">v2.0.7</span>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Dashboard</a>
+            <a href="/scan" class="nav-link">New Scan</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Scan Info -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Scan Report: <code>{{ scan.id }}</code></h2>
+                <span class="badge badge-{{ scan.status }}">{{ scan.status }}</span>
+            </div>
+            <div class="card-body">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Target</div>
+                        <div class="info-value"><code>{{ scan.target }}</code></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Duration</div>
+                        <div class="info-value">{{ "%.1f"|format(scan.duration) }}s</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Messages Sent</div>
+                        <div class="info-value">{{ scan.messages_sent }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Messages Received</div>
+                        <div class="info-value">{{ scan.messages_received }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Started</div>
+                        <div class="info-value">{{ scan.started_at or 'Pending' }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Completed</div>
+                        <div class="info-value">{{ scan.completed_at or 'In progress' }}</div>
+                    </div>
+                </div>
+
+                {% if scan.status == 'running' %}
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="scan-progress-bar" data-progress="{{ scan.progress }}"></div>
+                    <span class="progress-text">{{ scan.progress }}%</span>
+                </div>
+                <script>
+                    (function () {
+                        var bar = document.getElementById('scan-progress-bar');
+                        if (bar) bar.style.width = bar.getAttribute('data-progress') + '%';
+                    })();
+                </script>
+                {% endif %}
+
+                {% if scan.error %}
+                <div class="alert alert-error">
+                    <strong>Error:</strong> {{ scan.error }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Export Actions -->
+        {% if scan.status == 'completed' %}
+        <div class="card">
+            <div class="card-header">
+                <h3>📤 Export Results</h3>
+            </div>
+            <div class="card-body">
+                <div class="export-buttons">
+                    <a href="/api/scan/{{ scan.id }}/export/json" class="btn btn-outline">
+                        📋 JSON
+                    </a>
+                    <a href="/api/scan/{{ scan.id }}/export/csv" class="btn btn-outline">
+                        📊 CSV
+                    </a>
+                    <a href="/api/scan/{{ scan.id }}/export/sarif" class="btn btn-outline">
+                        🔒 SARIF
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Vulnerabilities -->
+        <div class="card">
+            <div class="card-header">
+                <h3>🔴 Vulnerabilities ({{ scan.vulnerabilities|length }})</h3>
+            </div>
+            <div class="card-body">
+                {% if scan.vulnerabilities %}
+                {% for vuln in scan.vulnerabilities %}
+                <div class="vuln-card vuln-{{ vuln.get('confidence', vuln.get('severity', 'medium'))|lower }}">
+                    <div class="vuln-header">
+                        <span class="vuln-type">{{ vuln.get('type', 'Unknown') }}</span>
+                        <span class="badge badge-{{ vuln.get('confidence', vuln.get('severity', 'medium'))|lower }}">
+                            {{ vuln.get('confidence', vuln.get('severity', 'MEDIUM')) }}
+                        </span>
+                        {% if vuln.get('browser_verified') %}
+                        <span class="badge badge-verified">✅ Browser Verified</span>
+                        {% endif %}
+                    </div>
+                    <p class="vuln-description">{{ vuln.get('description', 'No description') }}</p>
+                    {% if vuln.get('payload') %}
+                    <details class="vuln-details">
+                        <summary>Payload & Response</summary>
+                        <div class="code-block">
+                            <div class="code-label">Payload:</div>
+                            <pre><code>{{ vuln.get('payload', 'N/A')[:300] }}</code></pre>
+                        </div>
+                        {% if vuln.get('response_snippet') %}
+                        <div class="code-block">
+                            <div class="code-label">Response:</div>
+                            <pre><code>{{ vuln.get('response_snippet', 'N/A')[:300] }}</code></pre>
+                        </div>
+                        {% endif %}
+                    </details>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                {% else %}
+                {% if scan.status == 'completed' %}
+                <div class="empty-state">
+                    <div class="empty-icon">✅</div>
+                    <h3>No vulnerabilities found</h3>
+                    <p>The scan completed without detecting any issues.</p>
+                </div>
+                {% elif scan.status in ('running', 'queued') %}
+                <div class="empty-state">
+                    <div class="empty-icon loading-spinner">⏳</div>
+                    <h3>Scan in progress...</h3>
+                    <p>Results will appear here automatically.</p>
+                </div>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>WSHawk v2.0.7 by <a href="https://github.com/noobforanonymous">Regaan</a></p>
+    </footer>
+
+    {% if scan.status in ('running', 'queued') %}
+    <script>
+        // Poll for status updates
+        setInterval(async () => {
+            const resp = await fetch('/api/scan/{{ scan.id }}/status');
+            const data = await resp.json();
+            if (data.status !== '{{ scan.status }}') {
+                location.reload();
+            }
+        }, 3000);
+    </script>
+    {% endif %}
+</body>
+
+</html>

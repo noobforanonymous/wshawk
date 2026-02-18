@@ -1,18 +1,24 @@
-# WSHawk v2.0 Requirements
+# WSHawk Production Requirements
+# Usage: pip install -r requirements.txt
 
-# Core dependencies
+# Core
 websockets>=12.0
-PyYAML>=6.0
-
-# Playwright for XSS verification
-playwright>=1.40.0
-
-# HTTP requests for OAST
 aiohttp>=3.9.0
 
-# Testing
-pytest>=7.4.0
-pytest-asyncio>=0.21.0
-
-# Optional: For better terminal output
+# CLI & Configuration
+pyyaml>=6.0.1
 colorama>=0.4.6
+
+# Web GUI
+flask>=3.0.0
+
+# Binary Analysis (Optional but recommended)
+msgpack>=1.0.7
+cbor2>=5.6.1
+
+# Payload Generation
+numpy>=1.26.0
+scipy>=1.11.0
+
+# Verification (Optional)
+playwright>=1.40.0

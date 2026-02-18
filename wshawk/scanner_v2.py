@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 WSHawk v2.0 - Advanced WebSocket Security Scanner
-Integrated with all analyzer modules
+Integrated with all analyzer modules + smart payload generation
 """
 
 import asyncio
@@ -21,6 +21,13 @@ from .enhanced_reporter import EnhancedHTMLReporter
 from .headless_xss_verifier import HeadlessBrowserXSSVerifier
 from .oast_provider import OASTProvider, SimpleOASTServer
 from .session_hijacking_tester import SessionHijackingTester
+from .report_exporter import ReportExporter
+from .binary_handler import BinaryMessageHandler
+
+# Smart payload modules
+from .smart_payloads.context_generator import ContextAwareGenerator
+from .smart_payloads.feedback_loop import FeedbackLoop, ResponseSignal
+from .smart_payloads.payload_evolver import PayloadEvolver
 
 # Import existing modules
 from .__main__ import WSPayloads, Logger, Colors
@@ -32,10 +39,20 @@ class WSHawkV2:
     
     def __init__(self, url: str, headers: Optional[Dict] = None, 
                  auth_sequence: Optional[str] = None,
-                 max_rps: int = 10):
+                 max_rps: int = 10,
+                 config: Optional['WSHawkConfig'] = None):
         self.url = url
         self.headers = headers or {}
         self.vulnerabilities = []
+        
+        # Load config if not provided
+        if config is None:
+            from .config import WSHawkConfig
+            self.config = WSHawkConfig.load()
+        else:
+            self.config = config
+            
+        rate_limit = self.config.get('scanner.rate_limit', max_rps)
         
         # Initialize analysis modules
         self.message_analyzer = MessageAnalyzer()
@@ -43,11 +60,19 @@ class WSHawkV2:
         self.fingerprinter = ServerFingerprinter()
         self.state_machine = SessionStateMachine()
         self.rate_limiter = TokenBucketRateLimiter(
-            tokens_per_second=max_rps,
-            bucket_size=max_rps * 2,
+            tokens_per_second=rate_limit,
+            bucket_size=rate_limit * 2,
             enable_adaptive=True
         )
         self.reporter = EnhancedHTMLReporter()
+        self.report_exporter = ReportExporter()
+        self.binary_handler = BinaryMessageHandler()
+        
+        # Smart payload modules
+        self.context_generator = ContextAwareGenerator()
+        self.feedback_loop = FeedbackLoop()
+        self.payload_evolver = PayloadEvolver(population_size=100)
+        self.use_smart_payloads = False
         
         # Advanced verification (optional, can be disabled)
         self.use_headless_browser = True
@@ -128,6 +153,15 @@ class WSHawkV2:
             if format_info['injectable_fields']:
                 Logger.info(f"Injectable fields: {', '.join(format_info['injectable_fields'][:5])}")
             
+            # Feed into smart payload context generator
+            if self.use_smart_payloads:
+                for msg in samples:
+                    if isinstance(msg, str):
+                        self.context_generator.learn_from_message(msg)
+                        self.feedback_loop.establish_baseline(msg, 0.1)
+                if self.context_generator.analysis_complete:
+                    Logger.success(f"Smart payloads: learned {self.context_generator.context.get('format', 'unknown')} format")
+            
             # Fingerprint server
             fingerprint = self.fingerprinter.fingerprint()
             if fingerprint.language:
@@ -183,9 +217,21 @@ class WSHawkV2:
                             response, payload
                         )
                         
+                        # Feed response to smart feedback loop
+                        if self.use_smart_payloads:
+                            resp_time = time.monotonic() - start_time if 'start_time' in dir() else 0.1
+                            signal, sig_conf = self.feedback_loop.analyze_response(
+                                payload, response, resp_time, category='sqli'
+                            )
+                        
                         if is_vuln and confidence != ConfidenceLevel.LOW:
                             Logger.vuln(f"SQL Injection [{confidence.value}]: {description}")
                             Logger.vuln(f"Payload: {payload[:80]}")
+                            
+                            # Seed successful payload into evolver
+                            if self.use_smart_payloads:
+                                self.payload_evolver.seed([payload])
+                                self.payload_evolver.update_fitness(payload, 1.0)
                             
                             self.vulnerabilities.append({
                                 'type': 'SQL Injection',
@@ -266,6 +312,11 @@ class WSHawkV2:
                             Logger.vuln(f"Payload: {payload[:80]}")
                             if browser_verified:
                                 Logger.vuln("  [BROWSER VERIFIED] Payload executed in real browser!")
+                            
+                            # Seed into evolver
+                            if self.use_smart_payloads:
+                                self.payload_evolver.seed([payload])
+                                self.payload_evolver.update_fitness(payload, 1.0)
                             
                             self.vulnerabilities.append({
                                 'type': 'Cross-Site Scripting (XSS)',
@@ -583,6 +634,74 @@ class WSHawkV2:
         await self.test_ssrf_v2(ws)
         print()
         
+        # ─── Smart Payload Evolution Phase ──────────────────────
+        if self.use_smart_payloads and len(self.payload_evolver.population) > 0:
+            Logger.info("Running evolved payload phase...")
+            evolved = self.payload_evolver.evolve(count=30)
+            
+            # Also generate context-aware payloads
+            priorities = self.feedback_loop.get_priority_categories()
+            for category, _ in priorities[:3]:
+                ctx_payloads = self.context_generator.generate_payloads(category, count=10)
+                evolved.extend(ctx_payloads)
+            
+            if evolved:
+                Logger.info(f"Testing {len(evolved)} evolved/context payloads...")
+                base_message = self.sample_messages[0] if self.sample_messages else '{"test": "value"}'
+                
+                for payload in evolved:
+                    try:
+                        if self.learning_complete and self.message_analyzer.detected_format == MessageFormat.JSON:
+                            injected = self.message_analyzer.inject_payload_into_message(base_message, payload)
+                        else:
+                            injected = [payload]
+                        
+                        for msg in injected:
+                            await ws.send(msg)
+                            self.messages_sent += 1
+                            
+                            try:
+                                t0 = time.monotonic()
+                                response = await asyncio.wait_for(ws.recv(), timeout=2.0)
+                                elapsed = time.monotonic() - t0
+                                self.messages_received += 1
+                                
+                                # Feed to feedback loop
+                                signal, conf = self.feedback_loop.analyze_response(
+                                    payload, response, elapsed
+                                )
+                                
+                                # Check all vulnerability types
+                                for check_fn, vuln_type in [
+                                    (self.verifier.verify_sql_injection, 'SQL Injection'),
+                                    (self.verifier.verify_xss, 'Cross-Site Scripting (XSS)'),
+                                    (self.verifier.verify_command_injection, 'Command Injection'),
+                                ]:
+                                    is_vuln, confidence, desc = check_fn(response, payload)
+                                    if is_vuln and confidence != ConfidenceLevel.LOW:
+                                        Logger.vuln(f"[EVOLVED] {vuln_type} [{confidence.value}]: {desc}")
+                                        self.payload_evolver.update_fitness(payload, 1.0)
+                                        self.vulnerabilities.append({
+                                            'type': f'{vuln_type} (Evolved)',
+                                            'severity': confidence.value,
+                                            'confidence': confidence.value,
+                                            'description': f'[Smart Payload] {desc}',
+                                            'payload': payload,
+                                            'response_snippet': response[:200],
+                                            'recommendation': f'Novel payload discovered by evolutionary mutation'
+                                        })
+                                        break
+                                
+                            except asyncio.TimeoutError:
+                                pass
+                            
+                            await asyncio.sleep(0.05)
+                    except Exception:
+                        continue
+                
+                Logger.success(f"Evolution phase complete (gen {self.payload_evolver.generation})")
+            print()
+        
         # Close connection
         await ws.close()
         
@@ -645,33 +764,89 @@ class WSHawkV2:
                 if count > 0:
                     print(f"  {level}: {count}")
         
-        # Generate enhanced HTML report
-        Logger.info("\nGenerating enhanced HTML report...")
+        # Prepare paths
+        output_dir = self.config.get('reporting.output_dir', '.')
+        if output_dir != '.':
+            os.makedirs(output_dir, exist_ok=True)
+            
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        report_filename = os.path.join(output_dir, f"wshawk_report_{timestamp}.html")
+        
+        # Prepare scan info for exporters
         scan_info = {
             'target': self.url,
             'duration': duration,
             'messages_sent': self.messages_sent,
             'messages_received': self.messages_received
         }
-        
         fingerprint_info = self.fingerprinter.get_info()
         
+        # Generate enhanced HTML report
         report_html = self.reporter.generate_report(
             self.vulnerabilities,
             scan_info,
             fingerprint_info
         )
         
-        # Save report
-        report_filename = f"wshawk_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
         with open(report_filename, 'w') as f:
             f.write(report_html)
-        
         Logger.success(f"Enhanced HTML report saved: {report_filename}")
         
+        # Export other formats if configured
+        formats = self.config.get('reporting.formats', ['json'])
+        for fmt in formats:
+            try:
+                out_file = self.report_exporter.export(
+                    self.vulnerabilities, scan_info, fmt,
+                    fingerprint_info=fingerprint_info
+                )
+                Logger.success(f"{fmt.upper()} report saved: {out_file}")
+            except Exception as e:
+                Logger.error(f"Failed to export {fmt}: {e}")
+        
+        # ─── Automated Integrations ─────────────────────────────────
+        
+        # 1. DefectDojo
+        if self.config.get('integrations.defectdojo.enabled'):
+            try:
+                from .integrations.defectdojo import DefectDojoIntegration
+                dojo = DefectDojoIntegration(
+                    url=self.config.get('integrations.defectdojo.url'),
+                    api_key=self.config.get('integrations.defectdojo.api_key'),
+                    product_id=self.config.get('integrations.defectdojo.product_id')
+                )
+                await dojo.push_findings(self.vulnerabilities, scan_info)
+            except Exception as e:
+                Logger.error(f"DefectDojo integration failed: {e}")
+                
+        # 2. Jira
+        if self.config.get('integrations.jira.enabled'):
+            try:
+                from .integrations.jira_connector import JiraIntegration
+                jira = JiraIntegration(
+                    url=self.config.get('integrations.jira.url'),
+                    email=self.config.get('integrations.jira.email'),
+                    api_token=self.config.get('integrations.jira.api_token'),
+                    project_key=self.config.get('integrations.jira.project')
+                )
+                await jira.create_tickets(self.vulnerabilities, scan_info)
+            except Exception as e:
+                Logger.error(f"Jira integration failed: {e}")
+                
+        # 3. Webhooks
+        if self.config.get('integrations.webhook.enabled'):
+            try:
+                from .integrations.webhook import WebhookNotifier
+                webhook = WebhookNotifier(
+                    webhook_url=self.config.get('integrations.webhook.url'),
+                    platform=self.config.get('integrations.webhook.platform')
+                )
+                await webhook.notify(self.vulnerabilities, scan_info)
+            except Exception as e:
+                Logger.error(f"Webhook notification failed: {e}")
+
         # Show rate limiter stats
         rate_stats = self.rate_limiter.get_stats()
         Logger.info(f"Rate limiter: {rate_stats['total_requests']} requests, {rate_stats['total_waits']} waits")
-        Logger.info(f"  Current rate: {rate_stats['current_rate']}, Adaptive adjustments: {rate_stats['adaptive_adjustments']}")
         
         return self.vulnerabilities
