@@ -21,6 +21,19 @@ WSHawk is the only open-source WebSocket scanner that provides:
 - **WAF-aware payload mutation** - Dynamic evasion techniques
 - **CVSS-based professional reporting** - Industry-standard risk assessment
 
+# SECURITY WARNING: FAKE VERSIONS CIRCULATING
+
+> **PLEASE READ CAREFULLY:**  
+> Fake versions of WSHawk are being distributed on third-party download sites and linked in social media posts (e.g., LinkedIn). These versions may contain **MALWARE**.  
+>  
+> **OFFICIAL SOURCES ONLY:**  
+> - **Official Website:** [`https://wshawk.rothackers.com`](https://wshawk.rothackers.com)
+> - **GitHub:** [`https://github.com/noobforanonymous/wshawk`](https://github.com/noobforanonymous/wshawk)  
+> - **PyPI:** `pip install wshawk`  
+> - **Docker:** `docker pull rothackers/wshawk` or `ghcr.io/noobforanonymous/wshawk`  
+>  
+> **DO NOT DOWNLOAD** from any other website. If you see "WSHawk" on a "software download" site, it is likely fake/malicious.
+
 ## Features
 
 - **22,000+ Attack Payloads** - Comprehensive vulnerability coverage
@@ -35,19 +48,6 @@ WSHawk is the only open-source WebSocket scanner that provides:
 
 ### Vulnerability Detection
 SQL Injection • XSS • Command Injection • XXE • SSRF • NoSQL Injection • Path Traversal • LDAP Injection • SSTI • Open Redirect • Session Security Issues
-
-# SECURITY WARNING: FAKE VERSIONS CIRCULATING
-
-> **PLEASE READ CAREFULLY:**  
-> Fake versions of WSHawk are being distributed on third-party download sites and linked in social media posts (e.g., LinkedIn). These versions may contain **MALWARE**.  
->  
-> **OFFICIAL SOURCES ONLY:**  
-> - **Official Website:** [`https://wshawk.rothackers.com`](https://wshawk.rothackers.com)
-> - **GitHub:** [`https://github.com/noobforanonymous/wshawk`](https://github.com/noobforanonymous/wshawk)  
-> - **PyPI:** `pip install wshawk`  
-> - **Docker:** `docker pull rothackers/wshawk` or `ghcr.io/noobforanonymous/wshawk`  
->  
-> **DO NOT DOWNLOAD** from any other website. If you see "WSHawk" on a "software download" site, it is likely fake/malicious.
 
 ## Installation
 
