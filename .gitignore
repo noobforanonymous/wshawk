@@ -107,7 +107,6 @@ docs/_build/
 site/
 
 # Packaging
-wshawk-bridge.spec
 desktop/dist/
 desktop/bin/
 desktop/node_modules/
