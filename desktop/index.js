@@ -43,7 +43,16 @@ function startPythonSidecar() {
         if (process.platform === 'win32') {
             executablePath = path.join(process.resourcesPath, 'bin', 'wshawk-bridge.exe');
         } else {
-            executablePath = path.join(process.resourcesPath, 'bin', 'wshawk-bridge');
+            // Check standard resources path (for AppImage/Bundled)
+            const bundledPath = path.join(process.resourcesPath, 'bin', 'wshawk-bridge');
+            // Check system-wide path (for Arch/AUR/Debian installs where we use system electron)
+            const systemPath = path.join(__dirname, 'bin', 'wshawk-bridge');
+
+            if (fs.existsSync(systemPath)) {
+                executablePath = systemPath;
+            } else {
+                executablePath = bundledPath;
+            }
         }
 
         // Check if binary exists
