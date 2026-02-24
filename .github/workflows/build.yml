@@ -13,13 +13,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        include:
-          - os: ubuntu-latest
-            asset_pattern: 'dist/*.pacman dist/*.deb dist/*.AppImage'
-          - os: windows-latest
-            asset_pattern: 'dist/*.exe'
-          - os: macos-latest
-            asset_pattern: 'dist/*.dmg'
 
     steps:
       - name: Checkout Code
@@ -45,6 +38,12 @@ jobs:
         run: |
           pip install dnspython python-whois cryptography pyyaml
         shell: bash
+
+      - name: Install Linux Build Dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libarchive-tools
 
       - name: Compile Python Sidecar
         run: |
@@ -87,8 +86,65 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx electron-builder --publish never
 
-      - name: Upload Artifacts
+      - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: WSHawk-${{ matrix.os }}
-          path: desktop/dist/
+          path: |
+            desktop/dist/*.exe
+            desktop/dist/*.dmg
+            desktop/dist/*.AppImage
+            desktop/dist/*.pacman
+            desktop/dist/*.deb
+          if-no-files-found: warn
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: List Downloaded Files
+        run: find artifacts/ -type f | head -50
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: WSHawk ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: false
+          body: |
+            ## WSHawk ${{ github.ref_name }}
+
+            Enterprise-grade WebSocket security scanner with web penetration testing toolkit.
+
+            ### Downloads
+
+            | Platform | File |
+            |---|---|
+            | **Windows** | `.exe` (NSIS installer) |
+            | **macOS** | `.dmg` (Apple Disk Image) |
+            | **Linux (Universal)** | `.AppImage` |
+            | **Arch Linux** | `.pacman` |
+            | **Ubuntu/Debian** | `.deb` |
+
+            ### Install via pip
+            ```bash
+            pip install wshawk==3.0.1
+            ```
+
+            **Full Changelog**: https://github.com/noobforanonymous/wshawk/compare/v3.0.0...${{ github.ref_name }}
+          files: |
+            artifacts/**/*.exe
+            artifacts/**/*.dmg
+            artifacts/**/*.AppImage
+            artifacts/**/*.pacman
+            artifacts/**/*.deb
