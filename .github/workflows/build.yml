@@ -36,7 +36,7 @@ jobs:
 
       - name: Install Extra Python Dependencies
         run: |
-          pip install dnspython python-whois cryptography pyyaml
+          pip install uvicorn fastapi python-socketio dnspython python-whois cryptography pyyaml
         shell: bash
 
       - name: Install Linux Build Dependencies
