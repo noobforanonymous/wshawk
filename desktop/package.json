@@ -3,13 +3,23 @@
   "version": "3.0.1",
   "description": "WSHawk - Advanced WebSocket Security Scanner",
   "homepage": "https://github.com/noobforanonymous/wshawk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/noobforanonymous/wshawk.git"
+  },
   "main": "index.js",
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "websocket",
+    "security",
+    "scanner",
+    "pentesting",
+    "vulnerability"
+  ],
   "author": "Regaan <regaan@rothackers.com> (https://wshawk.rothackers.com)",
   "license": "ISC",
   "type": "commonjs",
