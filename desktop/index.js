@@ -36,31 +36,84 @@ function startPythonSidecar() {
     let args = [];
     let options = {};
 
+    const bridgePort = process.env.WSHAWK_BRIDGE_PORT || '8080';
+
     if (app.isPackaged) {
         // Run the compiled self-contained binary natively
-        executablePath = path.join(process.resourcesPath, 'bin', 'wshawk-bridge');
-        if (process.platform === 'win32') executablePath += '.exe';
-        options = { stdio: 'pipe' };
+        if (process.platform === 'win32') {
+            executablePath = path.join(process.resourcesPath, 'bin', 'wshawk-bridge.exe');
+        } else {
+            executablePath = path.join(process.resourcesPath, 'bin', 'wshawk-bridge');
+        }
+
+        // Check if binary exists
+        if (!fs.existsSync(executablePath)) {
+            console.error(`[FATAL] Sidecar binary not found at: ${executablePath}`);
+            dialog.showErrorBox(
+                'WSHawk Sidecar Missing',
+                `Could not find the Python sidecar binary at:\n${executablePath}\n\nPlease reinstall WSHawk.`
+            );
+            return;
+        }
+
+        // Fix execute permissions on macOS/Linux (DMG strips them)
+        if (process.platform !== 'win32') {
+            try {
+                fs.chmodSync(executablePath, 0o755);
+                console.log(`[+] Set execute permission on sidecar binary`);
+            } catch (e) {
+                console.error(`[-] Failed to set execute permission: ${e.message}`);
+            }
+        }
+
+        options = { stdio: 'pipe', env: { ...process.env, WSHAWK_BRIDGE_PORT: bridgePort } };
     } else {
         // Development mode: Run the script using system python3 as a module
-        executablePath = 'python3';
-        // Go up one level from 'desktop' to the project root where 'wshawk' package is
+        executablePath = process.platform === 'win32' ? 'python' : 'python3';
         options = {
             cwd: path.join(__dirname, '..'),
-            stdio: 'pipe'
+            stdio: 'pipe',
+            env: { ...process.env, WSHAWK_BRIDGE_PORT: bridgePort }
         };
         args = ['-m', 'wshawk.gui_bridge'];
     }
 
     console.log(`[Main] Spawning: ${executablePath} ${args.join(' ')} (CWD: ${options.cwd || 'default'})`);
-    pythonProcess = spawn(executablePath, args, options);
+    console.log(`[Main] Platform: ${process.platform}, Arch: ${process.arch}, Packaged: ${app.isPackaged}`);
+
+    try {
+        pythonProcess = spawn(executablePath, args, options);
+    } catch (e) {
+        console.error(`[FATAL] Failed to spawn sidecar: ${e.message}`);
+        dialog.showErrorBox('WSHawk Sidecar Error', `Failed to start Python engine:\n${e.message}`);
+        return;
+    }
 
     pythonProcess.stdout.on('data', (data) => {
         console.log(`[Python] ${data}`);
     });
 
     pythonProcess.stderr.on('data', (data) => {
-        console.error(`[Python Error] ${data}`);
+        const msg = data.toString();
+        console.error(`[Python Error] ${msg}`);
+        // Send to renderer so user sees it in system log
+        if (mainWindow && mainWindow.webContents) {
+            mainWindow.webContents.send('sidecar-error', msg);
+        }
+    });
+
+    pythonProcess.on('exit', (code, signal) => {
+        console.error(`[Main] Sidecar exited with code=${code}, signal=${signal}`);
+        if (code !== 0 && code !== null) {
+            if (mainWindow && mainWindow.webContents) {
+                mainWindow.webContents.send('sidecar-error', `Sidecar crashed (exit code ${code})`);
+            }
+        }
+    });
+
+    pythonProcess.on('error', (err) => {
+        console.error(`[FATAL] Sidecar process error: ${err.message}`);
+        dialog.showErrorBox('WSHawk Sidecar Error', `Python engine failed to start:\n${err.message}`);
     });
 }
 
