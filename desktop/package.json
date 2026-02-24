@@ -1,0 +1,78 @@
+{
+  "name": "wshawk",
+  "version": "3.0.1",
+  "description": "WSHawk - Advanced WebSocket Security Scanner",
+  "homepage": "https://github.com/noobforanonymous/wshawk",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Regaan <regaan@rothackers.com> (https://wshawk.rothackers.com)",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^40.6.0",
+    "electron-builder": "^26.8.1"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.8.3"
+  },
+  "overrides": {
+    "minimatch": "^10.2.1",
+    "glob": "^11.0.0"
+  },
+  "build": {
+    "appId": "com.rothackers.wshawk",
+    "productName": "WSHawk",
+    "icon": "build/icon.png",
+    "linux": {
+      "target": [
+        "pacman",
+        "AppImage",
+        "deb"
+      ],
+      "icon": "build/icon.png",
+      "executableName": "wshawk",
+      "artifactName": "wshawk-${version}.${ext}",
+      "category": "Security",
+      "maintainer": "WSHawk Developer"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.icns",
+      "category": "public.app-category.developer-tools"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "license": "LICENSE.txt"
+    },
+    "pacman": {
+      "depends": [
+        "python",
+        "python-pip"
+      ]
+    },
+    "directories": {
+      "output": "dist"
+    },
+    "extraResources": [
+      {
+        "from": "bin",
+        "to": "bin",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  }
+}

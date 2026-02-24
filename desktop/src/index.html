@@ -1,0 +1,2245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WSHawk Intelligence</title>
+    <!-- Premium Fonts: Inter for UI, JetBrains Mono for Code -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Welcome Overlay -->
+    <div id="welcome-modal" class="welcome-overlay">
+        <div class="welcome-card">
+            <div class="branding">
+                <img src="assets/logo.jpg" alt="WSHawk Logo" class="welcome-logo" id="fallback-logo">
+                <h2>WSHAWK Intelligence</h2>
+                <p>Advanced WebSocket Security Scanner</p>
+            </div>
+
+            <div class="actions">
+                <button id="btn-new-project" class="btn primary full-width">
+                    Create New Project
+                </button>
+                <div class="divider"><span>OR</span></div>
+                <button id="btn-open-project" class="btn secondary full-width">
+                    Open Existing Project
+                </button>
+            </div>
+            <p class="project-info text-muted text-center mt-4">Projects are saved locally as .wshawk files.</p>
+        </div>
+    </div>
+
+    <!-- Title Bar -->
+    <div class="titlebar">
+        <div class="titlebar-brand" style="display: flex; align-items: center; gap: 8px;">
+            <img src="assets/logo.jpg" alt="Logo" width="18" height="18" style="border-radius: 4px;">
+            <span>WSHAWK <span class="badge" id="mode-badge" style="margin-left: 6px;">STANDARD</span></span>
+        </div>
+        <div class="titlebar-controls">
+            <button class="titlebar-btn" id="btn-minimize" title="Minimize">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <line x1="1" y1="5" x2="9" y2="5"></line>
+                </svg>
+            </button>
+            <button class="titlebar-btn" id="btn-maximize" title="Maximize">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="1" y="1" width="8" height="8"></rect>
+                </svg>
+            </button>
+            <button class="titlebar-btn close" id="btn-close" title="Close">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <line x1="1" y1="1" x2="9" y2="9"></line>
+                    <line x1="9" y1="1" x2="1" y2="9"></line>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="app-layout" id="main-app" style="display: none;">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand w-full">
+                <div style="display: flex; gap: 6px; width: 100%; justify-content: space-between; align-items: center;">
+                    <button id="btn-save-project" class="btn-icon" title="Save Project (Ctrl+S)"
+                        style="background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); cursor: pointer; border-radius: 4px; padding: 4px; flex: 1; display: flex; justify-content: center; align-items: center; transition: all 0.2s;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
+                        </svg>
+                    </button>
+                    <button id="btn-export-report" class="btn-icon" title="Export HTML Report"
+                        style="background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); cursor: pointer; border-radius: 4px; padding: 4px; flex: 1; display: flex; justify-content: center; align-items: center; transition: all 0.2s;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </button>
+                    <button id="btn-export-json" class="btn-icon" title="Export JSON"
+                        style="background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); cursor: pointer; font-size: 10px; font-weight: 600; font-family: var(--font-mono); border-radius: 4px; padding: 4px; flex: 1; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                        JSON
+                    </button>
+                    <button id="btn-export-csv" class="btn-icon" title="Export CSV"
+                        style="background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); cursor: pointer; font-size: 10px; font-weight: 600; font-family: var(--font-mono); border-radius: 4px; padding: 4px; flex: 1; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                        CSV
+                    </button>
+                </div>
+            </div>
+
+            <nav class="nav-group custom-scroll">
+                <div class="nav-label">OVERVIEW</div>
+                <button class="nav-item active" data-target="dashboard">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="9"></rect>
+                        <rect x="14" y="3" width="7" height="5"></rect>
+                        <rect x="14" y="12" width="7" height="9"></rect>
+                        <rect x="3" y="16" width="7" height="5"></rect>
+                    </svg>
+                    Dashboard
+                </button>
+
+                <button class="nav-item" data-target="scanhistory">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Scan History
+                </button>
+
+                <div id="advanced-menu" style="display: none;">
+                    <div class="nav-label mt-6">ADVANCED TOOLS</div>
+                    <button class="nav-item" data-target="history">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 3v18h18" />
+                            <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+                        </svg>
+                        Activity History
+                    </button>
+                    <button class="nav-item" data-target="intercept">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        Interceptor
+                    </button>
+                    <button class="nav-item" data-target="reqforge">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 2v6h-6" />
+                            <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
+                            <path d="M3 22v-6h6" />
+                            <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
+                        </svg>
+                        Request Forge
+                    </button>
+                    <button class="nav-item" data-target="blaster">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                        Payload Blaster
+                    </button>
+
+                    <div class="nav-label mt-6">UTILITIES</div>
+                    <button class="nav-item" data-target="codec">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                        Codec
+                    </button>
+                    <button class="nav-item" data-target="comparer">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                        Comparer
+                    </button>
+                    <button class="nav-item" data-target="notes">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        Notes
+                    </button>
+                    <button class="nav-item" data-target="wsmap">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path
+                                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                            </path>
+                        </svg>
+                        Endpoint Map
+                    </button>
+                    <button class="nav-item" data-target="authbuilder">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Auth Builder
+                    </button>
+                    <button class="nav-item" data-target="scheduler">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Scheduler
+                    </button>
+                    <button class="nav-item" data-target="oast">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                        </svg>
+                        OAST Callbacks
+                    </button>
+                    <button class="nav-item" data-target="mutationlab">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M12 2v6m0 12v2m-6-8H2m20 0h-4M7.8 7.8L5.6 5.6m12.8 12.8l-2.2-2.2M7.8 16.2l-2.2 2.2M18.4 5.6l-2.2 2.2">
+                            </path>
+                            <circle cx="12" cy="12" r="4"></circle>
+                        </svg>
+                        Mutation Lab
+                    </button>
+                </div>
+
+                <!-- Web Pentest Section -->
+                <div id="web-menu" style="display: none;">
+                    <div class="nav-label mt-6">WEB PENTEST</div>
+                    <button class="nav-item" data-target="httpforge">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 2v6h-6"></path>
+                            <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                        </svg>
+                        HTTP Forge
+                    </button>
+                    <button class="nav-item" data-target="httpfuzzer">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                        HTTP Fuzzer
+                    </button>
+                    <button class="nav-item" data-target="dirscanner">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z">
+                            </path>
+                        </svg>
+                        Dir Scanner
+                    </button>
+                    <button class="nav-item" data-target="headeranalyzer">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        Header Analyzer
+                    </button>
+                    <button class="nav-item" data-target="jwtanalyzer">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        JWT Analyzer
+                    </button>
+                    <button class="nav-item" data-target="subdomain">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path
+                                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                            </path>
+                        </svg>
+                        Subdomain Finder
+                    </button>
+                    <button class="nav-item" data-target="webcrawler">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path
+                                d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94">
+                            </path>
+                        </svg>
+                        Web Crawler
+                        <span id="nav-dot-crawler" class="nav-status-dot hidden"></span>
+                    </button>
+                    <button class="nav-item" data-target="vulnscanner" style="border-left: 2px solid var(--danger);">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                            </path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <span id="nav-count-vuln" class="nav-count danger hidden">0</span>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        Vuln Scanner
+                    </button>
+                    <div class="nav-label mt-6">RECON</div>
+                    <button class="nav-item" data-target="techfp">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                            <rect x="9" y="9" width="6" height="6"></rect>
+                            <line x1="9" y1="1" x2="9" y2="4"></line>
+                            <line x1="15" y1="1" x2="15" y2="4"></line>
+                            <line x1="9" y1="20" x2="9" y2="23"></line>
+                            <line x1="15" y1="20" x2="15" y2="23"></line>
+                        </svg>
+                        Tech Fingerprint
+                    </button>
+                    <button class="nav-item" data-target="sslanalyzer">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        SSL/TLS Analyzer
+                    </button>
+                    <button class="nav-item" data-target="sensitivefinder">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        Sensitive Finder
+                    </button>
+                    <div class="nav-label mt-6">OFFENSIVE</div>
+                    <button class="nav-item" data-target="wafdetect">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <line x1="9" y1="12" x2="15" y2="12"></line>
+                        </svg>
+                        WAF Detector
+                    </button>
+                    <button class="nav-item" data-target="corstester">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                        </svg>
+                        CORS Tester
+                    </button>
+                    <button class="nav-item" data-target="portscanner">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                            <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                            <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                        </svg>
+                        Port Scanner
+                    </button>
+                    <button class="nav-item" data-target="dnslookup">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                        DNS / WHOIS
+                    </button>
+                    <div class="nav-label mt-6">EXPLOIT</div>
+                    <button class="nav-item" data-target="csrfforge">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                        CSRF Forge
+                    </button>
+                    <button class="nav-item" data-target="blindprobe">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06"></path>
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        </svg>
+                        Blind Probe
+                    </button>
+                    <button class="nav-item" data-target="redirecthunter">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 10 20 15 15 20"></polyline>
+                            <path d="M4 4v7a4 4 0 0 0 4 4h12"></path>
+                        </svg>
+                        Redirect Hunter
+                    </button>
+                    <button class="nav-item" data-target="protopolluter">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                            </path>
+                            <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
+                            <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
+                            <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>
+                            <line x1="3.27" y1="6.96" x2="12" y2="12.01"></line>
+                        </svg>
+                        Proto Polluter
+                    </button>
+                    <div class="nav-label mt-6">INTERCEPT</div>
+                    <button class="nav-item" data-target="hawkproxyca">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <path d="M9 12l2 2 4-4"></path>
+                        </svg>
+                        Proxy CA
+                    </button>
+                    <button class="nav-item" data-target="attackchainer">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="13 17 18 12 13 7"></polyline>
+                            <polyline points="6 17 11 12 6 7"></polyline>
+                        </svg>
+                        Attack Chainer
+                    </button>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div style="display: flex; gap: 4px; margin-bottom: 8px;">
+                    <button id="session-save-btn" class="workspace-btn"
+                        style="flex: 1; font-size: 10px; padding: 5px 0;">
+                        <span>💾 Save</span>
+                    </button>
+                    <button id="session-load-btn" class="workspace-btn"
+                        style="flex: 1; font-size: 10px; padding: 5px 0;">
+                        <span>📂 Load</span>
+                    </button>
+                </div>
+                <button id="btn-settings" class="workspace-btn mb-12">
+                    <span>Settings</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                        </path>
+                    </svg>
+                </button>
+                <button id="toggle-mode-btn" class="workspace-btn mb-12">
+                    <span id="btn-mode-text">Switch to Advanced</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </button>
+                <div class="author-credit">
+                    Built by <a href="https://regaan.rothackers.com" target="_blank">Regaan</a><br>
+                    <span class="muted">Security Researcher & Founder of Rot Hackers</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Window -->
+        <main class="main-content">
+            <!-- Top Controls -->
+            <header class="topbar">
+                <div class="connection-status" id="conn-pill">
+                    <div class="indicator" id="conn-dot"></div>
+                    <span id="conn-text">Disconnected</span>
+                </div>
+
+                <div class="target-control">
+                    <div class="input-wrapper">
+                        <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="2" y1="12" x2="22" y2="12" />
+                            <path
+                                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg>
+                        <input type="text" id="target-url" placeholder="wss://target.api.com/" autocomplete="off">
+                    </div>
+                    <div class="input-wrapper" style="width: 280px;">
+                        <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4">
+                            </path>
+                        </svg>
+                        <input type="text" id="auth-payload" placeholder="Skeleton Key (Initial Auth Payload)"
+                            autocomplete="off">
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <select id="profile-select" title="Connection Profiles"
+                            style="background: var(--bg-panel); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; font-size: 12px; min-width: 120px; cursor: pointer;">
+                            <option value="">No Profile</option>
+                        </select>
+                        <button id="profile-save-btn" class="btn secondary small"
+                            style="font-size: 11px; white-space: nowrap;">Save Profile</button>
+                        <button id="profile-delete-btn" class="btn secondary small"
+                            style="font-size: 11px; color: var(--danger); white-space: nowrap;">Del</button>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button id="scan-stop-btn" class="btn primary"
+                            style="background: var(--danger); border-color: var(--danger); display: none;">Stop</button>
+                        <button id="scan-btn" class="btn primary">Run Analysis</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Views Container -->
+            <div class="workspace">
+
+                <!-- Dashboard -->
+                <div id="view-dashboard" class="view slide-up active">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-title">Detected Threats</div>
+                            <div class="metric-value" id="val-vulns">0</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-title">Frames Analyzed</div>
+                            <div class="metric-value" id="val-msgs">0</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-title">Posture</div>
+                            <div class="metric-value text-safe" id="val-risk">SECURE</div>
+                        </div>
+                        <div class="metric-card progress-card">
+                            <div class="metric-title">Scan Progress</div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" id="val-progress"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-title">Severity Distribution</div>
+                            <div class="severity-chart" id="severity-chart">
+                                <div class="sev-bar-group">
+                                    <div class="sev-bar sev-bar-high" id="sev-bar-high" style="height: 0%;"></div>
+                                    <span class="sev-bar-label">HIGH</span>
+                                    <span class="sev-bar-count" id="sev-count-high">0</span>
+                                </div>
+                                <div class="sev-bar-group">
+                                    <div class="sev-bar sev-bar-medium" id="sev-bar-medium" style="height: 0%;"></div>
+                                    <span class="sev-bar-label">MED</span>
+                                    <span class="sev-bar-count" id="sev-count-medium">0</span>
+                                </div>
+                                <div class="sev-bar-group">
+                                    <div class="sev-bar sev-bar-low" id="sev-bar-low" style="height: 0%;"></div>
+                                    <span class="sev-bar-label">LOW</span>
+                                    <span class="sev-bar-count" id="sev-count-low">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="split-view">
+                        <div class="panel">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">Active Findings</span>
+                                <div class="findings-toolbar">
+                                    <input type="text" id="findings-search" placeholder="Search findings..."
+                                        style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; width: 140px; min-height: unset; height: 26px;">
+                                    <div class="sev-filter-group">
+                                        <button class="sev-filter-btn active" data-sev="all">All</button>
+                                        <button class="sev-filter-btn" data-sev="HIGH">High</button>
+                                        <button class="sev-filter-btn" data-sev="MEDIUM">Med</button>
+                                        <button class="sev-filter-btn" data-sev="LOW">Low</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body custom-scroll" id="findings-container">
+                                <div class="empty-state">No vulnerabilities detected on the target.</div>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-header glass-header">
+                                <span class="title">Engine Telemetry</span>
+                            </div>
+                            <div class="panel-body console-body custom-scroll" id="system-log">
+                                <div class="log-line text-muted">System initialization complete.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scan History -->
+                <div id="view-scanhistory" class="view slide-up">
+                    <div class="split-pane horizontal">
+                        <div class="pane flex-col panel" style="flex: 1;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">Saved Scans</span>
+                                <button class="btn primary small" id="btn-refresh-history">Refresh</button>
+                            </div>
+                            <div class="panel-body no-padding custom-scroll" style="height: 250px;">
+                                <table class="data-table" id="scanhistory-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <th>Target</th>
+                                            <th>High</th>
+                                            <th>Med</th>
+                                            <th>Low</th>
+                                            <th>Time (s)</th>
+                                            <th>Compare</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="scanhistory-tbody">
+                                        <!-- Populated via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="pane flex-col panel mt-4" style="flex: 2;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">Scan Details / PoC Generater</span>
+                                <span class="badge" id="scanhistory-detail-title">Select a scan</span>
+                            </div>
+                            <div class="panel-body no-padding custom-scroll" style="background: rgba(0,0,0,0.2);">
+                                <table class="data-table" id="scanhistory-vuln-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Severity</th>
+                                            <th>Vuln Type</th>
+                                            <th>Detail</th>
+                                            <th>Value/Endpoint</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="scanhistory-vuln-tbody">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="panel-body mt-2 custom-scroll"
+                                style="flex: 1; border-top: 1px solid var(--border-color); display: flex; flex-direction: column;">
+                                <div class="nav-label" style="margin-bottom: 8px;">Proof of Concept (PoC)</div>
+                                <textarea id="scanhistory-poc-box" class="code-area custom-scroll" style="flex: 1;"
+                                    readonly placeholder="Select a vulnerability to generate its PoC logic."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History -->
+                <div id="view-history" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <div>
+                                <span class="title">Traffic Chronicle</span>
+                                <span class="subtitle" id="history-count" style="margin-left: 10px;">0 frames</span>
+                            </div>
+                            <input type="text" id="history-filter" class="code-area"
+                                style="width: 200px; padding: 4px 8px; border-radius: 4px; min-height: unset; height: 30px;"
+                                placeholder="Filter payloads...">
+                        </div>
+                        <div class="panel-body no-padding custom-scroll">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>DIR</th>
+                                        <th>TIMING</th>
+                                        <th>SIZE</th>
+                                        <th>PAYLOAD</th>
+                                        <th style="width: 60px;">ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-tbody">
+                                    <tr class="empty-tr">
+                                        <td colspan="6">Awaiting traffic capture...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Request Forge -->
+                <div id="view-reqforge" class="view slide-up">
+                    <div class="reqforge-layout full-height">
+                        <div class="split-view" style="flex: 1;">
+                            <div class="panel">
+                                <div class="panel-header glass-header flex-between">
+                                    <span class="title">Request Editor</span>
+                                    <button id="send-reqforge" class="btn secondary small">Fire Payload</button>
+                                </div>
+                                <textarea id="reqforge-req" class="code-area custom-scroll"
+                                    spellcheck="false">{"action": "ping", "data": "test"}</textarea>
+                            </div>
+                            <div class="panel">
+                                <div class="panel-header glass-header flex-between">
+                                    <span class="title">Server Response</span>
+                                    <button id="reqforge-copy-btn" class="btn secondary small"
+                                        style="font-size: 11px;">Copy</button>
+                                </div>
+                                <textarea id="reqforge-res" class="code-area custom-scroll readonly" spellcheck="false"
+                                    readonly>Awaiting execution...</textarea>
+                            </div>
+                        </div>
+                        <div class="panel" style="flex: none; max-height: 180px;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">Regex Extractor</span>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <input type="text" id="extractor-regex" placeholder="Pattern: token[=:]\s*(.+?)\b"
+                                        style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; font-family: var(--font-mono); width: 240px; min-height: unset; height: 26px;">
+                                    <button id="extractor-run-btn" class="btn secondary small"
+                                        style="font-size: 11px;">Extract</button>
+                                </div>
+                            </div>
+                            <div class="panel-body custom-scroll" id="extractor-results"
+                                style="font-size: 12px; font-family: var(--font-mono); padding: 10px;">
+                                <div class="empty-state" style="padding: 10px;">Enter a regex pattern with capture
+                                    groups
+                                    and click Extract.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Intercept -->
+                <div id="view-intercept" class="view slide-up">
+                    <div class="split-view full-height">
+                        <div class="panel" style="flex: 1;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title" id="intercept-title">Interceptor: Idle</span>
+                                <button id="toggle-intercept-btn" class="btn secondary small">Engage
+                                    Interceptor</button>
+                            </div>
+                            <div class="panel-body no-padding custom-scroll"
+                                style="height: 150px; flex: none; border-bottom: 1px solid var(--border-color);">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>DIR</th>
+                                            <th>URL</th>
+                                            <th>Preview</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="intercept-queue-tbody">
+                                        <tr class="empty-tr">
+                                            <td colspan="3">Interceptor is currently idle.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="panel-body flex-center" id="intercept-orb-container"
+                                style="flex: 1; display: flex; flex-direction: column;">
+                                <div class="intercept-visual" id="intercept-orb" style="animation: none;"></div>
+                                <p class="text-muted">Awaiting connection through proxy
+                                    (ws://127.0.0.1:8080/proxy?url=ws://target)</p>
+                            </div>
+                        </div>
+                        <div class="panel" id="intercept-editor-panel"
+                            style="flex: 1; opacity: 0.5; pointer-events: none;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">Frame Editor</span>
+                                <div style="display: flex; gap: 8px;">
+                                    <button id="btn-intercept-drop" class="btn secondary small"
+                                        style="color: var(--danger);">Drop</button>
+                                    <button id="btn-intercept-forward" class="btn primary small">Forward</button>
+                                </div>
+                            </div>
+                            <textarea id="intercept-editor" class="code-area custom-scroll" spellcheck="false"
+                                placeholder="Frame payload..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payload Blaster -->
+                <div id="view-blaster" class="view slide-up">
+                    <div class="split-view full-height">
+                        <div class="panel">
+                            <div class="panel-header glass-header">
+                                <span class="title">Payload Blaster Configuration</span>
+                            </div>
+                            <div class="panel-body custom-scroll">
+                                <p class="text-muted mb-2" style="font-size: 13px;">1. Define base request template. Use
+                                    <code style="color:var(--primary);">§</code> to mark injection points.
+                                </p>
+                                <textarea id="blaster-template" class="code-area custom-scroll"
+                                    style="height: 120px; width: 100%; margin-bottom: 20px;" spellcheck="false"
+                                    placeholder='{"action": "login", "username": "§inject§"}'></textarea>
+
+                                <div class="flex-between mb-2">
+                                    <p class="text-muted" style="font-size: 13px;">2. Define payload list (one per
+                                        line).</p>
+                                    <div style="display: flex; gap: 10px; align-items: center;">
+                                        <span id="blaster-payload-count" class="text-muted"
+                                            style="font-size: 12px; display: none;">0 payloads</span>
+                                        <select id="blaster-payload-select" class="dropdown-select"
+                                            style="background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border); border-radius:4px; padding:4px;">
+                                            <option value="">-- Load The Arsenal --</option>
+                                            <optgroup label="SQL Injection">
+                                                <option value="sqli_all">All SQLi</option>
+                                                <option value="sqli_time">SQLi - Time-Based</option>
+                                                <option value="sqli_error">SQLi - Error-Based</option>
+                                                <option value="sqli_boolean">SQLi - Boolean</option>
+                                            </optgroup>
+                                            <optgroup label="Cross-Site Scripting (XSS)">
+                                                <option value="xss_all">All XSS</option>
+                                                <option value="xss_ws">XSS - WS Context</option>
+                                            </optgroup>
+                                            <option value="cmd">Command Injection</option>
+                                            <option value="lfi">Path Traversal</option>
+                                            <option value="xxe">XML External Entity</option>
+                                            <option value="ssti">Server-Side Template Inject</option>
+                                            <option value="nosql">NoSQL Injection</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <label
+                                        style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                        <input type="checkbox" id="blaster-spe-checkbox" style="cursor: pointer;">
+                                        Apply SPE mutation on these payloads (Smart Payload Evolution)
+                                    </label>
+                                </div>
+                                <textarea id="blaster-payloads" class="code-area custom-scroll"
+                                    style="height: 120px; width: 100%;" spellcheck="false"
+                                    placeholder="alert(1);&#10;1' OR '1'='1&#10;../../../../etc/passwd"></textarea>
+                                <div style="display: flex; gap: 8px; margin-top: 12px; width: 100%;">
+                                    <button id="blaster-stop-btn" class="btn primary w-full"
+                                        style="background: var(--danger); border-color: var(--danger); display: none;">STOP
+                                        BLASTING</button>
+                                    <button id="blaster-start-btn" class="btn primary w-full">COMMENCE FUZZING</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-header glass-header"
+                                style="display:flex; justify-content:space-between; align-items:center;">
+                                <span class="title">Blast Results</span>
+                                <button id="blaster-clear-btn"
+                                    style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:12px;">Clear
+                                    Results</button>
+                            </div>
+                            <div class="panel-body no-padding custom-scroll">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Payload</th>
+                                            <th>Status</th>
+                                            <th>Length</th>
+                                            <th>Diff</th>
+                                            <th>Response Snippet</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="blaster-tbody">
+                                        <tr class="empty-tr">
+                                            <td colspan="5">Awaiting execution...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Codec -->
+                <div id="view-codec" class="view slide-up">
+                    <div class="codec-layout">
+                        <div class="panel" style="flex: 1;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">Protocol Codec</span>
+                                <div style="display: flex; gap: 8px;">
+                                    <button id="codec-smart-btn" class="btn secondary small">Smart Decode</button>
+                                    <button id="codec-clear-btn" class="btn secondary small"
+                                        style="color: var(--text-muted);">Clear</button>
+                                </div>
+                            </div>
+                            <div class="panel-body custom-scroll" style="padding: 16px;">
+                                <div class="codec-input-section">
+                                    <label class="codec-label">Input</label>
+                                    <textarea id="codec-input" class="code-area custom-scroll" spellcheck="false"
+                                        style="height: 120px; width: 100%; border: 1px solid var(--border-color); border-radius: 6px;"
+                                        placeholder="Paste data to encode/decode..."></textarea>
+                                </div>
+
+                                <div class="codec-controls">
+                                    <div class="codec-row">
+                                        <span class="codec-label">Transform:</span>
+                                        <div class="codec-btn-grid">
+                                            <button class="codec-op-btn" data-op="base64-encode">Base64
+                                                Encode</button>
+                                            <button class="codec-op-btn" data-op="base64-decode">Base64
+                                                Decode</button>
+                                            <button class="codec-op-btn" data-op="url-encode">URL Encode</button>
+                                            <button class="codec-op-btn" data-op="url-decode">URL Decode</button>
+                                            <button class="codec-op-btn" data-op="html-encode">HTML Encode</button>
+                                            <button class="codec-op-btn" data-op="html-decode">HTML Decode</button>
+                                            <button class="codec-op-btn" data-op="hex-encode">Hex Encode</button>
+                                            <button class="codec-op-btn" data-op="hex-decode">Hex Decode</button>
+                                            <button class="codec-op-btn" data-op="unicode-encode">Unicode
+                                                Escape</button>
+                                            <button class="codec-op-btn" data-op="unicode-decode">Unicode
+                                                Unescape</button>
+                                            <button class="codec-op-btn" data-op="gzip-decompress">Gzip
+                                                Decompress</button>
+                                        </div>
+                                    </div>
+                                    <div class="codec-row">
+                                        <span class="codec-label">Hash:</span>
+                                        <div class="codec-btn-grid">
+                                            <button class="codec-op-btn hash-btn" data-op="md5">MD5</button>
+                                            <button class="codec-op-btn hash-btn" data-op="sha1">SHA-1</button>
+                                            <button class="codec-op-btn hash-btn" data-op="sha256">SHA-256</button>
+                                            <button class="codec-op-btn hash-btn" data-op="sha512">SHA-512</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="codec-output-section">
+                                    <div class="flex-between" style="margin-bottom: 8px;">
+                                        <label class="codec-label">Output</label>
+                                        <div style="display: flex; gap: 8px; align-items: center;">
+                                            <span class="codec-chain-badge" id="codec-chain-label"></span>
+                                            <button id="codec-copy-btn" class="btn secondary small"
+                                                style="font-size: 11px;">Copy</button>
+                                            <button id="codec-swap-btn" class="btn secondary small"
+                                                style="font-size: 11px;">↑ Use as Input</button>
+                                        </div>
+                                    </div>
+                                    <textarea id="codec-output" class="code-area custom-scroll readonly"
+                                        spellcheck="false"
+                                        style="height: 120px; width: 100%; border: 1px solid var(--border-color); border-radius: 6px;"
+                                        readonly placeholder="Result will appear here..."></textarea>
+                                </div>
+
+                                <div class="codec-chain-section" id="codec-chain-container">
+                                    <label class="codec-label">Decode Chain (Auto-detected layers)</label>
+                                    <div id="codec-chain-list" class="codec-chain-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparer -->
+                <div id="view-comparer" class="view slide-up">
+                    <div class="comparer-layout">
+                        <div class="panel" style="flex: 1;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">Sample A</span>
+                                <button id="comparer-paste-a" class="btn secondary small">Paste from Clipboard</button>
+                            </div>
+                            <textarea id="comparer-input-a" class="code-area custom-scroll" spellcheck="false"
+                                placeholder="Paste first response here..."></textarea>
+                        </div>
+                        <div class="comparer-controls-center">
+                            <button id="comparer-run-btn" class="btn primary small">Compare ⇄</button>
+                            <button id="comparer-clear-btn" class="btn secondary small"
+                                style="color: var(--text-muted); margin-top: 8px;">Clear</button>
+                            <div class="comparer-stats" id="comparer-stats"></div>
+                        </div>
+                        <div class="panel" style="flex: 1;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">Sample B</span>
+                                <button id="comparer-paste-b" class="btn secondary small">Paste from Clipboard</button>
+                            </div>
+                            <textarea id="comparer-input-b" class="code-area custom-scroll" spellcheck="false"
+                                placeholder="Paste second response here..."></textarea>
+                        </div>
+                    </div>
+                    <div class="panel" style="margin-top: 16px; flex: none; max-height: 280px;">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">Diff Output</span>
+                            <span class="subtitle" id="comparer-diff-count"></span>
+                        </div>
+                        <div class="panel-body custom-scroll" id="comparer-diff-output"
+                            style="font-family: var(--font-mono); font-size: 12px; padding: 12px; overflow-y: auto;">
+                            <div class="empty-state">Run a comparison to see differences.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div id="view-notes" class="view slide-up">
+                    <div class="split-view full-height">
+                        <div class="panel" style="flex: 0 0 220px;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">Engagement Notes</span>
+                                <button id="notes-add-btn" class="btn secondary small">+ New</button>
+                            </div>
+                            <div class="panel-body no-padding custom-scroll" id="notes-list-container">
+                                <div class="empty-state" style="padding: 20px;">No notes yet. Click + New.</div>
+                            </div>
+                        </div>
+                        <div class="panel" style="flex: 1;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title" id="notes-editor-title">Select a note</span>
+                                <div style="display: flex; gap: 8px;">
+                                    <button id="notes-link-btn" class="btn secondary small"
+                                        title="Link to current findings">Link Findings</button>
+                                    <button id="notes-delete-btn" class="btn secondary small"
+                                        style="color: var(--danger);">Delete</button>
+                                </div>
+                            </div>
+                            <textarea id="notes-editor" class="code-area custom-scroll" spellcheck="true"
+                                placeholder="Write your engagement notes here...&#10;&#10;Supports plain text. Findings can be auto-linked with the Link Findings button."
+                                style="flex: 1;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Endpoint Map -->
+                <div id="view-wsmap" class="view slide-up">
+                    <div class="split-view full-height">
+                        <div class="panel" style="flex: 0 0 280px;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">Discovered Endpoints</span>
+                                <button id="wsmap-scan-btn" class="btn primary small">Discover</button>
+                            </div>
+                            <div class="panel-body custom-scroll" id="wsmap-tree-container">
+                                <div class="empty-state">Enter a target HTTP URL above and click Discover to find
+                                    WebSocket endpoints.</div>
+                            </div>
+                        </div>
+                        <div class="panel" style="flex: 1;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title" id="wsmap-detail-title">Endpoint Details</span>
+                                <div style="display: flex; gap: 8px;">
+                                    <button id="wsmap-test-btn" class="btn secondary small" disabled>Probe
+                                        Endpoint</button>
+                                    <button id="wsmap-attack-btn" class="btn primary small" disabled>Scan This
+                                        Target</button>
+                                </div>
+                            </div>
+                            <div class="panel-body custom-scroll" id="wsmap-detail-body">
+                                <div class="empty-state">Select an endpoint from the tree to view details.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auth Builder -->
+                <div id="view-authbuilder" class="view slide-up">
+                    <div class="split-view full-height">
+                        <div class="panel" style="flex: 1;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">Authentication Sequence</span>
+                                <div style="display: flex; gap: 8px;">
+                                    <button id="auth-add-step" class="btn secondary small">+ Add Step</button>
+                                    <button id="auth-clear-all" class="btn secondary small"
+                                        style="color: var(--text-muted);">Clear All</button>
+                                </div>
+                            </div>
+                            <div class="panel-body custom-scroll" id="auth-steps-container">
+                                <div class="empty-state">Define multi-step authentication sequences.<br>Click + Add Step
+                                    to begin.</div>
+                            </div>
+                            <div
+                                style="padding: 12px; border-top: 1px solid var(--border-color); display: flex; gap: 8px;">
+                                <button id="auth-test-btn" class="btn primary w-full">Test Full Sequence</button>
+                                <button id="auth-save-btn" class="btn secondary w-full">Save as Preset</button>
+                            </div>
+                        </div>
+                        <div class="panel" style="flex: 0 0 320px;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">Extraction Rules</span>
+                                <button id="auth-add-rule" class="btn secondary small">+ Add Rule</button>
+                            </div>
+                            <div class="panel-body custom-scroll" id="auth-rules-container">
+                                <div class="empty-state">Define token extraction rules.<br>Use regex or JSONPath to
+                                    capture session tokens from responses.</div>
+                            </div>
+                            <div class="panel-header glass-header"
+                                style="border-top: 1px solid var(--border-color); border-bottom: none;">
+                                <span class="title">Test Output</span>
+                            </div>
+                            <textarea id="auth-test-output" class="code-area custom-scroll readonly"
+                                style="height: 140px;" readonly
+                                placeholder="Run the test sequence to see results here..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scheduler -->
+                <div id="view-scheduler" class="view slide-up">
+                    <div class="split-view full-height">
+                        <div class="panel" style="flex: 1;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">Scheduled Scans</span>
+                                <button id="sched-add-btn" class="btn primary small">+ New Schedule</button>
+                            </div>
+                            <div class="panel-body no-padding custom-scroll">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Target</th>
+                                            <th>Interval</th>
+                                            <th>Last Run</th>
+                                            <th>Findings</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sched-tbody">
+                                        <tr class="empty-tr">
+                                            <td colspan="6">No scheduled scans configured.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="panel" style="flex: 0 0 320px;">
+                            <div class="panel-header glass-header">
+                                <span class="title">Delta Report</span>
+                            </div>
+                            <div class="panel-body custom-scroll" id="sched-delta-container">
+                                <div class="empty-state">Select a scheduled scan to view the delta report showing
+                                    changes since the last run.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OAST Callbacks -->
+                <div id="view-oast" class="view slide-up">
+                    <div class="split-view full-height">
+                        <div class="panel" style="flex: 1;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">Out-of-Band Callbacks</span>
+                                <div style="display: flex; gap: 8px;">
+                                    <button id="oast-poll-btn" class="btn secondary small">Poll</button>
+                                    <button id="oast-clear-btn" class="btn secondary small"
+                                        style="color: var(--text-muted);">Clear</button>
+                                </div>
+                            </div>
+                            <div class="panel-body custom-scroll" id="oast-list" style="padding: 0;">
+                                <div class="empty-state">No callbacks received yet. Run a scan with OAST payloads to
+                                    detect
+                                    blind vulnerabilities.</div>
+                            </div>
+                        </div>
+                        <div class="panel" style="flex: 1;">
+                            <div class="panel-header glass-header">
+                                <span class="title">Callback Detail</span>
+                            </div>
+                            <div class="panel-body custom-scroll" id="oast-detail" style="padding: 16px;">
+                                <div class="empty-state">Select a callback to view details.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mutation Lab -->
+                <div id="view-mutationlab" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">Payload Mutation Lab (SPE)</span>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <select id="mutation-strategy"
+                                    style="background: var(--bg-panel); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; font-size: 12px;">
+                                    <option value="all">All Strategies</option>
+                                    <option value="case">Case Mutation</option>
+                                    <option value="encode">Encoding</option>
+                                    <option value="fragment">Fragmentation</option>
+                                    <option value="comment">Comment Injection</option>
+                                    <option value="unicode">Unicode Substitution</option>
+                                    <option value="double">Double Encoding</option>
+                                </select>
+                                <input type="number" id="mutation-count" value="10" min="1" max="50"
+                                    style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; width: 60px; min-height: unset; height: 28px;"
+                                    title="Number of mutations">
+                                <button id="mutation-run-btn" class="btn primary small">Mutate</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 16px;">
+                            <div style="margin-bottom: 16px;">
+                                <label class="text-muted"
+                                    style="font-size: 11px; display: block; margin-bottom: 4px;">Base
+                                    Payload</label>
+                                <textarea id="mutation-input" class="code-area"
+                                    style="height: 60px; width: 100%; resize: none;" spellcheck="false"
+                                    placeholder="<script>alert(1)</script>"></textarea>
+                            </div>
+                            <div id="mutation-results">
+                                <div class="empty-state">Enter a base payload and click Mutate to see SPE variations.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══════════════ WEB PENTEST VIEWS ═══════════════ -->
+
+                <!-- HTTP Forge -->
+                <div id="view-httpforge" class="view slide-up">
+                    <div class="split-view" style="height: 100%;">
+                        <div class="panel" style="flex: 1;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">HTTP Request</span>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <select id="http-method"
+                                        style="background: var(--bg-panel); color: var(--accent); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; font-size: 12px; font-weight: 700;">
+                                        <option>GET</option>
+                                        <option>POST</option>
+                                        <option>PUT</option>
+                                        <option>DELETE</option>
+                                        <option>PATCH</option>
+                                        <option>HEAD</option>
+                                        <option>OPTIONS</option>
+                                    </select>
+                                    <input type="text" id="http-url" placeholder="https://target.com/api/endpoint"
+                                        style="flex: 1; min-width: 220px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                    <button id="http-send-btn" class="btn primary small">Send</button>
+                                </div>
+                            </div>
+                            <div class="panel-body custom-scroll" style="padding: 0;">
+                                <div style="padding: 8px 12px; border-bottom: 1px solid var(--border-color);">
+                                    <label class="text-muted"
+                                        style="font-size: 10px; display: block; margin-bottom: 4px;">Headers (one per
+                                        line: Header: Value)</label>
+                                    <textarea id="http-headers" class="code-area"
+                                        style="height: 80px; width: 100%; resize: none;" spellcheck="false"
+                                        placeholder="Content-Type: application/json&#10;Authorization: Bearer eyJ..."></textarea>
+                                </div>
+                                <div style="padding: 8px 12px;">
+                                    <label class="text-muted"
+                                        style="font-size: 10px; display: block; margin-bottom: 4px;">Body</label>
+                                    <textarea id="http-body" class="code-area"
+                                        style="height: 120px; width: 100%; resize: none;" spellcheck="false"
+                                        placeholder='{"username": "admin", "password": "test"}'></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel" style="flex: 1;">
+                            <div class="panel-header glass-header flex-between">
+                                <span class="title">HTTP Response</span>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <span id="http-status-badge" class="text-muted" style="font-size: 11px;">—</span>
+                                    <span id="http-time-badge" class="text-muted" style="font-size: 11px;">—</span>
+                                    <button id="http-copy-res-btn" class="btn secondary small"
+                                        style="font-size: 10px;">Copy</button>
+                                </div>
+                            </div>
+                            <div class="panel-body custom-scroll" style="padding: 0;">
+                                <div style="padding: 8px 12px; border-bottom: 1px solid var(--border-color);">
+                                    <label class="text-muted" style="font-size: 10px;">Response Headers</label>
+                                    <pre id="http-res-headers"
+                                        style="font-size: 11px; color: var(--text-secondary); white-space: pre-wrap; margin: 4px 0; max-height: 100px; overflow-y: auto;">—</pre>
+                                </div>
+                                <div style="padding: 8px 12px;">
+                                    <label class="text-muted" style="font-size: 10px;">Response Body</label>
+                                    <textarea id="http-res-body" class="code-area"
+                                        style="height: 200px; width: 100%; resize: none;" readonly spellcheck="false"
+                                        placeholder="Awaiting request..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HTTP Fuzzer -->
+                <div id="view-httpfuzzer" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">HTTP Parameter Fuzzer</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <select id="fuzz-method"
+                                    style="background: var(--bg-panel); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; font-size: 12px;">
+                                    <option>GET</option>
+                                    <option>POST</option>
+                                    <option>PUT</option>
+                                </select>
+                                <input type="text" id="fuzz-url" placeholder="https://target.com/api?param=§FUZZ§"
+                                    style="min-width: 280px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <select id="fuzz-wordlist"
+                                    style="background: var(--bg-panel); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; font-size: 12px;">
+                                    <option value="common">Common Params</option>
+                                    <option value="sqli">SQLi Payloads</option>
+                                    <option value="xss">XSS Payloads</option>
+                                    <option value="dirs">Directories</option>
+                                </select>
+                                <input type="text" id="fuzz-custom-file"
+                                    placeholder="Custom wordlist path e.g. /usr/share/wordlists/dirb/common.txt"
+                                    style="width: 250px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; min-height: unset; height: 28px;">
+                                <select id="fuzz-encoder"
+                                    style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 4px 8px; border-radius: var(--radius); font-size: 11px; height: 28px;">
+                                    <option value="none">No Encoding</option>
+                                    <option value="url">URL Encode</option>
+                                    <option value="base64">Base64 Encode</option>
+                                    <option value="hex">Hex Encode</option>
+                                </select>
+                                <input type="text" id="fuzz-grep" placeholder="Regex Grep (e.g. SQL syntax.*error)"
+                                    style="width: 150px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; min-height: unset; height: 28px;">
+                                <button id="fuzz-start-btn" class="btn primary small">Start Fuzz</button>
+                                <button id="fuzz-stop-btn" class="btn secondary small"
+                                    style="display: none;">Stop</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 0;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Payload</th>
+                                        <th>Status</th>
+                                        <th>Length</th>
+                                        <th>Time</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="fuzz-results-tbody">
+                                    <tr class="empty-tr">
+                                        <td colspan="6">Configure target URL with §FUZZ§ markers and click Start.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dir Scanner -->
+                <div id="view-dirscanner" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">Directory & File Scanner</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="dir-target" placeholder="https://target.com"
+                                    style="min-width: 220px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <input type="text" id="dir-extensions" placeholder="php,html,js,txt"
+                                    value="php,html,js,txt,bak"
+                                    style="width: 100px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;"
+                                    title="Extensions to check">
+                                <input type="text" id="dir-custom-file" placeholder="Custom wordlist path (optional)"
+                                    style="width: 150px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; min-height: unset; height: 28px;">
+                                <input type="number" id="dir-throttle" placeholder="WAF Throttle MS" value="0"
+                                    style="width: 100px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; min-height: unset; height: 28px;">
+                                <label
+                                    style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-muted); cursor: pointer;">
+                                    <input type="checkbox" id="dir-recursive" style="margin: 0;">
+                                    Recursive
+                                </label>
+                                <button id="dir-start-btn" class="btn primary small">Scan</button>
+                                <button id="dir-stop-btn" class="btn secondary small"
+                                    style="display: none;">Stop</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 0;">
+                            <div id="dir-progress"
+                                style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); font-size: 11px; color: var(--text-muted);">
+                                Ready. Enter target URL and click Scan.
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Path</th>
+                                        <th>Size</th>
+                                        <th>Content-Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dir-results-tbody">
+                                    <tr class="empty-tr">
+                                        <td colspan="4">No results yet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Header Analyzer -->
+                <div id="view-headeranalyzer" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">Security Header Analyzer</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="header-target-url" placeholder="https://target.com"
+                                    style="min-width: 300px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <button id="header-analyze-btn" class="btn primary small">Analyze</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 16px;">
+                            <div id="header-results">
+                                <div class="empty-state">Enter a URL and click Analyze to check security headers.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JWT Analyzer -->
+                <div id="view-jwtanalyzer" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">JWT Token Analyzer</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <button id="jwt-decode-btn" class="btn primary small">Decode</button>
+                                <button id="jwt-none-attack-btn" class="btn secondary small"
+                                    title="alg: none attack">None Attack</button>
+                                <button id="jwt-bruteforce-btn" class="btn secondary small"
+                                    title="Bruteforce HS256 secret">Brute Secret</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 16px;">
+                            <div style="margin-bottom: 16px;">
+                                <label class="text-muted"
+                                    style="font-size: 11px; display: block; margin-bottom: 4px;">JWT Token</label>
+                                <textarea id="jwt-input" class="code-area"
+                                    style="height: 60px; width: 100%; resize: none;" spellcheck="false"
+                                    placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"></textarea>
+                            </div>
+                            <div class="split-view" style="gap: 12px;">
+                                <div style="flex: 1;">
+                                    <label class="text-muted"
+                                        style="font-size: 11px; display: block; margin-bottom: 4px;">Header</label>
+                                    <pre id="jwt-header"
+                                        style="background: var(--bg-secondary); padding: 10px; border-radius: var(--radius); font-size: 12px; color: var(--danger); min-height: 60px; white-space: pre-wrap; word-break: break-all;">—</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <label class="text-muted"
+                                        style="font-size: 11px; display: block; margin-bottom: 4px;">Payload</label>
+                                    <pre id="jwt-payload"
+                                        style="background: var(--bg-secondary); padding: 10px; border-radius: var(--radius); font-size: 12px; color: var(--accent); min-height: 60px; white-space: pre-wrap; word-break: break-all;">—</pre>
+                                </div>
+                            </div>
+                            <div style="margin-top: 12px;">
+                                <label class="text-muted"
+                                    style="font-size: 11px; display: block; margin-bottom: 4px;">Signature &
+                                    Verification</label>
+                                <pre id="jwt-signature"
+                                    style="background: var(--bg-secondary); padding: 10px; border-radius: var(--radius); font-size: 12px; color: var(--warning); white-space: pre-wrap; word-break: break-all;">—</pre>
+                            </div>
+                            <div id="jwt-attacks-output" style="margin-top: 12px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subdomain Finder -->
+                <div id="view-subdomain" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">Subdomain Finder</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="subdomain-target" placeholder="target.com"
+                                    style="min-width: 220px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <button id="subdomain-start-btn" class="btn primary small"
+                                    style="box-shadow: 0 0 10px rgba(0, 198, 255, 0.4);">Find Subdomains</button>
+                                <button id="subdomain-workflow-btn" class="btn warning small"
+                                    style="display: none; box-shadow: 0 0 10px rgba(243, 156, 18, 0.4);">⚡ Vuln
+                                    Auto-Orchestrate</button>
+                                <button id="subdomain-export-btn" class="btn secondary small">Export/Copy</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 0;">
+                            <div id="subdomain-progress"
+                                style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); font-size: 11px; color: var(--text-muted);">
+                                Enter a domain and click Find Subdomains.
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Subdomain</th>
+                                        <th>IP</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subdomain-results-tbody">
+                                    <tr class="empty-tr">
+                                        <td colspan="3">No results yet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Web Crawler -->
+                <div id="view-webcrawler" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">Web Crawler</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="crawl-target" placeholder="https://target.com"
+                                    style="min-width: 250px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <input type="number" id="crawl-depth" value="3" min="1" max="10"
+                                    style="width: 55px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; min-height: unset; height: 28px;"
+                                    title="Max Depth">
+                                <input type="number" id="crawl-max" value="100" min="10" max="500"
+                                    style="width: 60px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; min-height: unset; height: 28px;"
+                                    title="Max Pages">
+                                <label
+                                    style="display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text-muted); cursor: pointer;">
+                                    <input type="checkbox" id="crawl-sensitive-toggle"
+                                        style="accent-color: var(--accent);">
+                                    + Sensitive Scan
+                                </label>
+                                <button id="crawl-start-btn" class="btn primary small">Crawl</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 0;">
+                            <div id="crawl-stats"
+                                style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); font-size: 11px; color: var(--text-muted); display: flex; gap: 16px;">
+                                <span>Pages: <strong id="crawl-stat-pages">0</strong></span>
+                                <span>Forms: <strong id="crawl-stat-forms">0</strong></span>
+                                <span>Scripts: <strong id="crawl-stat-scripts">0</strong></span>
+                                <span>API Endpoints: <strong id="crawl-stat-apis">0</strong></span>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>URL</th>
+                                        <th>Status</th>
+                                        <th>Depth</th>
+                                        <th>Size</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="crawl-results-tbody">
+                                    <tr class="empty-tr">
+                                        <td colspan="4">Enter a target URL and click Crawl to begin.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vulnerability Scanner -->
+                <div id="view-vulnscanner" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title" style="color: var(--danger); font-weight: 700;">⚠ Vulnerability
+                                Scanner</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="vuln-target" placeholder="https://target.com"
+                                    style="min-width: 280px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <button id="vuln-start-btn" class="btn primary small"
+                                    style="background: var(--danger); box-shadow: 0 0 12px rgba(239,68,68,0.4);">Launch
+                                    Scan</button>
+                                <button id="vuln-stop-btn" class="btn secondary small"
+                                    style="display: none;">Stop</button>
+                                <button id="vuln-export-btn" class="btn secondary small">Export Report</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 0;">
+                            <!-- Phase Progress -->
+                            <div id="vuln-phases"
+                                style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; gap: 12px; flex-wrap: wrap;">
+                                <span id="vuln-phase-crawl" class="badge standard" style="opacity: 0.4;">Crawl</span>
+                                <span id="vuln-phase-headers" class="badge standard"
+                                    style="opacity: 0.4;">Headers</span>
+                                <span id="vuln-phase-dirscan" class="badge standard"
+                                    style="opacity: 0.4;">DirScan</span>
+                                <span id="vuln-phase-fuzz" class="badge standard" style="opacity: 0.4;">Fuzz</span>
+                            </div>
+                            <!-- Severity Chart + Summary -->
+                            <div id="vuln-charts"
+                                style="padding: 16px; border-bottom: 1px solid var(--border-color); display: none;">
+                                <div style="display: flex; gap: 20px; align-items: center;">
+                                    <canvas id="vuln-pie-chart" width="120" height="120"
+                                        style="flex-shrink: 0;"></canvas>
+                                    <div style="flex: 1;">
+                                        <div
+                                            style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;">
+                                            Severity Breakdown</div>
+                                        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                                            <div style="text-align: center;">
+                                                <div id="vuln-count-high"
+                                                    style="font-size: 22px; font-weight: 700; color: var(--danger);">0
+                                                </div>
+                                                <div
+                                                    style="font-size: 9px; text-transform: uppercase; color: var(--text-muted);">
+                                                    High</div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div id="vuln-count-medium"
+                                                    style="font-size: 22px; font-weight: 700; color: var(--warning);">0
+                                                </div>
+                                                <div
+                                                    style="font-size: 9px; text-transform: uppercase; color: var(--text-muted);">
+                                                    Medium</div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div id="vuln-count-low"
+                                                    style="font-size: 22px; font-weight: 700; color: var(--accent);">0
+                                                </div>
+                                                <div
+                                                    style="font-size: 9px; text-transform: uppercase; color: var(--text-muted);">
+                                                    Low</div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div id="vuln-count-info"
+                                                    style="font-size: 22px; font-weight: 700; color: var(--text-muted);">
+                                                    0</div>
+                                                <div
+                                                    style="font-size: 9px; text-transform: uppercase; color: var(--text-muted);">
+                                                    Info</div>
+                                            </div>
+                                        </div>
+                                        <div id="vuln-scan-time"
+                                            style="margin-top: 10px; font-size: 10px; color: var(--text-muted);"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Live Log -->
+                            <div id="vuln-log"
+                                style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); max-height: 140px; overflow-y: auto; font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); background: var(--bg-secondary);">
+                                Waiting for scan to start...
+                            </div>
+                            <!-- Findings Table -->
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Severity</th>
+                                        <th>Type</th>
+                                        <th>Title</th>
+                                        <th>Detail</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="vuln-findings-tbody">
+                                    <tr class="empty-tr">
+                                        <td colspan="5">No findings yet. Enter a target and click Launch Scan.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tech Fingerprint -->
+                <div id="view-techfp" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">Tech Stack Fingerprinter</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="techfp-target" placeholder="https://target.com"
+                                    style="min-width: 300px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <button id="techfp-start-btn" class="btn primary small">Detect</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 16px;">
+                            <div id="techfp-results">
+                                <div class="empty-state">Enter a URL and click Detect to identify the technology stack.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SSL/TLS Analyzer -->
+                <div id="view-sslanalyzer" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">SSL/TLS Certificate Analyzer</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="ssl-target" placeholder="example.com"
+                                    style="min-width: 250px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <input type="number" id="ssl-port" value="443" min="1" max="65535"
+                                    style="width: 65px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; min-height: unset; height: 28px;">
+                                <button id="ssl-start-btn" class="btn primary small">Analyze</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 16px;">
+                            <div id="ssl-results">
+                                <div class="empty-state">Enter a hostname and click Analyze to inspect SSL/TLS
+                                    configuration.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sensitive Data Finder -->
+                <div id="view-sensitivefinder" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">Sensitive Data Finder</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="sensitive-target" placeholder="https://target.com/page"
+                                    style="min-width: 300px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <button id="sensitive-start-btn" class="btn primary small">Scan</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 0;">
+                            <div id="sensitive-progress"
+                                style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); font-size: 11px; color: var(--text-muted);">
+                                Enter a URL to scan for leaked API keys, tokens, credentials, and sensitive data.
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Severity</th>
+                                        <th>Type</th>
+                                        <th>Value (Masked)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sensitive-results-tbody">
+                                    <tr class="empty-tr">
+                                        <td colspan="3">No findings yet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WAF Detector -->
+                <div id="view-wafdetect" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">WAF Detector</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="waf-target" placeholder="https://target.com"
+                                    style="min-width: 300px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <button id="waf-start-btn" class="btn primary small">Detect</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 16px;">
+                            <div id="waf-results">
+                                <div class="empty-state">Enter a URL and click Detect to identify WAFs.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CORS Tester -->
+                <div id="view-corstester" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">CORS Misconfiguration Tester</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="cors-target" placeholder="https://target.com/api"
+                                    style="min-width: 300px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <button id="cors-start-btn" class="btn primary small">Test</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 0;">
+                            <div id="cors-summary"
+                                style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); font-size: 11px; color: var(--text-muted);">
+                                Enter a URL to test for CORS misconfigurations.
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Severity</th>
+                                        <th>Test</th>
+                                        <th>Origin Sent</th>
+                                        <th>ACAO Response</th>
+                                        <th>Credentials</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cors-results-tbody">
+                                    <tr class="empty-tr">
+                                        <td colspan="5">No results yet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Port Scanner -->
+                <div id="view-portscanner" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">TCP Port Scanner</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="port-target" placeholder="target.com"
+                                    style="min-width: 200px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <select id="port-preset"
+                                    style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; height: 28px;">
+                                    <option value="top100">Top 100</option>
+                                    <option value="web">Web Ports</option>
+                                    <option value="database">Database</option>
+                                    <option value="full">Full 1-1024</option>
+                                </select>
+                                <input type="text" id="port-custom" placeholder="Custom: 80,443,8000-8100"
+                                    style="width: 160px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; min-height: unset; height: 28px;">
+                                <button id="port-start-btn" class="btn primary small">Scan</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 0;">
+                            <div id="port-stats"
+                                style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); font-size: 11px; color: var(--text-muted); display: flex; gap: 16px;">
+                                <span>Open: <strong id="port-stat-open">0</strong></span>
+                                <span>Scanned: <strong id="port-stat-total">0</strong></span>
+                                <span>Elapsed: <strong id="port-stat-time">—</strong></span>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Port</th>
+                                        <th>State</th>
+                                        <th>Service</th>
+                                        <th>Banner</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="port-results-tbody">
+                                    <tr class="empty-tr">
+                                        <td colspan="4">Enter a host and click Scan.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DNS / WHOIS -->
+                <div id="view-dnslookup" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">DNS / WHOIS Lookup</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="dns-target" placeholder="example.com"
+                                    style="min-width: 280px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <button id="dns-start-btn" class="btn primary small">Lookup</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 16px;">
+                            <div id="dns-results">
+                                <div class="empty-state">Enter a domain to query DNS records and WHOIS data.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CSRF Forge -->
+                <div id="view-csrfforge" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title" style="color: var(--warning);">⚡ CSRF Forge</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <select id="csrf-method"
+                                    style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; height: 28px;">
+                                    <option>POST</option>
+                                    <option>GET</option>
+                                    <option>PUT</option>
+                                    <option>DELETE</option>
+                                </select>
+                                <input type="text" id="csrf-url" placeholder="https://target.com/action"
+                                    style="min-width: 280px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <button id="csrf-gen-btn" class="btn primary small"
+                                    style="background: var(--warning); color: #111;">Generate</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 0;">
+                            <div style="display: flex; height: 100%;">
+                                <div
+                                    style="flex: 1; border-right: 1px solid var(--border-color); display: flex; flex-direction: column;">
+                                    <div
+                                        style="padding: 8px 12px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">
+                                        Request Body / Form Data</div>
+                                    <textarea id="csrf-body"
+                                        placeholder="username=admin&password=pass123&#10;OR JSON:&#10;{&quot;action&quot;: &quot;delete&quot;, &quot;id&quot;: 1}"
+                                        style="flex: 1; background: var(--bg-secondary); border: none; padding: 12px; font-family: var(--font-mono); font-size: 12px; color: var(--text-primary); resize: none;"></textarea>
+                                    <div
+                                        style="padding: 8px 12px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+                                        Headers (optional)</div>
+                                    <textarea id="csrf-headers"
+                                        placeholder="Content-Type: application/x-www-form-urlencoded"
+                                        style="height: 80px; background: var(--bg-secondary); border: none; padding: 12px; font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); resize: none;"></textarea>
+                                </div>
+                                <div style="flex: 1; display: flex; flex-direction: column;">
+                                    <div
+                                        style="padding: 8px 12px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                                        Generated PoC
+                                        <button id="csrf-copy-btn" class="btn secondary small"
+                                            style="font-size: 9px; padding: 2px 8px;">Copy HTML</button>
+                                    </div>
+                                    <div id="csrf-results" style="flex: 1; padding: 12px; overflow-y: auto;">
+                                        <div class="empty-state">Fill in the request details and click Generate.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blind Probe (SSRF) -->
+                <div id="view-blindprobe" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title" style="color: var(--danger);">👁 Blind Probe (SSRF)</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="ssrf-url" placeholder="https://target.com/fetch?url=VALUE"
+                                    style="min-width: 300px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <input type="text" id="ssrf-param" placeholder="param (auto)"
+                                    style="width: 90px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; min-height: unset; height: 28px;">
+                                <button id="ssrf-start-btn" class="btn primary small"
+                                    style="background: var(--danger);">Probe</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 0;">
+                            <div id="ssrf-stats"
+                                style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); font-size: 11px; color: var(--text-muted); display: flex; gap: 16px;">
+                                <span>Payloads: <strong id="ssrf-stat-sent">0</strong></span>
+                                <span>Findings: <strong id="ssrf-stat-findings"
+                                        style="color: var(--danger);">0</strong></span>
+                                <span>Params: <strong id="ssrf-stat-params">—</strong></span>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Severity</th>
+                                        <th>Category</th>
+                                        <th>Param</th>
+                                        <th>Payload</th>
+                                        <th>Status</th>
+                                        <th>Indicators</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ssrf-results-tbody">
+                                    <tr class="empty-tr">
+                                        <td colspan="6">Enter a URL with parameters and click Probe to test for SSRF.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Redirect Hunter -->
+                <div id="view-redirecthunter" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title">↗ Redirect Hunter</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="redirect-url" placeholder="https://target.com/login?next=VALUE"
+                                    style="min-width: 320px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <input type="text" id="redirect-param" placeholder="param (auto)"
+                                    style="width: 90px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; min-height: unset; height: 28px;">
+                                <button id="redirect-start-btn" class="btn primary small">Hunt</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 0;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Severity</th>
+                                        <th>Technique</th>
+                                        <th>Param</th>
+                                        <th>Payload</th>
+                                        <th>Redirect Type</th>
+                                        <th>Destination</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="redirect-results-tbody">
+                                    <tr class="empty-tr">
+                                        <td colspan="6">Enter a URL with redirect parameters and click Hunt.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proto Polluter -->
+                <div id="view-protopolluter" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title" style="color: var(--warning);">🧬 Proto Polluter</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <input type="text" id="proto-url" placeholder="https://target.com/api/settings"
+                                    style="min-width: 300px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <select id="proto-method"
+                                    style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 11px; height: 28px;">
+                                    <option>GET</option>
+                                    <option>POST</option>
+                                    <option>PUT</option>
+                                </select>
+                                <button id="proto-start-btn" class="btn primary small"
+                                    style="background: var(--warning); color: #111;">Pollute</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 0;">
+                            <div id="proto-stats"
+                                style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); font-size: 11px; color: var(--text-muted); display: flex; gap: 16px;">
+                                <span>Tests: <strong id="proto-stat-tests">0</strong></span>
+                                <span>Findings: <strong id="proto-stat-findings"
+                                        style="color: var(--warning);">0</strong></span>
+                                <span>Baseline: <strong id="proto-stat-baseline">—</strong></span>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Severity</th>
+                                        <th>Vector</th>
+                                        <th>Payload</th>
+                                        <th>Status</th>
+                                        <th>Response Δ</th>
+                                        <th>Indicators</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="proto-results-tbody">
+                                    <tr class="empty-tr">
+                                        <td colspan="6">Enter a URL and click Pollute to test for prototype pollution.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proxy CA -->
+                <div id="view-hawkproxyca" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title" style="color: var(--accent);">🛡 Proxy CA</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <button id="ca-generate-btn" class="btn primary small">Generate CA</button>
+                                <input type="text" id="ca-host-input" placeholder="hostname for cert"
+                                    style="min-width: 180px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px 8px; color: var(--text-primary); font-size: 12px; min-height: unset; height: 28px;">
+                                <button id="ca-host-btn" class="btn secondary small">Host Cert</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 16px;">
+                            <div id="ca-results">
+                                <div class="empty-state">Click "Generate CA" to create the WSHawk root certificate
+                                    authority.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attack Chainer -->
+                <div id="view-attackchainer" class="view slide-up">
+                    <div class="panel full-height">
+                        <div class="panel-header glass-header flex-between">
+                            <span class="title" style="color: var(--danger);">⛓ Attack Chainer</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <button id="chain-add-step" class="btn secondary small">+ Step</button>
+                                <button id="chain-exec-btn" class="btn primary small"
+                                    style="background: var(--danger);">Execute Chain</button>
+                            </div>
+                        </div>
+                        <div class="panel-body custom-scroll" style="padding: 0;">
+                            <div style="display: flex; height: 100%;">
+                                <!-- Step Builder -->
+                                <div
+                                    style="flex: 1; border-right: 1px solid var(--border-color); display: flex; flex-direction: column;">
+                                    <div
+                                        style="padding: 8px 12px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between;">
+                                        Steps (JSON)
+                                        <span style="font-size: 9px; opacity: 0.5;">Use {{var}} for injection</span>
+                                    </div>
+                                    <textarea id="chain-steps-editor" placeholder='[
+  {
+    "name": "Step 1 — Get Login Page",
+    "method": "GET",
+    "url": "https://target.com/login",
+    "headers": {},
+    "body": "",
+    "extract": [
+      {
+        "var": "csrf",
+        "from": "body",
+        "regex": "name=\"csrf_token\" value=\"([^\"]+)\""
+      }
+    ]
+  },
+  {
+    "name": "Step 2 — Submit Login with Token",
+    "method": "POST",
+    "url": "https://target.com/login",
+    "headers": {"Content-Type": "application/x-www-form-urlencoded"},
+    "body": "username=admin&password=pass&csrf_token={{csrf}}",
+    "extract": [
+      {
+        "var": "session",
+        "from": "cookies",
+        "regex": "session=([^;]+)"
+      }
+    ]
+  }
+]' style="flex: 1; background: var(--bg-secondary); border: none; padding: 12px; font-family: var(--font-mono); font-size: 11px; color: var(--text-primary); resize: none; line-height: 1.6;"></textarea>
+                                </div>
+                                <!-- Results -->
+                                <div style="flex: 1; display: flex; flex-direction: column;">
+                                    <div
+                                        style="padding: 8px 12px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); border-bottom: 1px solid var(--border-color);">
+                                        Chain Results
+                                    </div>
+                                    <div id="chain-results" style="flex: 1; padding: 12px; overflow-y: auto;">
+                                        <div class="empty-state">Define attack steps and click Execute Chain.</div>
+                                    </div>
+                                    <div
+                                        style="padding: 8px 12px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); border-top: 1px solid var(--border-color);">
+                                        Variables
+                                    </div>
+                                    <div id="chain-variables"
+                                        style="padding: 8px 12px; font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); max-height: 100px; overflow-y: auto;">
+                                        <span style="opacity: 0.5;">No variables extracted yet.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Status Bar -->
+            <div class="status-bar" id="status-bar">
+                <div class="status-segment">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span id="status-conn">Disconnected</span>
+                </div>
+                <div class="status-segment">
+                    <span id="status-timer">00:00:00</span>
+                </div>
+                <div class="status-segment">
+                    <span id="status-schedulers">0 schedulers</span>
+                </div>
+                <div class="status-segment">
+                    <span id="status-storage">Storage: --</span>
+                </div>
+                <div class="status-segment" style="margin-left: auto; color: var(--text-muted);">
+                    <span>Ctrl+K: Search &middot; Ctrl+Enter: Execute &middot; Ctrl+S: Save</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- HawkSearch Overlay (Ctrl+K) -->
+    <div class="hawksearch-overlay" id="hawksearch-overlay">
+        <div class="hawksearch-box">
+            <input type="text" class="hawksearch-input" id="hawksearch-input"
+                placeholder="Search tools, actions, or type a command...">
+            <div class="hawksearch-results" id="hawksearch-results"></div>
+            <div class="hawksearch-footer">
+                <span>↑↓ Navigate · Enter Select · Esc Close</span>
+                <span>Ctrl+K</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Settings & Themes</h2>
+                <button id="btn-settings-close"
+                    style="background:none;border:none;color:var(--text-muted);cursor:pointer;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <!-- Theme Selector -->
+                <h3 style="margin-bottom:10px; font-size:14px; color:var(--text-primary);">🎨 Theme</h3>
+                <div style="margin-bottom: 20px; display: flex; gap: 8px;">
+                    <button class="theme-btn btn secondary small" data-theme="" style="flex:1;">Midnight</button>
+                    <button class="theme-btn btn secondary small" data-theme="matrix"
+                        style="flex:1; color: #00ff41;">Matrix</button>
+                    <button class="theme-btn btn secondary small" data-theme="cyber-red"
+                        style="flex:1; color: #ff2222;">Cyber Red</button>
+                    <button class="theme-btn btn secondary small" data-theme="arctic"
+                        style="flex:1; color: #38bdf8;">Arctic</button>
+                </div>
+
+                <h3 style="margin-bottom:10px; font-size:14px; color:var(--text-primary);">Jira Integration</h3>
+                <div style="margin-bottom: 20px;">
+                    <div style="margin-bottom: 10px;">
+                        <input type="text" id="cfg-jira-url" class="modal-input"
+                            placeholder="Jira URL (e.g. https://corp.atlassian.net)">
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <input type="text" id="cfg-jira-email" class="modal-input" placeholder="Jira Email">
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <input type="password" id="cfg-jira-token" class="modal-input" placeholder="Jira API Token">
+                    </div>
+                    <div>
+                        <input type="text" id="cfg-jira-project" class="modal-input"
+                            placeholder="Jira Project Key (default: SEC)">
+                    </div>
+                </div>
+
+                <h3 style="margin-bottom:10px; font-size:14px; color:var(--text-primary);">DefectDojo Integration</h3>
+                <div>
+                    <div style="margin-bottom: 10px;">
+                        <input type="text" id="cfg-dd-url" class="modal-input"
+                            placeholder="DefectDojo URL (e.g. http://dojo.local:8080)">
+                    </div>
+                    <div>
+                        <input type="password" id="cfg-dd-key" class="modal-input" placeholder="DefectDojo API Key">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 20px; text-align: right; border-top: 1px solid var(--border);">
+                <button id="btn-settings-save" class="btn primary">Save Integrations</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legal Terms and Conditions Modal -->
+    <div id="tos-modal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 600px; border: 1px solid var(--danger);">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+                <h2 style="color: var(--danger);">LEGAL DISCLAIMER AND TERMS OF USE</h2>
+            </div>
+            <div class="modal-body custom-scroll"
+                style="padding: 20px; max-height: 400px; overflow-y: auto; font-size: 13px; line-height: 1.6;">
+                <p><strong>WSHawk is designed exclusively for security professionals, researchers, and developers for
+                        AUTHORIZED testing only.</strong></p>
+                <h3 style="margin-top: 15px; margin-bottom: 5px; color: var(--text-primary);">1. Authorization</h3>
+                <p>You must have explicit, written permission from the system owner before scanning or interacting with
+                    any application, server, or network using WSHawk. Unauthorized usage may violate local, state,
+                    federal, or international laws.</p>
+                <h3 style="margin-top: 15px; margin-bottom: 5px; color: var(--text-primary);">2. Liability</h3>
+                <p>The author (Regaan) and associated contributors are <strong>NOT</strong> responsible for any damage,
+                    downtime, data loss, or legal consequences caused by the use or misuse of this application.</p>
+                <h3 style="margin-top: 15px; margin-bottom: 5px; color: var(--text-primary);">3. Offensive Capabilities
+                </h3>
+                <p>This tool contains live exploit payloads and weaponization features capable of compromising
+                    vulnerable systems, altering database records, and executing arbitrary code. Handle with extreme
+                    caution.</p>
+                <p style="margin-top: 20px; color: var(--warning);">By clicking "I Agree", you acknowledge that you have
+                    read this disclaimer, understand the risks, and legally accept full responsibility for your actions.
+                </p>
+            </div>
+            <div class="modal-footer"
+                style="padding: 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end;">
+                <button id="btn-agree-tos" class="btn primary" style="background: var(--danger);">I Agree &
+                    Understand</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Search Modal (Ctrl+K) -->
+    <div id="global-search-modal" class="modal-overlay"
+        style="display: none; align-items: flex-start; padding-top: 15vh;">
+        <div class="modal-box" style="max-width: 560px; max-height: 500px; display: flex; flex-direction: column;">
+            <div style="padding: 16px; border-bottom: 1px solid var(--border-color);">
+                <input type="text" id="global-search-input" placeholder="Search findings, notes, history, endpoints..."
+                    style="width: 100%; background: transparent; border: none; color: var(--text-primary); font-size: 15px; outline: none; font-family: var(--font-main);"
+                    autocomplete="off">
+            </div>
+            <div id="global-search-results" class="custom-scroll"
+                style="flex: 1; overflow-y: auto; padding: 8px; max-height: 380px;">
+                <div class="empty-state" style="padding: 20px;">Type to search across all data.</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script src="renderer.js"></script>
+</body>
+
+</html>

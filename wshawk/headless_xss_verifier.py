@@ -5,7 +5,14 @@ Uses Playwright to verify actual XSS execution
 """
 
 import asyncio
-from playwright.async_api import async_playwright, Browser, Page
+try:
+    from playwright.async_api import async_playwright, Browser, Page
+    HAS_PLAYWRIGHT = True
+except ImportError:
+    HAS_PLAYWRIGHT = False
+    async_playwright = None
+    Browser = None
+    Page = None
 from typing import Optional, Tuple
 import hashlib
 import time
@@ -23,6 +30,11 @@ class HeadlessBrowserXSSVerifier:
         
     async def start(self):
         """Start headless browser"""
+        if not HAS_PLAYWRIGHT:
+            raise ImportError(
+                "Playwright is not installed. Install it with: "
+                "pip install playwright && playwright install chromium"
+            )
         self.playwright = await async_playwright().start()
         self.browser = await self.playwright.chromium.launch(headless=True)
     

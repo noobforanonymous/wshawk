@@ -4,9 +4,9 @@ __pycache__/
 *$py.class
 *.so
 .Python
-build/
+/build/
 develop-eggs/
-dist/
+/dist/
 downloads/
 eggs/
 .eggs/
@@ -105,3 +105,10 @@ wshawk.yaml.example
 # Documentation builds
 docs/_build/
 site/
+
+# Packaging
+wshawk-bridge.spec
+desktop/dist/
+desktop/bin/
+desktop/node_modules/
+desktop/out/

@@ -4,6 +4,7 @@ WSHawk v2.0 - Advanced WebSocket Security Scanner
 Integrated with all analyzer modules + smart payload generation
 """
 
+import os
 import asyncio
 import websockets
 import json
@@ -18,7 +19,10 @@ from .server_fingerprint import ServerFingerprinter
 from .state_machine import SessionStateMachine, SessionState
 from .rate_limiter import TokenBucketRateLimiter
 from .enhanced_reporter import EnhancedHTMLReporter
-from .headless_xss_verifier import HeadlessBrowserXSSVerifier
+try:
+    from .headless_xss_verifier import HeadlessBrowserXSSVerifier
+except ImportError:
+    HeadlessBrowserXSSVerifier = None
 from .oast_provider import OASTProvider, SimpleOASTServer
 from .session_hijacking_tester import SessionHijackingTester
 from .report_exporter import ReportExporter
@@ -40,10 +44,12 @@ class WSHawkV2:
     def __init__(self, url: str, headers: Optional[Dict] = None, 
                  auth_sequence: Optional[str] = None,
                  max_rps: int = 10,
-                 config: Optional['WSHawkConfig'] = None):
+                 config: Optional['WSHawkConfig'] = None,
+                 event_callback = None):
         self.url = url
         self.headers = headers or {}
         self.vulnerabilities = []
+        self.event_callback = event_callback
         
         # Load config if not provided
         if config is None:
@@ -83,8 +89,16 @@ class WSHawkV2:
         self.oast_provider = None
         
         # Load auth sequence if provided
+        self.raw_auth_payload = None
         if auth_sequence:
-            self.state_machine.load_sequence_from_yaml(auth_sequence)
+            if auth_sequence.strip().startswith('{') or '\n' not in auth_sequence:
+                self.raw_auth_payload = auth_sequence
+            else:
+                try:
+                    self.state_machine.load_sequence_from_yaml(auth_sequence)
+                except Exception as e:
+                    Logger.warning(f"YAML parsing failed, falling back to raw payload")
+                    self.raw_auth_payload = auth_sequence
         
         # Statistics
         self.messages_sent = 0
@@ -107,6 +121,8 @@ class WSHawkV2:
             return ws
         except Exception as e:
             Logger.error(f"Connection failed: {e}")
+            if self.event_callback:
+                asyncio.create_task(self.event_callback('scan_error', {'error': str(e)}))
             return None
     
     async def learning_phase(self, ws, duration: int = 5):
@@ -130,6 +146,9 @@ class WSHawkV2:
                     # Add to fingerprinter
                     self.fingerprinter.add_response(message)
                     
+                    if self.event_callback:
+                        asyncio.create_task(self.event_callback('message_sent', {'response': message}))
+                        
                     if len(samples) <= 3:
                         Logger.info(f"Sample message {len(samples)}: {message[:100]}...")
                 
@@ -228,12 +247,7 @@ class WSHawkV2:
                             Logger.vuln(f"SQL Injection [{confidence.value}]: {description}")
                             Logger.vuln(f"Payload: {payload[:80]}")
                             
-                            # Seed successful payload into evolver
-                            if self.use_smart_payloads:
-                                self.payload_evolver.seed([payload])
-                                self.payload_evolver.update_fitness(payload, 1.0)
-                            
-                            self.vulnerabilities.append({
+                            vuln_data = {
                                 'type': 'SQL Injection',
                                 'severity': confidence.value,
                                 'confidence': confidence.value,
@@ -241,11 +255,24 @@ class WSHawkV2:
                                 'payload': payload,
                                 'response_snippet': response[:200],
                                 'recommendation': 'Use parameterized queries'
-                            })
+                            }
+                            
+                            if self.event_callback:
+                                asyncio.create_task(self.event_callback('vulnerability_found', vuln_data))
+                            
+                            # Seed successful payload into evolver
+                            if self.use_smart_payloads:
+                                self.payload_evolver.seed([payload])
+                                self.payload_evolver.update_fitness(payload, 1.0)
+                            
+                            self.vulnerabilities.append(vuln_data)
                             results.append({'payload': payload, 'confidence': confidence.value})
                     
                     except asyncio.TimeoutError:
                         pass
+                    
+                    if self.event_callback:
+                        asyncio.create_task(self.event_callback('message_sent', {'msg': msg, 'response': response if 'response' in locals() else None}))
                     
                     await asyncio.sleep(0.05)  # Rate limiting
             
@@ -313,12 +340,7 @@ class WSHawkV2:
                             if browser_verified:
                                 Logger.vuln("  [BROWSER VERIFIED] Payload executed in real browser!")
                             
-                            # Seed into evolver
-                            if self.use_smart_payloads:
-                                self.payload_evolver.seed([payload])
-                                self.payload_evolver.update_fitness(payload, 1.0)
-                            
-                            self.vulnerabilities.append({
+                            vuln_info = {
                                 'type': 'Cross-Site Scripting (XSS)',
                                 'severity': confidence.value,
                                 'confidence': confidence.value,
@@ -327,11 +349,24 @@ class WSHawkV2:
                                 'response_snippet': response[:200],
                                 'browser_verified': browser_verified,
                                 'recommendation': 'Sanitize and encode all user input'
-                            })
+                            }
+                            
+                            if self.event_callback:
+                                asyncio.create_task(self.event_callback('vulnerability_found', vuln_info))
+                            
+                            # Seed into evolver
+                            if self.use_smart_payloads:
+                                self.payload_evolver.seed([payload])
+                                self.payload_evolver.update_fitness(payload, 1.0)
+                            
+                            self.vulnerabilities.append(vuln_info)
                             results.append({'payload': payload, 'confidence': confidence.value})
                     
                     except asyncio.TimeoutError:
                         pass
+                    
+                    if self.event_callback:
+                        asyncio.create_task(self.event_callback('message_sent', {'msg': msg, 'response': response if 'response' in locals() else None}))
                     
                     await asyncio.sleep(0.05)
             
@@ -385,7 +420,7 @@ class WSHawkV2:
                             Logger.vuln(f"Command Injection [{confidence.value}]: {description}")
                             Logger.vuln(f"Payload: {payload[:80]}")
                             
-                            self.vulnerabilities.append({
+                            vuln_info = {
                                 'type': 'Command Injection',
                                 'severity': confidence.value,
                                 'confidence': confidence.value,
@@ -393,11 +428,19 @@ class WSHawkV2:
                                 'payload': payload,
                                 'response_snippet': response[:200],
                                 'recommendation': 'Never pass user input to system commands'
-                            })
+                            }
+                            
+                            if self.event_callback:
+                                asyncio.create_task(self.event_callback('vulnerability_found', vuln_info))
+                            
+                            self.vulnerabilities.append(vuln_info)
                             results.append({'payload': payload, 'confidence': confidence.value})
                     
                     except asyncio.TimeoutError:
                         pass
+                    
+                    if self.event_callback:
+                        asyncio.create_task(self.event_callback('message_sent', {'msg': msg, 'response': response if 'response' in locals() else None}))
                     
                     await asyncio.sleep(0.05)
             
@@ -441,6 +484,9 @@ class WSHawkV2:
                 except asyncio.TimeoutError:
                     pass
                 
+                if self.event_callback:
+                    asyncio.create_task(self.event_callback('message_sent', {'msg': msg, 'response': response if 'response' in locals() else None}))
+                
                 await asyncio.sleep(0.05)
             except Exception as e:
                 continue
@@ -483,7 +529,7 @@ class WSHawkV2:
                     xxe_indicators = ['<!entity', 'system', 'file://', 'root:', 'XML Parse Error']
                     if any(ind.lower() in response.lower() for ind in xxe_indicators):
                         Logger.vuln(f"XXE [HIGH]: Entity processing detected")
-                        self.vulnerabilities.append({
+                        vuln_info = {
                             'type': 'XML External Entity (XXE)',
                             'severity': 'HIGH',
                             'confidence': 'HIGH',
@@ -491,11 +537,17 @@ class WSHawkV2:
                             'payload': payload[:80],
                             'response_snippet': response[:200],
                             'recommendation': 'Disable external entity processing'
-                        })
+                        }
+                        if self.event_callback:
+                            asyncio.create_task(self.event_callback('vulnerability_found', vuln_info))
+                        self.vulnerabilities.append(vuln_info)
                         results.append({'payload': payload, 'confidence': 'HIGH'})
                 
                 except asyncio.TimeoutError:
                     pass
+                
+                if self.event_callback:
+                    asyncio.create_task(self.event_callback('message_sent', {'msg': msg, 'response': response if 'response' in locals() else None}))
                 
                 await asyncio.sleep(0.05)
             except Exception as e:
@@ -523,7 +575,7 @@ class WSHawkV2:
                     nosql_indicators = ['mongodb', 'bson', 'query error', '$ne', '$gt', 'Query Error']
                     if any(ind.lower() in response.lower() for ind in nosql_indicators):
                         Logger.vuln(f"NoSQL Injection [HIGH]: Query manipulation detected")
-                        self.vulnerabilities.append({
+                        vuln_info = {
                             'type': 'NoSQL Injection',
                             'severity': 'HIGH',
                             'confidence': 'HIGH',
@@ -531,11 +583,17 @@ class WSHawkV2:
                             'payload': payload,
                             'response_snippet': response[:200],
                             'recommendation': 'Use parameterized queries'
-                        })
+                        }
+                        if self.event_callback:
+                            asyncio.create_task(self.event_callback('vulnerability_found', vuln_info))
+                        self.vulnerabilities.append(vuln_info)
                         results.append({'payload': payload, 'confidence': 'HIGH'})
                 
                 except asyncio.TimeoutError:
                     pass
+                
+                if self.event_callback:
+                    asyncio.create_task(self.event_callback('message_sent', {'msg': msg, 'response': response if 'response' in locals() else None}))
                 
                 await asyncio.sleep(0.05)
             except Exception as e:
@@ -570,7 +628,7 @@ class WSHawkV2:
                     ssrf_indicators = ['connection refused', 'timeout', 'metadata', 'instance-id', 'localhost']
                     if any(ind.lower() in response.lower() for ind in ssrf_indicators):
                         Logger.vuln(f"SSRF [HIGH]: Internal endpoint accessible - {target}")
-                        self.vulnerabilities.append({
+                        vuln_info = {
                             'type': 'Server-Side Request Forgery (SSRF)',
                             'severity': 'HIGH',
                             'confidence': 'HIGH',
@@ -578,12 +636,18 @@ class WSHawkV2:
                             'payload': target,
                             'response_snippet': response[:200],
                             'recommendation': 'Validate and whitelist allowed URLs'
-                        })
+                        }
+                        if self.event_callback:
+                            asyncio.create_task(self.event_callback('vulnerability_found', vuln_info))
+                        self.vulnerabilities.append(vuln_info)
                         results.append({'payload': target, 'confidence': 'HIGH'})
                 
                 except asyncio.TimeoutError:
                     pass
                 
+                if self.event_callback:
+                    asyncio.create_task(self.event_callback('message_sent', {'msg': msg, 'response': response if 'response' in locals() else None}))
+                    
                 await asyncio.sleep(0.1)
             except Exception as e:
                 continue
@@ -606,6 +670,17 @@ class WSHawkV2:
             return None
         
         Logger.success("Connected!")
+        
+        # If we have a single auth payload (Skeleton Key), fire it first string
+        if self.raw_auth_payload:
+            Logger.info(f"Firing Skeleton Key (Auth Payload)")
+            try:
+                await ws.send(self.raw_auth_payload)
+                resp = await asyncio.wait_for(ws.recv(), timeout=2.0)
+                Logger.success(f"Auth Response received: {resp[:50]}")
+            except Exception as e:
+                Logger.error(f"Failed to execute Skeleton Key: {e}")
+                
         print()
         
         # Learning phase
@@ -614,21 +689,33 @@ class WSHawkV2:
         
         # Run ALL tests with heuristics and rate limiting
         await self.test_sql_injection_v2(ws)
+        if self.event_callback:
+            asyncio.create_task(self.event_callback('scan_progress', {'progress': 15, 'phase': 'SQL Injection'}))
         print()
         
         await self.test_xss_v2(ws)
+        if self.event_callback:
+            asyncio.create_task(self.event_callback('scan_progress', {'progress': 30, 'phase': 'XSS'}))
         print()
         
         await self.test_command_injection_v2(ws)
+        if self.event_callback:
+            asyncio.create_task(self.event_callback('scan_progress', {'progress': 45, 'phase': 'Command Injection'}))
         print()
         
         await self.test_path_traversal_v2(ws)
+        if self.event_callback:
+            asyncio.create_task(self.event_callback('scan_progress', {'progress': 60, 'phase': 'Path Traversal'}))
         print()
         
         await self.test_xxe_v2(ws)
+        if self.event_callback:
+            asyncio.create_task(self.event_callback('scan_progress', {'progress': 75, 'phase': 'XXE'}))
         print()
         
         await self.test_nosql_injection_v2(ws)
+        if self.event_callback:
+            asyncio.create_task(self.event_callback('scan_progress', {'progress': 90, 'phase': 'NoSQL'}))
         print()
         
         await self.test_ssrf_v2(ws)
@@ -695,6 +782,9 @@ class WSHawkV2:
                             except asyncio.TimeoutError:
                                 pass
                             
+                            if self.event_callback:
+                                asyncio.create_task(self.event_callback('message_sent', {'msg': msg, 'response': response if 'response' in locals() else None}))
+                                
                             await asyncio.sleep(0.05)
                     except Exception:
                         continue
@@ -793,7 +883,7 @@ class WSHawkV2:
         Logger.success(f"Enhanced HTML report saved: {report_filename}")
         
         # Export other formats if configured
-        formats = self.config.get('reporting.formats', ['json'])
+        formats = [fmt for fmt in self.config.get('reporting.formats', ['json']) if fmt in self.report_exporter.SUPPORTED_FORMATS]
         for fmt in formats:
             try:
                 out_file = self.report_exporter.export(

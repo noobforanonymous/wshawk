@@ -1,18 +1,4 @@
-# WSHawk v3.0.0 - Professional WebSocket Security Scanner
-
-# SECURITY WARNING: FAKE VERSIONS CIRCULATING
-
-> **PLEASE READ CAREFULLY:**  
-> Fake versions of WSHawk are being distributed on third-party download sites and linked in social media posts (e.g., LinkedIn). These versions may contain **MALWARE**.  
->  
-> **OFFICIAL SOURCES ONLY:**  
-> - **Official Website:** [`https://wshawk.rothackers.com`](https://wshawk.rothackers.com)
-> - **GitHub:** [`https://github.com/noobforanonymous/wshawk`](https://github.com/noobforanonymous/wshawk)  
-> - **PyPI:** `pip install wshawk`  
-> - **Docker:** `docker pull rothackers/wshawk` or `ghcr.io/noobforanonymous/wshawk`  
->  
-> **DO NOT DOWNLOAD** from any other website. If you see "WSHawk" on a "software download" site, it is likely fake/malicious.
-
+# WSHawk — Enterprise-Grade WebSocket Security Scanner & Web Penetration Testing Toolkit
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyPI version](https://badge.fury.io/py/wshawk.svg)](https://badge.fury.io/py/wshawk)
@@ -20,238 +6,200 @@
 [![Playwright](https://img.shields.io/badge/Playwright-Supported-green.svg)](https://playwright.dev/)
 [![Status: Production](https://img.shields.io/badge/status-production-green.svg)](https://github.com/noobforanonymous/wshawk)
 
-**WSHawk v3.0.0** is a production-grade WebSocket security scanner with advanced features including real vulnerability verification, dynamic mutation, and comprehensive session security testing. It also includes a **Persistent Web GUI** for dashboarding and history.
+**WSHawk** is an enterprise-grade, open-source WebSocket security scanner built for professional penetration testers, security engineers, bug bounty hunters, and red teams. It performs automated vulnerability assessment over WebSocket connections — detecting SQL injection, XSS, command injection, XXE, SSRF, NoSQL injection, and path traversal — using an adaptive **Smart Payload Evolution (SPE)** engine with real-time feedback loops, genetic payload mutation, and intelligent WAF bypass capabilities.
 
-## Why WSHawk?
+Starting with v3.0.1, we're also adding a **web application penetration testing toolkit** to the Desktop app — 22 security tools for HTTP fuzzing, directory scanning, subdomain enumeration, vulnerability scanning, CORS testing, CSRF exploit generation, SSRF probing, SSL/TLS analysis, and more. Still growing, but already useful for day-to-day pentesting alongside the WebSocket scanner.
 
-WSHawk is the only open-source WebSocket scanner that provides:
-- **Smart Payload Evolution** - Adaptive feedback-driven mutation engine
-- **Hierarchical Configuration** - `wshawk.yaml` with env var secret resolution
-- **Persistent Web GUI** - Dashboard with SQLite history and password auth
-- **Enterprise Integrations** - Auto-push to **Jira**, **DefectDojo**, and **Webhooks**
-- **Real browser XSS verification** (Playwright) - Not just pattern matching
-- **Blind vulnerability detection** via OAST - Finds XXE, SSRF that others miss
-- **Session hijacking analysis** - 6 advanced session security tests
-- **WAF-aware payload mutation** - Dynamic evasion techniques
-- **CVSS-based professional reporting** - Industry-standard risk assessment
+> [!IMPORTANT]
+> **Full Documentation:**
+> - 🦅 **[WSHawk V3: Complete Enterprise Guide](docs/V3_COMPLETE_GUIDE.md)** — Architecture, scanning engine, configuration
+> - 💻 **[WSHawk Desktop: Full Reference Manual](docs/DESKTOP_V3_GUIDE.md)** — All 22 tools, API reference, build guide
 
-## Features
+---
 
-- **22,000+ Attack Payloads** - Comprehensive vulnerability coverage
-- **Real Vulnerability Verification** - Confirms exploitability, not just reflection
-- **Playwright XSS Verification** - Actual browser-based script execution testing
-- **OAST Integration** - Detects blind vulnerabilities (XXE, SSRF)
-- **Session Hijacking Tests** - Token reuse, impersonation, privilege escalation
-- **Advanced Mutation Engine** - WAF bypass with 8+ evasion strategies
-- **CVSS v3.1 Scoring** - Automatic vulnerability risk assessment
-- **Professional HTML Reports** - Screenshots, replay sequences, traffic logs
-- **Adaptive Rate Limiting** - Server-friendly scanning
+## Why WSHawk — Enterprise Security Features
+
+- **Smart Payload Evolution** — Genetic algorithm that mutates and evolves payloads based on server responses, WAF blocks, and timing signals
+- **22,000+ attack payloads** across 11 categories (SQLi, XSS, CMDi, XXE, SSRF, NoSQLi, LFI, SSTI, LDAP, open redirect, CSV injection)
+- **Real browser-based XSS verification** via Playwright — confirms actual script execution, not just pattern matching
+- **Blind vulnerability detection** via OAST callbacks — catches XXE, SSRF, and DNS exfiltration that response-only scanners miss
+- **Full-duplex WebSocket interceptor** — MitM proxy with frame-by-frame forward, drop, and edit (similar to Burp Suite)
+- **Session hijacking analysis** — Token reuse, session fixation, privilege escalation, and impersonation testing
+- **22 web pentest tools** — Crawler, fuzzer, port scanner, subdomain finder, WAF detector, CORS tester, SSL analyzer, and more
+- **WAF-aware mutation engine** — 8 bypass strategies (encoding, case variation, comment injection, polyglot, tag breaking)
+- **CVSS v3.1 scoring** — Industry-standard risk assessment for all findings
+- **Enterprise integrations** — Auto-push findings to Jira, DefectDojo, Slack, Discord, and Microsoft Teams
+- **Professional reporting** — HTML, JSON, PDF, CSV, and SARIF export formats
+- **Native desktop app** — Electron + Python hybrid with real-time streaming results on Linux, Windows, and macOS
+
+---
+
+## Enterprise WebSocket Vulnerability Scanner
+
+WSHawk's core engine performs enterprise-grade, stateful, bidirectional WebSocket security testing. Unlike traditional DAST scanners that only handle HTTP request-response, WSHawk maintains persistent WebSocket connections and analyzes asynchronous responses that may arrive long after the attack payload is sent — critical for real-world financial, healthcare, and SaaS applications.
 
 ### Vulnerability Detection
-SQL Injection • XSS • Command Injection • XXE • SSRF • NoSQL Injection • Path Traversal • LDAP Injection • SSTI • Open Redirect • Session Security Issues
+
+| Category | Technique |
+|---|---|
+| **SQL Injection** | Error-based, time-based (SLEEP/WAITFOR), boolean-based blind |
+| **Cross-Site Scripting (XSS)** | Reflection analysis, context detection, DOM sink identification, browser verification |
+| **Command Injection** | Timing attacks, command chaining (`&&`, `\|`, `;`), out-of-band detection |
+| **XML External Entity (XXE)** | Entity expansion, OAST callback detection, parameter entities |
+| **Server-Side Request Forgery (SSRF)** | Internal IP probing, cloud metadata access, DNS rebinding |
+| **NoSQL Injection** | MongoDB operator injection (`$gt`, `$ne`, `$regex`, `$where`) |
+| **Path Traversal / LFI** | File content markers (`/etc/passwd`, `win.ini`), encoding bypass |
+
+### Smart Payload Engine
+
+The SPE system adapts attack payloads in real-time:
+
+1. **Context Generator** — Detects message format (JSON, XML, plaintext) and generates payloads matching the target's protocol schema
+2. **Feedback Loop** — Analyzes server signals (errors, reflections, timing anomalies, WAF blocks) and adjusts strategy dynamically
+3. **Payload Evolver** — Genetic algorithm that crossovers and mutates successful payloads to discover novel WAF bypasses
+
+---
+
+## Web Application Penetration Testing Toolkit (NEW in v3.0.1)
+
+The WSHawk Desktop application now ships with 22 HTTP security tools organized into six phases. We're building this out alongside the WebSocket scanner to give pentesters a single interface for both WebSocket and HTTP assessments.
+
+### Reconnaissance & Discovery Tools
+
+| Tool | Description |
+|---|---|
+| **Web Crawler** | BFS spider with form extraction, API endpoint discovery, robots.txt and sitemap.xml parsing |
+| **Subdomain Finder** | Passive enumeration via crt.sh (Certificate Transparency) and AlienVault OTX, plus active DNS brute-forcing with resolution validation |
+| **Technology Fingerprinter** | Identifies 35+ technologies (Nginx, Apache, WordPress, React, Cloudflare, etc.) from headers, cookies, and page content |
+| **DNS / WHOIS Lookup** | Full record enumeration (A, AAAA, MX, NS, TXT, CNAME, SOA, SRV, CAA) with WHOIS registration data |
+| **TCP Port Scanner** | Async connect scanner with service identification, banner grabbing, and preset port lists (top-100, web, database, full) |
+
+### Vulnerability Scanning Tools
+
+| Tool | Description |
+|---|---|
+| **HTTP Fuzzer** | Parameter fuzzing with `§FUZZ§` markers, built-in wordlists, encoding options (URL/Base64/Hex), and heuristic vuln detection |
+| **Directory Scanner** | Path brute-forcing with extension permutation, recursive scanning, custom wordlists (up to 50K entries), and WAF-evasion throttling |
+| **Automated Vulnerability Scanner** | Multi-phase orchestrator: Crawl → Header Analysis → Directory Scan → Fuzz → Sensitive Data Scan, with auto-escalation (SQLi → LFI chaining) |
+| **Security Header Analyzer** | Evaluates HSTS, CSP, X-Frame-Options, X-Content-Type-Options, CORS, Server, and X-Powered-By with risk ratings |
+| **Sensitive Data Finder** | Regex detection for 30+ secret types — AWS keys, Google API keys, JWTs, GitHub tokens, database connection strings, internal IPs |
+
+### Offensive Security Tools
+
+| Tool | Description |
+|---|---|
+| **WAF Detector** | Passive and active fingerprinting of 15+ WAFs (Cloudflare, AWS WAF, Akamai, Imperva, Sucuri, ModSecurity, F5 BIG-IP) |
+| **CORS Misconfiguration Tester** | Probes 6 attack patterns — wildcard origin, null origin, subdomain suffix attack, domain prefix injection, HTTP downgrade |
+| **SSL/TLS Analyzer** | Certificate inspection, protocol version testing (TLS 1.0–1.3), weak cipher detection, expiry and self-signed checks |
+| **SSRF Prober** | 40+ payloads targeting AWS/GCP/Azure metadata endpoints, internal services, DNS rebinding, and URL parser confusion |
+| **Open Redirect Scanner** | 25+ bypass techniques with auto-detection of 20+ common redirect parameter names |
+| **Prototype Pollution Tester** | `__proto__` and `constructor.prototype` injection via query params and JSON bodies with escalation detection |
+
+### Exploit Generation & Attack Chaining
+
+| Tool | Description |
+|---|---|
+| **CSRF Exploit Forge** | Generates proof-of-concept HTML pages — auto-submitting forms, Fetch API XHR, multipart — with CSRF token detection |
+| **Attack Chainer** | Multi-step HTTP attack sequencing with regex-based value extraction and `{{variable}}` templating across requests |
+| **Proxy CA Generator** | Root Certificate Authority (RSA 4096-bit, 10-year validity) for HTTPS interception with per-host certificate signing |
+| **HTTP Request Forge** | Manual HTTP request builder (GET/POST/PUT/DELETE/PATCH/HEAD/OPTIONS) routed through Python to bypass browser CORS |
+| **Report Generator** | Professional HTML reports with executive summary, severity charts, and remediation guidance. Also exports JSON, PDF, CSV, SARIF |
+
+---
+
+## WSHawk Desktop — Native Security Testing Application
+
+A native Electron + Python desktop application with three operating modes:
+
+| Mode | What You Get |
+|---|---|
+| **Standard** | WebSocket scanner dashboard, request forge, findings panel, traffic history, system log |
+| **Advanced** | + Payload blaster, real-time WebSocket interceptor, endpoint map, auth builder, mutation lab, scheduler, codec, comparer, notes |
+| **Web Pentest** | + All 22 HTTP security tools with real-time streaming results |
+
+### Desktop-Exclusive Features
+
+- **Real-Time WebSocket Interceptor** — Full-duplex MitM proxy with frame-by-frame forward, drop, and edit controls
+- **Payload Blaster** — High-speed WebSocket fuzzer with 11 payload categories and Smart Payload Evolution toggle
+- **WebSocket Endpoint Map** — Automated discovery via HTTP Upgrade probing, HTML crawling, and JavaScript source analysis
+- **Auth Builder** — Multi-step authentication sequence with regex token extraction and variable substitution
+- **Exploit PoC Generator** — One-click standalone Python exploit script for confirmed vulnerabilities
+- **Session Persistence** — Save and restore full assessment state to `~/.wshawk/sessions/`
+- **Scan History & Diffing** — SQLite-backed history with vulnerability regression tracking between scans
+- **HawkSearch** — `Ctrl+K` command palette for instant navigation to any tool
+
+**Builds for:** Linux (.pacman, .AppImage, .deb) · Windows (.exe NSIS installer) · macOS (.dmg)
+
+**[Full Desktop Documentation →](docs/DESKTOP_V3_GUIDE.md)**
+
+---
 
 ## Installation
 
-### Option 1: pip (Recommended)
+### Install via pip
 
 ```bash
 pip install wshawk
 
-# Optional: For browser-based XSS verification
+# Optional: Browser-based XSS verification
 playwright install chromium
 ```
 
-### Option 2: Docker
+### Install via Docker
 
 ```bash
-# From Docker Hub
 docker pull rothackers/wshawk:latest
-
-# Or from GitHub Container Registry
-docker pull ghcr.io/noobforanonymous/wshawk:latest
-
-# Run WSHawk
 docker run --rm rothackers/wshawk ws://target.com
-
-# Defensive validation
-docker run --rm rothackers/wshawk wshawk-defensive ws://target.com
 ```
 
 See [Docker Guide](docs/DOCKER.md) for detailed usage.
 
-## Quick Start
+### Build Desktop Application
 
-WSHawk provides **4 easy ways** to scan WebSocket applications:
+```bash
+git clone https://github.com/noobforanonymous/wshawk
+cd wshawk
 
-### Method 1: Quick Scan (Fastest)
+# Build Python sidecar binary
+pip install -e . && pip install pyinstaller
+pyinstaller wshawk-bridge.spec
+
+# Build desktop installer
+mkdir -p desktop/bin && cp dist/wshawk-bridge desktop/bin/
+cd desktop && npm install && npm run dist
+```
+
+---
+
+## Quick Start Guide
+
+### WebSocket Scan (CLI)
 ```bash
 wshawk ws://target.com
 ```
 
-### Method 2: Interactive Menu (User-Friendly)
+### Interactive Mode
 ```bash
 wshawk-interactive
 ```
 
-### Method 3: Advanced CLI (Full Control)
+### Advanced Scan with All Features
 ```bash
-# Basic scan
-wshawk-advanced ws://target.com
-
-# With Smart Payloads and Playwright verification
 wshawk-advanced ws://target.com --smart-payloads --playwright --full
 ```
 
-### Method 4: Web Management Dashboard (GUI)
+### Web Dashboard
 ```bash
-# Launch the persistent web dashboard
-wshawk --web
+export WSHAWK_WEB_PASSWORD='your-password'
+wshawk --web --port 5000
 ```
-Best for teams requiring scan history, visual progress tracking, and professional report management.
 
-## Web Management Dashboard
-
-WSHawk v3.0.0 introduces a persistent, secure web-based dashboard for managing all your WebSocket security assessments.
-
-### Launching the GUI
+### Desktop Application
 ```bash
-wshawk --web --port 5000 --host 0.0.0.0
+cd desktop && npm start
 ```
 
-### Authentication
-For production security, the Web GUI is protected by a password. Set it using an environment variable:
-```bash
-export WSHAWK_WEB_PASSWORD='your-strong-password'
-wshawk --web
-```
-*Note: If no password is set, the dashboard will run in open mode (only recommended for local testing).*
-
-### Features
-| Feature | Description |
-|---------|-------------|
-| **Persistent History** | All scans are saved to a local SQLite database (`scans.db`). |
-| **Visual Progress** | Real-time scan status and vulnerability counters. |
-| **Interactive Reports** | View, delete, and manage comprehensive HTML reports in-browser. |
-| **API Key Support** | Programmatic access via `--api-key` or `WSHAWK_API_KEY`. |
-
-## Hierarchical Configuration (`wshawk.yaml`)
-
-WSHawk now supports a professional configuration system. Generate a template to get started:
-```bash
-python3 -m wshawk.config --generate
-```
-
-Rename `wshawk.yaml.example` to `wshawk.yaml`. You can resolve secrets from environment variables or files:
-```yaml
-integrations:
-  jira:
-    api_token: "env:JIRA_TOKEN"  # Fetched from environment
-    project: "SEC"
-```
-
-## Command Comparison
-
-| Feature | `wshawk` | `wshawk-interactive` | `wshawk-advanced` | `wshawk --web` |
-|---------|----------|----------------------|-------------------|----------------|
-| Ease of Use | High | High | Medium | **Highest** |
-| Persistence | No | No | No | **Yes (SQLite)** |
-| Auth Support | No | No | No | **Yes (SHA-256)** |
-| Best For | Automation | Learning | Power Users | **Teams / SOC** |
-
-
-## What You Get
-
-All methods include:
-- Real vulnerability verification (not just pattern matching)
-- 22,000+ attack payloads
-- Advanced mutation engine with WAF bypass
-- CVSS v3.1 scoring for all findings
-- Session hijacking tests (6 security tests)
-- Professional HTML reports
-- Adaptive rate limiting
-- OAST integration for blind vulnerabilities
-- Optional Playwright for browser-based XSS verification
-
-## Output
-
-WSHawk generates comprehensive HTML reports with:
-- CVSS v3.1 scores for all vulnerabilities
-- Screenshots (for XSS browser verification)
-- Message replay sequences
-- Raw WebSocket traffic logs
-- Server fingerprints
-- Actionable remediation recommendations
-
-Reports saved as: `wshawk_report_YYYYMMDD_HHMMSS.html`
-
-## Advanced Options
-
-```bash
-wshawk-advanced --help
-
-Options:
-  --playwright     Enable browser-based XSS verification
-  --rate N         Set max requests per second (default: 10)
-  --full           Enable ALL features
-  --no-oast        Disable OAST testing
-```
-
-## Defensive Validation (NEW in v3.0.0)
-
-WSHawk now includes a **Defensive Validation Module** designed for blue teams to validate their security controls.
-
-```bash
-# Run defensive validation tests
-wshawk-defensive ws://your-server.com
-```
-
-### What It Tests
-
-**1. DNS Exfiltration Prevention**
-- Validates if DNS-based data exfiltration is blocked
-- Tests egress filtering effectiveness
-- Detects potential APT-style attack vectors
-
-**2. Bot Detection Effectiveness**
-- Tests if anti-bot measures detect headless browsers
-- Validates resistance to evasion techniques
-- Identifies gaps in bot protection
-
-**3. CSWSH (Cross-Site WebSocket Hijacking)**
-- Tests Origin header validation (216+ malicious origins)
-- Validates CSRF token requirements
-- Critical for preventing session hijacking
-
-**4. WSS Protocol Security Validation**
-- TLS version validation (detects deprecated SSLv2/v3, TLS 1.0/1.1)
-- Weak cipher suite detection (RC4, DES, 3DES)
-- Certificate validation (expiration, self-signed, chain integrity)
-- Forward secrecy verification (ECDHE, DHE)
-- Prevents MITM and protocol downgrade attacks
-
-### Use Cases
-
-- Validate security controls before production deployment
-- Regular security posture assessment
-- Compliance and audit requirements
-- Blue team defensive capability testing
-
-See [Defensive Validation Documentation](docs/DEFENSIVE_VALIDATION.md) for detailed usage and remediation guidance.
-
-
-## Documentation
-
-- [Getting Started Guide](docs/getting_started.md)
-- [Advanced Usage](docs/advanced_usage.md)
-- [Vulnerability Details](docs/vulnerabilities.md)
-- [Session Security Tests](docs/session_tests.md)
-- [Mutation Engine](docs/mutation_engine.md)
-- [Architecture](docs/architecture.md)
-
-## Python API
-
-For integration into custom scripts:
-
+### Python API
 ```python
 import asyncio
 from wshawk.scanner_v2 import WSHawkV2
@@ -262,49 +210,120 @@ scanner.use_oast = True
 asyncio.run(scanner.run_heuristic_scan())
 ```
 
-See [Advanced Usage](docs/advanced_usage.md) for more examples.
+---
 
-## Responsible Disclosure
+## Interface Comparison
 
-WSHawk is designed for:
-- Authorized penetration testing
-- Bug bounty programs
-- Security research
-- Educational purposes
-
-**Always obtain proper authorization before testing.**
-
-## License
-
-MIT License - see [LICENSE](LICENSE) file
-
-## Author
-
-**Regaan** (@noobforanonymous)
-
-## Contributing
-
-Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md)
-
-## Legal Disclaimer
-
-**WSHawk is designed for security professionals, researchers, and developers for authorized testing only.**
-
-- **Usage:** You must have explicit permission from the system owner before scanning.
-- **Liability:** The author (Regaan) is **NOT** responsible for any damage caused by the misuse of this tool.
-- **Malware:** WSHawk is a security scanner, NOT malware. Any repackaged version found on third-party sites containing malicious code is **NOT** associated with this project.
-
-By using WSHawk, you agree to these terms and use it at your own risk.
-
-## Support
-
-- **Issues:** [GitHub Issues](https://github.com/noobforanonymous/wshawk/issues)
-- **Documentation:** [docs/](docs/)
-- **Examples:** [examples/](examples/)
-- **Email:** support@rothackers.com
+| Capability | CLI | Web Dashboard | Desktop App |
+|---|---|---|---|
+| WebSocket Scanner | ✅ | ✅ | ✅ |
+| Web Pentest Toolkit (22 tools) | — | — | ✅ |
+| WebSocket Interceptor (MitM) | — | — | ✅ |
+| Payload Blaster / Fuzzer | — | — | ✅ |
+| Endpoint Discovery Map | — | — | ✅ |
+| Scan Persistence | — | SQLite | SQLite + Sessions |
+| Exploit PoC Export | — | — | ✅ |
+| Report Formats | HTML | HTML | HTML / JSON / PDF |
+| Best For | CI/CD pipelines | Teams, SOC | Manual pentesting, red teams |
 
 ---
 
-**WSHawk v3.0.0** - Professional WebSocket Security Scanner
+## Configuration
 
-*Built for the security community*
+### wshawk.yaml
+```bash
+python3 -m wshawk.config --generate
+```
+
+```yaml
+integrations:
+  jira:
+    api_token: "env:JIRA_TOKEN"
+    project: "SEC"
+  defectdojo:
+    api_key: "env:DD_API_KEY"
+    url: "https://defectdojo.your-org.com"
+```
+
+| Environment Variable | Description |
+|---|---|
+| `WSHAWK_BRIDGE_PORT` | Backend server port (default: 8080) |
+| `WSHAWK_WEB_PASSWORD` | Web dashboard authentication password |
+| `WSHAWK_API_KEY` | API key for programmatic access |
+
+---
+
+## Defensive Validation Module
+
+Blue team module for validating your WebSocket security controls:
+
+```bash
+wshawk-defensive ws://your-server.com
+```
+
+- **DNS Exfiltration Prevention** — Validates egress filtering effectiveness
+- **Bot Detection** — Tests anti-bot measures against headless browser evasion
+- **CSWSH Protection** — Origin header validation with 216+ malicious origins
+- **WSS Protocol Security** — TLS versions, cipher suites, certificate chain, forward secrecy
+
+See [Defensive Validation Guide](docs/DEFENSIVE_VALIDATION.md).
+
+---
+
+## Security Warning — Fake Versions
+
+> Repackaged versions of WSHawk containing malware have been found on third-party download sites.
+>
+> **Download only from official sources:**
+> - **Website:** [`https://wshawk.rothackers.com`](https://wshawk.rothackers.com)
+> - **GitHub:** [`https://github.com/noobforanonymous/wshawk`](https://github.com/noobforanonymous/wshawk)
+> - **PyPI:** `pip install wshawk`
+> - **Docker:** `docker pull rothackers/wshawk`
+
+---
+
+## Documentation
+
+| Guide | Description |
+|---|---|
+| **[🦅 Complete Enterprise Guide](docs/V3_COMPLETE_GUIDE.md)** | Architecture, scanning engine, configuration, integrations |
+| **[💻 Desktop Reference Manual](docs/DESKTOP_V3_GUIDE.md)** | All 22 tools, API reference, build instructions |
+| [Getting Started](docs/getting_started.md) | First scan, output format, common use cases |
+| [Defensive Validation](docs/DEFENSIVE_VALIDATION.md) | Blue team security control testing |
+| [Vulnerability Details](docs/vulnerabilities.md) | Full vulnerability coverage reference |
+| [Session Security Tests](docs/session_tests.md) | WebSocket session hijacking tests |
+| [Docker Deployment](docs/DOCKER.md) | Container deployment guide |
+
+---
+
+## Responsible Use
+
+WSHawk is designed for authorized penetration testing, bug bounty programs, security research, and education. **Always obtain explicit permission before scanning any target.**
+
+The author is not responsible for misuse of this tool. Repackaged versions found on third-party download sites are not associated with this project.
+
+## License
+
+MIT License — see [LICENSE](LICENSE)
+
+## Author
+
+**Regaan** ([@noobforanonymous](https://github.com/noobforanonymous))
+
+## Contributing
+
+Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Support
+
+| Channel | Link |
+|---|---|
+| Issues | [GitHub Issues](https://github.com/noobforanonymous/wshawk/issues) |
+| Documentation | [docs/](docs/) |
+| Email | support@rothackers.com |
+
+---
+
+**WSHawk v3.0.1** — Enterprise-Grade WebSocket Security Scanner & Web Penetration Testing Toolkit
+
+*Built for security professionals, by Regaan.*

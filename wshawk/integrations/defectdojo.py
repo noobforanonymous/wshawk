@@ -20,7 +20,7 @@ except ImportError:
 try:
     from .._version_info import __version__
 except ImportError:
-    __version__ = "3.0.0"
+    __version__ = "3.0.1"
 
 try:
     from ..__main__ import Logger

@@ -121,7 +121,7 @@ class ReportExporter:
 
         report = {
             'wshawk_report': {
-                'version': '3.0.0',
+                'version': '3.0.1',
                 'generated_at': datetime.now().isoformat(),
                 'scanner': 'WSHawk by Regaan (@noobforanonymous)',
                 'format_version': '1.0'
@@ -218,7 +218,7 @@ class ReportExporter:
         writer.writerow(['Duration (seconds)', scan_info.get('duration', 0)])
         writer.writerow(['Messages Sent', scan_info.get('messages_sent', 0)])
         writer.writerow(['Messages Received', scan_info.get('messages_received', 0)])
-        writer.writerow(['Scanner', 'WSHawk v3.0.0 by Regaan'])
+        writer.writerow(['Scanner', 'WSHawk v3.0.1 by Regaan'])
 
         return output.getvalue()
 
@@ -291,8 +291,8 @@ class ReportExporter:
                 'tool': {
                     'driver': {
                         'name': 'WSHawk',
-                        'version': '3.0.0',
-                        'semanticVersion': '3.0.0',
+                        'version': '3.0.1',
+                        'semanticVersion': '3.0.1',
                         'informationUri': 'https://github.com/noobforanonymous/wshawk',
                         'organization': 'Rot Hackers',
                         'rules': list(rules.values())

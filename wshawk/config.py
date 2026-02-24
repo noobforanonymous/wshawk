@@ -26,7 +26,7 @@ DEFAULT_CONFIG = {
         'learning_duration': 5,
         'max_payload_count': 100,
         'verify_ssl': False,
-        'user_agent': 'WSHawk/3.0.0',
+        'user_agent': 'WSHawk/3.0.1',
         'features': {
             'playwright': False,
             'oast': True,
