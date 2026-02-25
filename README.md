@@ -145,6 +145,30 @@ pip install wshawk
 playwright install chromium
 ```
 
+### Install on Kali Linux / Debian
+
+WSHawk is available via the official Regaan APT repository.
+
+```bash
+# Add the WSHawk GPG key
+curl -sSL https://noobforanonymous.github.io/wshawk-repo/wshawk_repo.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/wshawk-archive-keyring.gpg
+
+# Add the WSHawk APT repository
+echo "deb [signed-by=/usr/share/keyrings/wshawk-archive-keyring.gpg] https://noobforanonymous.github.io/wshawk-repo stable main" | sudo tee /etc/apt/sources.list.d/wshawk.list
+
+# Install WSHawk
+sudo apt update && sudo apt install wshawk
+```
+
+### Install on Arch Linux
+
+WSHawk is available in the Arch User Repository (AUR).
+
+```bash
+# Install WSHawk via yay
+yay -S wshawk
+```
+
 ### Install via Docker
 
 ```bash
