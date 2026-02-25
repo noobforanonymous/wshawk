@@ -1,4 +1,4 @@
-    async def test_ssrf_v2(self, ws) -> List[Dict]:
+async def test_ssrf_v2(self, ws) -> List[Dict]:
         """Enhanced SSRF testing with OAST"""
         Logger.info("Testing SSRF...")
         

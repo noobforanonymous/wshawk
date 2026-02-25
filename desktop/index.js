@@ -68,10 +68,15 @@ function startPythonSidecar() {
         // Fix execute permissions on macOS/Linux (DMG strips them)
         if (process.platform !== 'win32') {
             try {
+                // Only attempt chmod if we have write access (fails on system-wide root installs)
+                fs.accessSync(executablePath, fs.constants.W_OK);
                 fs.chmodSync(executablePath, 0o755);
                 console.log(`[+] Set execute permission on sidecar binary`);
             } catch (e) {
-                console.error(`[-] Failed to set execute permission: ${e.message}`);
+                // If it's a system install, it's already +x from the package manager
+                if (e.code !== 'EACCES' && e.code !== 'EPERM') {
+                    console.error(`[-] Failed to set execute permission: ${e.message}`);
+                }
             }
         }
 
@@ -106,7 +111,7 @@ function startPythonSidecar() {
         const msg = data.toString();
         console.error(`[Python Error] ${msg}`);
         // Send to renderer so user sees it in system log
-        if (mainWindow && mainWindow.webContents) {
+        if (mainWindow && !mainWindow.isDestroyed() && mainWindow.webContents) {
             mainWindow.webContents.send('sidecar-error', msg);
         }
     });
@@ -114,7 +119,7 @@ function startPythonSidecar() {
     pythonProcess.on('exit', (code, signal) => {
         console.error(`[Main] Sidecar exited with code=${code}, signal=${signal}`);
         if (code !== 0 && code !== null) {
-            if (mainWindow && mainWindow.webContents) {
+            if (mainWindow && !mainWindow.isDestroyed() && mainWindow.webContents) {
                 mainWindow.webContents.send('sidecar-error', `Sidecar crashed (exit code ${code})`);
             }
         }

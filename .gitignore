@@ -111,3 +111,20 @@ desktop/dist/
 desktop/bin/
 desktop/node_modules/
 desktop/out/
+
+# Debian & Repository Artifacts
+repo/
+*.deb
+.pybuild/
+debian/wshawk/
+debian/.debhelper/
+debian/files
+debian/wshawk.debhelper.log
+debian/wshawk.substvars
+*.buildinfo
+*.changes
+
+# AUR & Debian Source (Separate Repos)
+PKGBUILD
+.SRCINFO
+debian/
