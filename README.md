@@ -145,6 +145,22 @@ pip install wshawk
 playwright install chromium
 ```
 
+### Install on macOS (Homebrew)
+
+**Method 1: One-liner (Recommended)**
+```bash
+brew install --cask https://raw.githubusercontent.com/noobforanonymous/homebrew-tap/main/Casks/wshawk.rb
+```
+
+**Method 2: Stay Updated (Via Tap)**
+```bash
+# Register the WSHawk tap
+brew tap noobforanonymous/tap
+
+# Install the cask
+brew install --cask wshawk
+```
+
 ### Install on Kali Linux / Debian
 
 WSHawk is available via the official Regaan APT repository.
