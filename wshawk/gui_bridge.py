@@ -29,7 +29,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from wshawk.scanner_v2 import WSHawkV2
 from wshawk.__main__ import WSPayloads
-from wshawk.db_manager import WSHawkDatabase
+from wshawk.db_manager import WSHawkDatabase, init_db
 
 # Initialize Database
 db = WSHawkDatabase()

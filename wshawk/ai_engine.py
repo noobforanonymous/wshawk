@@ -3,7 +3,9 @@ import json
 import asyncio
 import aiohttp
 from typing import List, Dict, Optional, Any
-from .logger import Logger
+from .logger import get_logger
+
+logger = get_logger("AIEngine")
 
 class AIEngine:
     """
@@ -37,10 +39,10 @@ class AIEngine:
             elif self.provider in ("openai", "custom"):
                 return await self._call_openai_compatible(prompt)
             else:
-                Logger.error(f"Unsupported AI provider: {self.provider}")
+                logger.error(f"Unsupported AI provider: {self.provider}")
                 return []
         except Exception as e:
-            Logger.error(f"AI Generation Error: {e}")
+            logger.error(f"AI Generation Error: {e}")
             return []
 
     def _build_prompt(self, context: str, vuln_type: str, count: int) -> str:
