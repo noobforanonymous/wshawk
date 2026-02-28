@@ -3,16 +3,20 @@
 # Bundles the full backend: core scanner, web_pentest toolkit, smart payloads,
 # payload mutator, database manager, and all data files.
 
-a = Analysis(
-    ['wshawk/gui_bridge.py'],
-    pathex=['.'],
-    binaries=[],
-    datas=[
+from PyInstaller.utils.hooks import collect_data_files
+
+all_datas = collect_data_files('certifi') + collect_data_files('aiohttp') + [
         # Payload wordlists (used by scanner + blaster)
         ('wshawk/payloads', 'wshawk/payloads'),
         # Flask web dashboard templates/static (if present)
         ('wshawk/web', 'wshawk/web'),
-    ],
+    ]
+
+a = Analysis(
+    ['wshawk/gui_bridge.py'],
+    pathex=['.'],
+    binaries=[],
+    datas=all_datas,
     hiddenimports=[
         # ── Core WSHawk modules ──
         'wshawk',
