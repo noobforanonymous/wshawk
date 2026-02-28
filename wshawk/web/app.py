@@ -38,153 +38,17 @@ except ImportError:
         def error(msg): print(f"[-] {msg}")
 
 
-# ─── SQLite Persistence Layer ───────────────────────────────────
+try:
+    from ..db_manager import WSHawkDatabase
+except ImportError:
+    # Fallback if relative import fails during development
+    import sys
+    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+    from db_manager import WSHawkDatabase
 
-class ScanDatabase:
-    """
-    SQLite-backed scan storage.
-    
-    Persists scan data across restarts. Thread-safe via SQLite's 
-    WAL mode and per-request connection.
-    """
-    
-    def __init__(self, db_path: str = None):
-        self.db_path = db_path or os.path.join(
-            os.path.expanduser('~'), '.wshawk', 'scans.db'
-        )
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
-        self._init_schema()
-    
-    def _get_conn(self) -> sqlite3.Connection:
-        """Get a thread-local connection."""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA foreign_keys=ON")
-        return conn
-    
-    def _init_schema(self):
-        """Create tables if they don't exist."""
-        conn = self._get_conn()
-        try:
-            conn.executescript("""
-                CREATE TABLE IF NOT EXISTS scans (
-                    id TEXT PRIMARY KEY,
-                    target TEXT NOT NULL,
-                    options TEXT DEFAULT '{}',
-                    status TEXT DEFAULT 'queued',
-                    progress INTEGER DEFAULT 0,
-                    vulnerabilities TEXT DEFAULT '[]',
-                    messages_sent INTEGER DEFAULT 0,
-                    messages_received INTEGER DEFAULT 0,
-                    created_at TEXT NOT NULL,
-                    started_at TEXT,
-                    completed_at TEXT,
-                    duration REAL DEFAULT 0,
-                    error TEXT
-                );
-                
-                CREATE INDEX IF NOT EXISTS idx_scans_status ON scans(status);
-                CREATE INDEX IF NOT EXISTS idx_scans_created ON scans(created_at DESC);
-            """)
-            conn.commit()
-        finally:
-            conn.close()
-    
-    def create(self, target: str, options: Dict = None) -> str:
-        """Create a new scan entry, return scan ID."""
-        scan_id = str(uuid.uuid4())[:8]
-        conn = self._get_conn()
-        try:
-            conn.execute(
-                """INSERT INTO scans (id, target, options, status, created_at)
-                   VALUES (?, ?, ?, 'queued', ?)""",
-                (scan_id, target, json.dumps(options or {}), datetime.now().isoformat())
-            )
-            conn.commit()
-        finally:
-            conn.close()
-        return scan_id
-    
-    def update(self, scan_id: str, **kwargs):
-        """Update scan fields."""
-        conn = self._get_conn()
-        try:
-            for key, value in kwargs.items():
-                if key == 'vulnerabilities':
-                    value = json.dumps(value)
-                elif key == 'options':
-                    value = json.dumps(value)
-                conn.execute(
-                    f"UPDATE scans SET {key} = ? WHERE id = ?",
-                    (value, scan_id)
-                )
-            conn.commit()
-        finally:
-            conn.close()
-    
-    def get(self, scan_id: str) -> Optional[Dict]:
-        """Get scan by ID."""
-        conn = self._get_conn()
-        try:
-            row = conn.execute("SELECT * FROM scans WHERE id = ?", (scan_id,)).fetchone()
-            if row:
-                return self._row_to_dict(row)
-            return None
-        finally:
-            conn.close()
-    
-    def list_all(self, limit: int = 100) -> List[Dict]:
-        """Get all scans, newest first."""
-        conn = self._get_conn()
-        try:
-            rows = conn.execute(
-                "SELECT * FROM scans ORDER BY created_at DESC LIMIT ?", (limit,)
-            ).fetchall()
-            return [self._row_to_dict(r) for r in rows]
-        finally:
-            conn.close()
-    
-    def delete(self, scan_id: str) -> bool:
-        """Delete a scan."""
-        conn = self._get_conn()
-        try:
-            cursor = conn.execute("DELETE FROM scans WHERE id = ?", (scan_id,))
-            conn.commit()
-            return cursor.rowcount > 0
-        finally:
-            conn.close()
-    
-    def get_stats(self) -> Dict:
-        """Get aggregate statistics."""
-        conn = self._get_conn()
-        try:
-            total = conn.execute("SELECT COUNT(*) FROM scans").fetchone()[0]
-            completed = conn.execute(
-                "SELECT COUNT(*) FROM scans WHERE status = 'completed'"
-            ).fetchone()[0]
-            running = conn.execute(
-                "SELECT COUNT(*) FROM scans WHERE status IN ('queued', 'running')"
-            ).fetchone()[0]
-            return {
-                'total_scans': total,
-                'completed': completed,
-                'running': running,
-            }
-        finally:
-            conn.close()
-    
-    def _row_to_dict(self, row: sqlite3.Row) -> Dict:
-        """Convert a sqlite3.Row to a dict with JSON parsing."""
-        d = dict(row)
-        # Parse JSON fields
-        for field in ('vulnerabilities', 'options'):
-            if field in d and isinstance(d[field], str):
-                try:
-                    d[field] = json.loads(d[field])
-                except (json.JSONDecodeError, TypeError):
-                    d[field] = [] if field == 'vulnerabilities' else {}
-        return d
+
+# ─── SQLite Persistence Layer ───────────────────────────────────
+# Internal ScanDatabase removed in favor of unified WSHawkDatabase
 
 
 # ─── Authentication ─────────────────────────────────────────────
@@ -234,7 +98,7 @@ def require_auth(f):
 
 # ─── Background Scan Runner ────────────────────────────────────
 
-def run_scan_background(store: ScanDatabase, scan_id: str):
+def run_scan_background(store: WSHawkDatabase, scan_id: str):
     """Run a scan in a background thread with proper error handling."""
     scan = store.get(scan_id)
     if not scan:
@@ -270,7 +134,7 @@ def run_scan_background(store: ScanDatabase, scan_id: str):
                 scan_id,
                 status='completed',
                 completed_at=datetime.now().isoformat(),
-                vulnerabilities=vulns or [],
+                findings_json=vulns or [],
                 messages_sent=scanner.messages_sent,
                 messages_received=scanner.messages_received,
                 duration=duration,
@@ -330,7 +194,7 @@ def create_app(
     app.config['API_KEY'] = os.environ.get('WSHAWK_API_KEY', secrets.token_hex(16))
     
     # Initialize database
-    store = ScanDatabase(db_path)
+    store = WSHawkDatabase(db_path)
     
     # ─── Auth Routes ────────────────────────────────────────────
     
@@ -371,10 +235,10 @@ def create_app(
         """Main dashboard — scan history and overview."""
         scans = store.list_all()
         
-        total_vulns = sum(len(s.get('vulnerabilities', [])) for s in scans)
+        total_vulns = sum(len(s.get('findings', [])) for s in scans)
         critical_count = sum(
             1 for s in scans
-            for v in s.get('vulnerabilities', [])
+            for v in s.get('findings', [])
             if v.get('confidence', v.get('severity', '')).upper() in ('CRITICAL', 'HIGH')
         )
         
@@ -499,7 +363,7 @@ def create_app(
             'id': scan_id,
             'status': scan['status'],
             'progress': scan['progress'],
-            'vulnerabilities_found': len(scan.get('vulnerabilities', [])),
+            'vulnerabilities_found': len(scan.get('findings', [])),
         })
     
     @app.route('/api/scan/<scan_id>', methods=['DELETE'])
@@ -532,7 +396,7 @@ def create_app(
         }
         
         output_path = f'/tmp/wshawk_export_{scan_id}.{fmt}'
-        exporter.export(scan.get('vulnerabilities', []), scan_info, fmt, output_path)
+        exporter.export(scan.get('findings', []), scan_info, fmt, output_path)
         
         return send_file(output_path, as_attachment=True)
     
@@ -591,7 +455,7 @@ def run_web(
         Logger.info(f"API Key: {app.config['API_KEY']}")
     else:
         Logger.info("Authentication DISABLED (set WSHAWK_WEB_PASSWORD to enable)")
-    Logger.info(f"Database: {ScanDatabase(db_path).db_path}")
+    Logger.info(f"Database: {WSHawkDatabase(db_path).db_path}")
     Logger.info("Press Ctrl+C to stop")
     
     app.run(host=host, port=port, debug=debug)

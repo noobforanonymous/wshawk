@@ -743,6 +743,26 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="panel-header glass-header"
+                                style="flex: none; border-top: 1px solid var(--border-color);">
+                                <span class="title">Captured Handshakes (Extension)</span>
+                            </div>
+                            <div class="panel-body no-padding custom-scroll" style="height: 150px; flex: none;">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>URL</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="handshake-tbody">
+                                        <tr class="empty-tr">
+                                            <td colspan="3">Awaiting handshakes from WSHawk Extension...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                             <div class="panel-body flex-center" id="intercept-orb-container"
                                 style="flex: 1; display: flex; flex-direction: column;">
                                 <div class="intercept-visual" id="intercept-orb" style="animation: none;"></div>
@@ -2179,6 +2199,29 @@
                     </div>
                     <div>
                         <input type="password" id="cfg-dd-key" class="modal-input" placeholder="DefectDojo API Key">
+                    </div>
+                </div>
+
+                <h3 style="margin-bottom:10px; font-size:14px; color:var(--primary); margin-top: 20px;">🤖 AI-Enhanced
+                    Fuzzing</h3>
+                <div style="margin-bottom: 20px;">
+                    <div style="margin-bottom: 10px;">
+                        <select id="cfg-ai-provider" class="modal-input" style="background: var(--bg-secondary);">
+                            <option value="ollama">Ollama (Local)</option>
+                            <option value="openai">OpenAI (Remote)</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <input type="text" id="cfg-ai-model" class="modal-input"
+                            placeholder="Model Name (e.g. llama3, gpt-4o)">
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <input type="text" id="cfg-ai-url" class="modal-input"
+                            placeholder="Base URL (e.g. http://localhost:11434/v1)">
+                    </div>
+                    <div>
+                        <input type="password" id="cfg-ai-key" class="modal-input"
+                            placeholder="API Key (for remote providers)">
                     </div>
                 </div>
             </div>

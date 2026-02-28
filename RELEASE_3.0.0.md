@@ -1,6 +1,6 @@
-# WSHawk v3.0.1 - Enterprise Release Summary
+# WSHawk V3.0.1 - Enterprise Release Summary
 
-WSHawk v3.0.1 represents a major architectural leap, transforming from a high-performance scanner into a production-grade, enterprise-ready WebSocket security ecosystem. This release focuses on **Resilience**, **Persistence**, and **Automation**.
+WSHawk V3.0.1 represents a major architectural leap, transforming from a high-performance scanner into a production-grade, enterprise-ready WebSocket security ecosystem. This release focuses on **Resilience**, **Persistence**, and **Automation**.
 
 ---
 
@@ -28,7 +28,7 @@ The scanning engine is no longer static; it now adapts to the target server's re
 - **Genetic Mutation Phase**: A new post-scan process that evolves novel payloads by mutating successful bypasses found during the initial heuristic scan.
 
 ### SOC & CI/CD Integrations
-WSHawk v3.0.1 is built to live inside a modern security operations center.
+WSHawk V3.0.1 is built to live inside a modern security operations center.
 - **Jira Integration**: Automated ticket creation with full reproduction steps and CVSS severity.
 - **DefectDojo Integration**: Direct push of findings to the open-source vulnerability management platform.
 - **Rich Webhooks**: Structured notifications for **Slack**, **Discord**, and **Microsoft Teams**.
@@ -44,7 +44,7 @@ WSHawk v3.0.1 is built to live inside a modern security operations center.
 ### Modern CLI Interface
 - **Argparse Refactor**: Unified command-line interface with full support for flags:
   - `wshawk --web`: Launches the Management Dashboard.
-  - `wshawk --version`: Displays the official v3.0.1 build info.
+  - `wshawk --version`: Displays the official V3.0.1 build info.
   - `wshawk --port <port>`: Custom port binding for the web server.
 - **Async Safety**: Implemented thread-safe event loop management to prevent "RuntimeError: Event loop already running" when calling multiple entry points.
 

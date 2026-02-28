@@ -218,7 +218,7 @@ class ReportExporter:
         writer.writerow(['Duration (seconds)', scan_info.get('duration', 0)])
         writer.writerow(['Messages Sent', scan_info.get('messages_sent', 0)])
         writer.writerow(['Messages Received', scan_info.get('messages_received', 0)])
-        writer.writerow(['Scanner', 'WSHawk v3.0.1 by Regaan'])
+        writer.writerow(['Scanner', 'WSHawk V3.0.2 by Regaan'])
 
         return output.getvalue()
 

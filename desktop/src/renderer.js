@@ -341,7 +341,42 @@ function connectBridge() {
     socket.on('intercepted_frame', (frame) => {
         handleInterceptedFrame(frame);
     });
+
+    socket.on('new_handshake', (data) => {
+        addHandshakeRow(data);
+        appendLog('success', `Extension captured new handshake: ${truncate(data.url, 40)}`);
+    });
 }
+
+function addHandshakeRow(data) {
+    const tbody = document.getElementById('handshake-tbody');
+    if (!tbody) return;
+    if (tbody.querySelector('.empty-tr')) tbody.innerHTML = '';
+
+    const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>${esc(time)}</td>
+        <td><span class="text-accent" title="${esc(data.url)}">${esc(truncate(data.url, 50))}</span></td>
+        <td>
+            <button class="btn secondary small" style="font-size: 10px; padding: 2px 6px;" onclick='useHandshake(${JSON.stringify(data)})'>Use</button>
+        </td>
+    `;
+    tbody.insertBefore(row, tbody.firstChild);
+}
+
+window.useHandshake = function (data) {
+    if (targetUrlInput) targetUrlInput.value = data.url;
+    const authInput = document.getElementById('auth-payload');
+    if (authInput && data.headers) {
+        // Simple heuristic: if there's an Authorization header or similar, try to use it
+        const headersJson = JSON.stringify(data.headers, null, 2);
+        authInput.value = headersJson;
+        appendLog('info', 'Target URL and handshake headers synced to Interceptor.');
+    }
+    // Switch to Interceptor view
+    document.querySelector('.nav-item[data-target="intercept"]')?.click();
+};
 
 let baselineLength = null;
 
@@ -887,7 +922,12 @@ if (btnSettings && settingsModal) {
                     'cfg-jira-token': data.jiraToken,
                     'cfg-jira-project': data.jiraProject,
                     'cfg-dd-url': data.ddUrl,
-                    'cfg-dd-key': data.ddKey
+                    'cfg-dd-key': data.ddKey,
+                    // AI Settings
+                    'cfg-ai-provider': data.ai_provider,
+                    'cfg-ai-model': data.ai_model,
+                    'cfg-ai-url': data.ai_base_url,
+                    'cfg-ai-key': data.ai_api_key
                 };
                 for (const [id, val] of Object.entries(fields)) {
                     const el = document.getElementById(id);
@@ -920,7 +960,12 @@ if (btnSettings && settingsModal) {
                 jiraToken: getVal('cfg-jira-token'),
                 jiraProject: getVal('cfg-jira-project'),
                 ddUrl: getVal('cfg-dd-url'),
-                ddKey: getVal('cfg-dd-key')
+                ddKey: getVal('cfg-dd-key'),
+                // AI Settings
+                ai_provider: getVal('cfg-ai-provider'),
+                ai_model: getVal('cfg-ai-model'),
+                ai_base_url: getVal('cfg-ai-url'),
+                ai_api_key: getVal('cfg-ai-key')
             };
 
             try {

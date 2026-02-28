@@ -1,4 +1,4 @@
-# WSHawk v3.0.1: The Complete Enterprise Evolution Guide
+# WSHawk V3.0.1: The Complete Enterprise Evolution Guide
 ## The Definitive Manual for Professional WebSocket Security Auditing
 
 ---
@@ -8,7 +8,7 @@
 1.  **[Introduction](#1-introduction)**
     - Vision and Roadmap
     - Why WebSocket Security Matters
-2.  **[What is WSHawk v3.0.1?](#2-what-is-wshawk)**
+2.  **[What is WSHawk V3.0.1?](#2-what-is-wshawk)**
     - The Enterprise Release Philosophy
     - High-Level Capability Matrix
 3.  **[Core Architectural Framework](#3-architecture)**
@@ -82,17 +82,17 @@
 ## 1. Introduction <a name="1-introduction"></a>
 
 ### Vision and Roadmap
-WSHawk v3.0.1 is not an update; it is a paradigm shift. In the early days of WebSocket research, tools were often fragmented—one script for a handshake, another for a single payload. WSHawk v3.0.1 consolidates a decade of research into a single, unified execution engine. Our vision is to provide a "Cognitive Security" experience where the tool understands the context of the application it is scanning.
+WSHawk V3.0.1 is not an update; it is a paradigm shift. In the early days of WebSocket research, tools were often fragmented—one script for a handshake, another for a single payload. WSHawk V3.0.1 consolidates a decade of research into a single, unified execution engine. Our vision is to provide a "Cognitive Security" experience where the tool understands the context of the application it is scanning.
 
 ### Why WebSocket Security Matters
-As the web moves towards real-time interactivity, WebSockets have become the backbone of modern finance, healthcare telemetry, and collaborative SaaS. However, traditional DAST scanners struggle with the asynchronous, bi-directional nature of the protocol. WSHawk v3.0.1 bridges this gap by maintaining stateful connections and analyzing responses that may arrive long after the attack payload was sent.
+As the web moves towards real-time interactivity, WebSockets have become the backbone of modern finance, healthcare telemetry, and collaborative SaaS. However, traditional DAST scanners struggle with the asynchronous, bi-directional nature of the protocol. WSHawk V3.0.1 bridges this gap by maintaining stateful connections and analyzing responses that may arrive long after the attack payload was sent.
 
 ---
 
-## 2. What is WSHawk v3.0.1? <a name="2-what-is-wshawk"></a>
+## 2. What is WSHawk V3.0.1? <a name="2-what-is-wshawk"></a>
 
 ### The Enterprise Release Philosophy
-v3.0.1 is built on three pillars:
+V3.0.1 is built on three pillars:
 1.  **Zero-Loss Persistence**: Security data should never be ephemeral. 
 2.  **Autonomous Evolution**: The tool should adapt to the target, not vice versa.
 3.  **Actionable Output**: A vulnerability is only as useful as the ticket it creates.
@@ -223,7 +223,7 @@ WSHawk probes the `Sec-WebSocket-Protocol` header to see if the server supports 
 
 ## 7. Vulnerability Encyclopedia <a name="7-vulnerability-encyclopedia"></a>
 
-This section outlines the primary attack vectors supported in v3.0.1.
+This section outlines the primary attack vectors supported in V3.0.1.
 
 ### 7.1 Injections
 - **SQL Injection**: Targeting the persistence layer. WSHawk tests for Time-based (using `SLEEP` or `pg_sleep`) and Error-based signatures.
@@ -411,7 +411,7 @@ Configure your WAF to analyze the **WebSocket Payload**, not just the initial Ha
 ## 16. Troubleshooting & Technical FAQ <a name="16-troubleshooting"></a>
 
 **Q: Why am I getting "TemplateNotFound" errors?**
-A: This usually happens with older v2 installations. Upgrade to v3.0.1 and ensure you use `pip install .` or `pip install wshawk`.
+A: This usually happens with older v2 installations. Upgrade to V3.0.1 and ensure you use `pip install .` or `pip install wshawk`.
 
 **Q: How do I scan a server that requires Auth?**
 A: Use the `wshawk.yaml` config to set custom headers like `Authorization: Bearer <TOKEN>`.
@@ -440,4 +440,4 @@ WSHawk is a community-driven project. We rely on your feedback to improve our mu
 - **GitHub**: https://github.com/noobforanonymous/wshawk
 
 ---
-**WSHawk v3.0.1** - *Built by Regaan and for the global security research community.*
+**WSHawk V3.0.1** - *Built by Regaan and for the global security research community.*

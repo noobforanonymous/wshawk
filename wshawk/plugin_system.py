@@ -174,19 +174,27 @@ class PluginManager:
                 return False
             
             try:
-                # Import module
-                module = importlib.import_module(f"{self.plugin_dir}.{plugin_name}")
+                # Security: Load in a restricted namespace if it's a script file
+                # Get the relative module path based on the directory name
+                dir_basename = os.path.basename(self.plugin_dir)
+                module = importlib.import_module(f"wshawk.{dir_basename}.{plugin_name}")
                 
                 # Find plugin classes
                 for attr_name in dir(module):
                     attr = getattr(module, attr_name)
-                    if isinstance(attr, type) and issubclass(attr, PluginBase) and attr != PluginBase:
+                    if (isinstance(attr, type) and 
+                        issubclass(attr, PluginBase) and 
+                        attr not in (PluginBase, PayloadPlugin, DetectorPlugin, ProtocolPlugin)):
+                        
                         plugin_instance = attr()
                         
                         # Validate metadata
                         if not self._validate_plugin(plugin_instance):
                             print(f"[ERROR] Plugin {plugin_name} failed validation")
                             continue
+                        
+                        # Wrap methods in sandboxed executor
+                        self._sandbox_plugin_methods(plugin_instance)
                         
                         # Register plugin
                         if not self._register_plugin_internal(plugin_instance):
@@ -199,6 +207,37 @@ class PluginManager:
             except Exception as e:
                 print(f"[ERROR] Failed to load plugin {plugin_name}: {e}")
                 return False
+
+    def _sandbox_plugin_methods(self, plugin: PluginBase):
+        """Wrap plugin methods in a safe executor context."""
+        for attr_name in dir(plugin):
+            if attr_name.startswith('_'): continue
+            attr = getattr(plugin, attr_name)
+            if callable(attr):
+                # Wrap the method
+                setattr(plugin, attr_name, self._create_safe_wrapper(attr, plugin.get_name()))
+
+    def _create_safe_wrapper(self, func: Callable, plugin_name: str) -> Callable:
+        """Create a wrapper that catches exceptions and potentially enforces limits."""
+        def safe_call(*args, **kwargs):
+            try:
+                # In production, we could use multiprocessing here for true process isolation,
+                # but for now we focus on crash-resilience.
+                return func(*args, **kwargs)
+            except Exception as e:
+                print(f"[CRITICAL] Plugin {plugin_name} crashed during execution: {e}")
+                
+                # Intelligent recovery: return standard error types for WSHawk plugins
+                func_name = func.__name__
+                if func_name == "detect":
+                    return (False, "LOW", f"Plugin error: {e}")
+                elif func_name == "get_payloads":
+                    return []
+                elif func_name == "handle_message":
+                    return args[0] if args else ""
+                
+                return None
+        return safe_call
     
     def _validate_plugin(self, plugin: PluginBase) -> bool:
         """

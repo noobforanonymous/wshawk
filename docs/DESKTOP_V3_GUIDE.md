@@ -955,4 +955,4 @@ rm wshawk/wshawk.db
 ---
 
 
-*WSHawk Desktop v3.0.1 — Built for security professionals, by Regaan.*
+*WSHawk Desktop V3.0.1 — Built for security professionals, by Regaan.*

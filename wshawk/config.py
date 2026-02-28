@@ -32,7 +32,14 @@ DEFAULT_CONFIG = {
             'oast': True,
             'binary_analysis': False,
             'smart_payloads': False,
+            'ai_fuzzing': False,
         },
+    },
+    'ai': {
+        'provider': 'ollama',    # ollama, openai, custom
+        'model': 'codellama',
+        'base_url': '',          # override default provider URL
+        'api_key': '',           # or env:WSHAWK_AI_KEY
     },
     'reporting': {
         'output_dir': './reports',
@@ -283,6 +290,10 @@ class WSHawkConfig:
             'WSHAWK_WEB_HOST': 'web.host',
             'WSHAWK_WEB_PORT': 'web.port',
             'WSHAWK_WEB_PASSWORD': 'web.auth.password',
+            'WSHAWK_AI_PROVIDER': 'ai.provider',
+            'WSHAWK_AI_MODEL': 'ai.model',
+            'WSHAWK_AI_KEY': 'ai.api_key',
+            'WSHAWK_AI_BASE_URL': 'ai.base_url',
         }
         
         for env_var, config_path in env_map.items():
@@ -315,11 +326,18 @@ scanner:
   learning_duration: 5
   max_payload_count: 100
   verify_ssl: false
-  features:
-    playwright: false
-    oast: true
-    binary_analysis: false
-    smart_payloads: false
+    features:
+      playwright: false
+      oast: true
+      binary_analysis: false
+      smart_payloads: false
+      ai_fuzzing: false
+
+ai:
+  provider: ollama
+  model: codellama
+  # api_key: env:WSHAWK_AI_KEY
+  # base_url: http://localhost:11434/api/generate
 
 reporting:
   output_dir: ./reports

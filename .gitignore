@@ -114,6 +114,7 @@ desktop/out/
 
 # Debian & Repository Artifacts
 repo/
+homebrew-tap/
 *.deb
 .pybuild/
 debian/wshawk/

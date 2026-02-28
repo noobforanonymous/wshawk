@@ -31,7 +31,7 @@ class Logger:
 ║║║╚═╗╠═╣╠═╣║║║╠╩╗
 ╚╩╝╚═╝╩ ╩╩ ╩╚╩╝╩ ╩
 {Colors.END}
-{Colors.YELLOW}WebSocket Security Scanner v3.0.1{Colors.END}
+{Colors.YELLOW}WebSocket Security Scanner V3.0.2{Colors.END}
 {Colors.CYAN}Created by: Regaan (@noobforanonymous){Colors.END}
 {Colors.BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Colors.END}
 """

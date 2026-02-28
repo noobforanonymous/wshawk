@@ -1,5 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
-# WSHawk v3.0.1 — PyInstaller spec for the GUI Bridge sidecar binary
+# WSHawk V3.0.2 — PyInstaller spec for the GUI Bridge sidecar binary
 # Bundles the full backend: core scanner, web_pentest toolkit, smart payloads,
 # payload mutator, database manager, and all data files.
 
@@ -40,6 +40,7 @@ a = Analysis(
         'wshawk.report_exporter',
         'wshawk.plugin_system',
         'wshawk.defensive_validation',
+        'wshawk.ai_engine',
 
         # ── Smart Payload Engine ──
         'wshawk.smart_payloads',

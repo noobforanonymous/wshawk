@@ -29,7 +29,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from wshawk.scanner_v2 import WSHawkV2
 from wshawk.__main__ import WSPayloads
-from wshawk.db_manager import init_db, save_scan, get_all_scans, get_scan, compare_scans
+from wshawk.db_manager import WSHawkDatabase
+
+# Initialize Database
+db = WSHawkDatabase()
 
 # Initialize FastAPI app
 app = FastAPI(title="WSHawk GUI Bridge")
@@ -270,6 +273,16 @@ async def interceptor_action(data: Dict[str, Any]):
         del state.interception_queue[i_id]
         return {"status": "success"}
     return {"status": "not_found"}
+
+@app.post("/api/interceptor/handshake")
+async def api_interceptor_handshake(data: Dict[str, Any]):
+    """Receive WebSocket handshake from browser extension."""
+    try:
+        # Emit to Socket.IO so the UI can display it
+        await sio.emit('new_handshake', data)
+        return {"status": "success", "received": True}
+    except Exception as e:
+        return {"status": "error", "msg": str(e)}
 
 @app.websocket("/proxy")
 async def websocket_proxy(websocket: WebSocket, url: str):
@@ -781,7 +794,7 @@ async def _run_vuln_wrapper(url, options):
     global _vuln_scanner
     report = await _vuln_scanner.run_scan(url, options)
     try:
-        scan_id = save_scan(url, report)
+        scan_id = db.save_scan(url, report)
         print(f"Scan saved to DB: {scan_id}")
     except Exception as e:
         print(f"Failed to save scan to DB: {e}")
@@ -813,7 +826,7 @@ async def web_vulnscan_stop():
 async def api_get_history():
     """Return all historical scans."""
     try:
-        return {"status": "success", "history": get_all_scans()}
+        return {"status": "success", "history": db.list_all()}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -821,7 +834,7 @@ async def api_get_history():
 async def api_get_scan(scan_id: str):
     """Return an individual scan with full findings."""
     try:
-        scan = get_scan(scan_id)
+        scan = db.get(scan_id)
         if not scan:
             raise HTTPException(status_code=404, detail="Scan not found")
         return {"status": "success", "scan": scan}
@@ -832,7 +845,7 @@ async def api_get_scan(scan_id: str):
 async def api_compare_scans(id1: str, id2: str):
     """Compare two historical scans for fixed and new vulns."""
     try:
-        res = compare_scans(id1, id2)
+        res = db.compare_scans(id1, id2)
         if "error" in res:
             raise HTTPException(status_code=404, detail=res["error"])
         return {"status": "success", "diff": res}

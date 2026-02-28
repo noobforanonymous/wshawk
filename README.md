@@ -8,7 +8,7 @@
 
 **WSHawk** is an enterprise-grade, open-source WebSocket security scanner built for professional penetration testers, security engineers, bug bounty hunters, and red teams. It performs automated vulnerability assessment over WebSocket connections — detecting SQL injection, XSS, command injection, XXE, SSRF, NoSQL injection, and path traversal — using an adaptive **Smart Payload Evolution (SPE)** engine with real-time feedback loops, genetic payload mutation, and intelligent WAF bypass capabilities.
 
-Starting with v3.0.1, we're also adding a **web application penetration testing toolkit** to the Desktop app — 22 security tools for HTTP fuzzing, directory scanning, subdomain enumeration, vulnerability scanning, CORS testing, CSRF exploit generation, SSRF probing, SSL/TLS analysis, and more. Still growing, but already useful for day-to-day pentesting alongside the WebSocket scanner.
+Starting with v3.0.2, we've integrated a **Context-Aware Heuristic Engine** for advanced fuzzing and a **WSHawk Browser Companion** for seamless handshake interception. The desktop suite now includes 22 optimized security tools for full-spectrum HTTP and WebSocket penetration testing.
 
 > [!IMPORTANT]
 > **Full Documentation:**
@@ -60,7 +60,7 @@ The SPE system adapts attack payloads in real-time:
 
 ---
 
-## Web Application Penetration Testing Toolkit (NEW in v3.0.1)
+## Web Application Penetration Testing Toolkit (Enhanced in v3.0.2)
 
 The WSHawk Desktop application now ships with 22 HTTP security tools organized into six phases. We're building this out alongside the WebSocket scanner to give pentesters a single interface for both WebSocket and HTTP assessments.
 
@@ -364,6 +364,14 @@ Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ---
 
-**WSHawk v3.0.1** — Enterprise-Grade WebSocket Security Scanner & Web Penetration Testing Toolkit
+**WSHawk v3.0.2** — Professional WebSocket Security Scanner & Interception Suite
+
+---
+
+### Latest Updates (v3.0.2)
+- **Context-Aware Heuristic Fuzzing**: Advanced payload generation engine with deep protocol awareness for high-accuracy vulnerability discovery.
+- **WSHawk Browser Companion**: Browser extension for real-time WebSocket handshake capture and automated Interceptor synchronization.
+- **Unified Security Architecture**: Harmonized database logic and plugin sandboxing for enterprise-grade stability and performance.
+- **Desktop UI Enhancements**: Optimized traffic monitoring views and unified configuration management for professional workflows.
 
 *Built for security professionals, by Regaan.*

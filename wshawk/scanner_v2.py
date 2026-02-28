@@ -27,6 +27,7 @@ from .oast_provider import OASTProvider, SimpleOASTServer
 from .session_hijacking_tester import SessionHijackingTester
 from .report_exporter import ReportExporter
 from .binary_handler import BinaryMessageHandler
+from .ai_engine import AIEngine
 
 # Smart payload modules
 from .smart_payloads.context_generator import ContextAwareGenerator
@@ -79,6 +80,15 @@ class WSHawkV2:
         self.feedback_loop = FeedbackLoop()
         self.payload_evolver = PayloadEvolver(population_size=100)
         self.use_smart_payloads = False
+        
+        # AI Engine
+        self.ai_engine = AIEngine(
+            provider=self.config.get('ai.provider', 'ollama'),
+            model=self.config.get('ai.model', 'codellama'),
+            base_url=self.config.get('ai.base_url'),
+            api_key=self.config.get('ai.api_key')
+        )
+        self.use_ai = self.config.get('scanner.features.ai_fuzzing', False)
         
         # Advanced verification (optional, can be disabled)
         self.use_headless_browser = True
@@ -200,7 +210,15 @@ class WSHawkV2:
         Logger.info("Testing SQL injection with heuristic verification...")
         
         results = []
-        payloads = WSPayloads.get_sql_injection()[:100]  # Use subset for speed
+        payloads = WSPayloads.get_sql_injection()[:100]
+        
+        # AI Integration
+        if self.use_ai:
+            context = "\n".join(self.sample_messages[:5])
+            ai_payloads = await self.ai_engine.generate_payloads(context, "SQL Injection")
+            if ai_payloads:
+                Logger.info(f"AI Engine generated {len(ai_payloads)} targeted SQLi payloads")
+                payloads = ai_payloads + payloads[:50]
         
         # Get server-specific payloads if fingerprinted
         fingerprint = self.fingerprinter.fingerprint()
@@ -286,12 +304,20 @@ class WSHawkV2:
         """
         Enhanced XSS testing with context analysis
         """
-        Logger.info("Testing XSS with context analysis...")
+        Logger.info("Testing XSS and reflective injection...")
         
         results = []
-        payloads = WSPayloads.get_xss()[:100]
+        payloads = WSPayloads.get_xss_payloads()[:100]
         
-        base_message = self.sample_messages[0] if self.sample_messages else '{"message": "test"}'
+        # AI Integration
+        if self.use_ai:
+            context = "\n".join(self.sample_messages[:5])
+            ai_payloads = await self.ai_engine.generate_payloads(context, "Cross-Site Scripting (XSS)")
+            if ai_payloads:
+                Logger.info(f"AI Engine generated {len(ai_payloads)} targeted XSS payloads")
+                payloads = ai_payloads + payloads[:50]
+        
+        base_message = self.sample_messages[0] if self.sample_messages else '{"input": "test"}'
         
         for payload in payloads:
             try:
@@ -383,6 +409,14 @@ class WSHawkV2:
         
         results = []
         payloads = WSPayloads.get_command_injection()[:100]
+        
+        # AI Integration
+        if self.use_ai:
+            context = "\n".join(self.sample_messages[:5])
+            ai_payloads = await self.ai_engine.generate_payloads(context, "Command Injection")
+            if ai_payloads:
+                Logger.info(f"AI Engine generated {len(ai_payloads)} targeted Command Injection payloads")
+                payloads = ai_payloads + payloads[:50]
         
         # Get language-specific payloads
         fingerprint = self.fingerprinter.fingerprint()
