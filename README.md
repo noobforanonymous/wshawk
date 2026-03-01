@@ -8,7 +8,7 @@
 
 **WSHawk** is an enterprise-grade, open-source WebSocket security scanner built for professional penetration testers, security engineers, bug bounty hunters, and red teams. It performs automated vulnerability assessment over WebSocket connections — detecting SQL injection, XSS, command injection, XXE, SSRF, NoSQL injection, and path traversal — using an adaptive **Smart Payload Evolution (SPE)** engine with real-time feedback loops, genetic payload mutation, and intelligent WAF bypass capabilities.
 
-Starting with v3.0.2, we've integrated a **Context-Aware Heuristic Engine** for advanced fuzzing and a **WSHawk Browser Companion** for seamless handshake interception. The desktop suite now includes 22 optimized security tools for full-spectrum HTTP and WebSocket penetration testing.
+Starting with v3.0.3, we've integrated a **Headless DOM Invader** powered by Playwright for real browser-based XSS verification and complex SSO auth flow recording/replay. Also includes a **Context-Aware Heuristic Engine** and **WSHawk Browser Companion** for seamless handshake interception.
 
 > [!IMPORTANT]
 > **Full Documentation:**
@@ -326,6 +326,7 @@ See [Defensive Validation Guide](docs/DEFENSIVE_VALIDATION.md).
 
 | Guide | Description |
 |---|---|
+| **[V3.0.3 Release Guide](docs/V3.0.3_RELEASE_GUIDE.md)** | DOM Invader, Auth Flow Recorder, AI Exploit Engine — full technical reference |
 | **[🦅 Complete Enterprise Guide](docs/V3_COMPLETE_GUIDE.md)** | Architecture, scanning engine, configuration, integrations |
 | **[💻 Desktop Reference Manual](docs/DESKTOP_V3_GUIDE.md)** | All 22 tools, API reference, build instructions |
 | [Getting Started](docs/getting_started.md) | First scan, output format, common use cases |
@@ -364,14 +365,15 @@ Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ---
 
-**WSHawk v3.0.2** — Professional WebSocket Security Scanner & Interception Suite
+**WSHawk v3.0.3** — Professional WebSocket Security Scanner & Interception Suite
 
 ---
 
-### Latest Updates (v3.0.2)
+### Latest Updates (v3.0.3)
+- **DOM Invader**: Headless Playwright engine verifies XSS payloads in a real browser — zero false positives. Confirms `alert()`, `eval()`, DOM mutations, and injected script tags.
+- **Auth Flow Recorder**: Records complex SSO/OAuth login flows in a visible browser, then replays them headlessly to mint fresh tokens during long fuzzing runs.
+- **Auto Session Reconnect**: Payload Blaster detects session expiry and automatically replays the recorded auth flow to reconnect — no manual intervention needed.
+- **AI Exploit Engine**: Right-click any parameter in ReqForge to generate context-aware XSS/SQLi/SSTI payloads, auto-populated into the Payload Blaster.
 - **Context-Aware Heuristic Fuzzing**: Advanced payload generation engine with deep protocol awareness for high-accuracy vulnerability discovery.
-- **WSHawk Browser Companion**: Browser extension for real-time WebSocket handshake capture and automated Interceptor synchronization.
-- **Unified Security Architecture**: Harmonized database logic and plugin sandboxing for enterprise-grade stability and performance.
-- **Desktop UI Enhancements**: Optimized traffic monitoring views and unified configuration management for professional workflows.
 
 *Built for security professionals, by Regaan.*

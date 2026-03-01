@@ -2,6 +2,22 @@
 
 All notable changes to WSHawk will be documented in this file.
 
+## [3.0.3] - 2026-03-01
+
+### Added
+- **Headless DOM Invader** — New `wshawk/dom_invader.py` engine with three components:
+  - `BrowserPool` — manages up to 4 reusable Chromium contexts (no cold-start per payload).
+  - `XSSVerifier` — renders WebSocket responses in a sandboxed headless page, instruments `alert()`, `eval()`, MutationObserver, and DOM sink hooks to confirm real JS execution — zero false positives.
+  - `AuthFlowRecorder` — records SSO/OAuth login flows in a visible browser, captures cookies/tokens, and replays headlessly to mint fresh session tokens for long fuzzing operations.
+- **Payload Blaster: DOM Verify toggle** — Enable headless XSS verification inline per response.
+- **Payload Blaster: Record Auth Flow** — One-click auth recording from within the Blaster panel.
+- **Auto Session Reconnect** — Blaster detects `ConnectionClosed` and auto-replays the auth flow (up to 3 attempts) to resume fuzzing without interruption.
+- **Five new REST routes** — `/dom/status`, `/dom/verify`, `/dom/verify/batch`, `/dom/auth/record`, `/dom/auth/replay`.
+- **Blaster results: DOM Verified column** — Each result shows `CONFIRMED XSS` (pulsing red badge) or `Unverified`.
+- **`dom_xss_confirmed` Socket.IO event** — Fires a critical log entry when browser-confirmed XSS is detected.
+- **AI Exploit Engine** (`wshawk/ai_exploit_engine.py`) — Context-aware payload generation from ReqForge right-click menu.
+- **PyInstaller spec** — Added `dom_invader`, `ai_exploit_engine`, `headless_xss_verifier`, and full `playwright._impl.*` submodules to `hiddenimports`; removed `playwright` from `excludes`.
+
 ## [3.0.0] - 2026-02-18
 
 ### Added

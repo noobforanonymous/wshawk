@@ -80,6 +80,19 @@ async def connect(sid, environ):
 @sio.event
 async def disconnect(sid):
     print(f"[*] Frontend disconnected: {sid}")
+    # Team cleanup: remove from any room on disconnect
+    try:
+        from wshawk.team_engine import TeamEngine
+        # Use the module-level team instance (defined in team routes section below)
+        if 'team' in globals():
+            room, op = team.leave_room(sid)
+            if room and op:
+                await sio.leave_room(sid, room.sio_room)
+                await sio.emit("team_roster", {"operators": room.roster(), "room_code": room.code}, room=room.sio_room)
+                activity = {"type": "leave", "operator": op.name, "color": op.color, "time": datetime.now().isoformat()}
+                await sio.emit("team_activity", activity, room=room.sio_room)
+    except Exception:
+        pass
 
 # ─── REST API Endpoints ─────────────────────────────────────────
 
@@ -145,11 +158,18 @@ async def blaster_start(data: Dict[str, Any]):
     template = data.get("template", "")
     use_spe = data.get("spe", False)
     auth_payload = data.get("auth_payload")
-    
+    dom_verify = data.get("dom_verify", False)   # NEW: DOM XSS verification
+    auth_flow = data.get("auth_flow", None)       # NEW: recorded auth flow for auto-reconnect
+
     if not target_url or not payloads:
         raise HTTPException(status_code=400, detail="Target URL and payloads array required")
-        
-    task = asyncio.create_task(run_blaster_task(target_url, payloads, template, use_spe, auth_payload))
+
+    task = asyncio.create_task(
+        run_blaster_task(
+            target_url, payloads, template, use_spe,
+            auth_payload, dom_verify, auth_flow,
+        )
+    )
     state.active_scans['blaster_task'] = task
     return {"status": "started", "count": len(payloads)}
 
@@ -192,7 +212,12 @@ async def get_config():
             "jiraToken": config.get('integrations.jira.api_token', ''),
             "jiraProject": config.get('integrations.jira.project_key', 'SEC'),
             "ddUrl": config.get('integrations.defectdojo.url', ''),
-            "ddKey": config.get('integrations.defectdojo.api_key', '')
+            "ddKey": config.get('integrations.defectdojo.api_key', ''),
+            # AI settings
+            "ai_provider": config.get('ai.provider', 'ollama'),
+            "ai_model": config.get('ai.model', ''),
+            "ai_base_url": config.get('ai.base_url', ''),
+            "ai_api_key": config.get('ai.api_key', ''),
         }
     except Exception as e:
         return {"status": "error", "msg": str(e)}
@@ -239,11 +264,198 @@ async def save_config(data: Dict[str, Any]):
         dd_data['enabled'] = bool(data.get('ddUrl') and data.get('ddKey'))
         if data.get('ddUrl'): dd_data['url'] = data.get('ddUrl')
         if data.get('ddKey'): dd_data['api_key'] = data.get('ddKey')
+
+        # Update AI settings
+        if 'ai' not in current_data:
+            current_data['ai'] = {}
+        ai_data = current_data['ai']
+        if data.get('ai_provider'): ai_data['provider'] = data.get('ai_provider')
+        if data.get('ai_model'): ai_data['model'] = data.get('ai_model')
+        if data.get('ai_base_url'): ai_data['base_url'] = data.get('ai_base_url')
+        if data.get('ai_api_key'): ai_data['api_key'] = data.get('ai_api_key')
         
         with open(config_path, 'w') as f:
             yaml.dump(current_data, f, default_flow_style=False)
             
         return {"status": "success"}
+    except Exception as e:
+        return {"status": "error", "msg": str(e)}
+
+# ─── AI Context Exploit (Heuristic Auto-Exploit) ────────────────
+
+@app.post("/ai/context-exploit")
+async def ai_context_exploit(data: Dict[str, Any]):
+    """
+    Highlight-to-Hack: Generate context-aware exploit payloads.
+    Receives the full message, highlighted selection, and cursor position.
+    Returns payloads + a ready-to-use Blaster template.
+    """
+    try:
+        import yaml
+        from .ai_engine import AIEngine
+        from .ai_exploit_engine import AIExploitEngine
+
+        full_text = data.get("full_text", "")
+        selection = data.get("selection", "")
+        cursor_pos = data.get("cursor_pos", 0)
+        vuln_types = data.get("vuln_types", None)
+        count = data.get("count", 10)
+
+        if not selection:
+            return {"status": "error", "msg": "No text selected"}
+
+        # Load AI config from wshawk.yaml
+        ai_engine = None
+        try:
+            config_path = Path('./wshawk.yaml')
+            if not config_path.exists():
+                config_path = Path('./wshawk.yml')
+            if config_path.exists():
+                with open(config_path, 'r') as f:
+                    cfg = yaml.safe_load(f) or {}
+                ai_cfg = cfg.get('ai', {})
+                provider = ai_cfg.get('provider', 'ollama')
+                model = ai_cfg.get('model', '')
+                base_url = ai_cfg.get('base_url', '')
+                api_key = ai_cfg.get('api_key', '')
+                if model:  # Only initialize if a model is configured
+                    ai_engine = AIEngine(
+                        provider=provider,
+                        model=model,
+                        base_url=base_url or None,
+                        api_key=api_key or None,
+                    )
+        except Exception as e:
+            logger.warning(f"AI engine init failed, using fallback payloads: {e}")
+
+        exploit_engine = AIExploitEngine(ai_engine=ai_engine)
+        result = await exploit_engine.generate_exploits(
+            full_text=full_text,
+            selection=selection,
+            cursor_pos=cursor_pos,
+            vuln_types=vuln_types,
+            count=count,
+        )
+
+        return {"status": "success", **result}
+
+    except Exception as e:
+        logger.error(f"AI context-exploit error: {e}")
+        return {"status": "error", "msg": str(e)}
+
+# ─── DOM Invader (Headless Playwright Integration) ──────────────
+
+# Lazy singleton — initialized on first use
+_dom_invader = None
+
+def _get_dom_invader():
+    global _dom_invader
+    if _dom_invader is None:
+        from .dom_invader import DOMInvader
+        _dom_invader = DOMInvader()
+    return _dom_invader
+
+@app.get("/dom/status")
+async def dom_status():
+    """Check if Playwright is installed and browser pool status."""
+    invader = _get_dom_invader()
+    return {"status": "success", **invader.status()}
+
+@app.post("/dom/verify")
+async def dom_verify(data: Dict[str, Any]):
+    """
+    Verify a single XSS payload via headless browser execution.
+    Receives: { payload, response, timeout_ms? }
+    Returns:  { executed, evidence, technique, ... }
+    """
+    try:
+        invader = _get_dom_invader()
+        if not invader.is_available:
+            return {"status": "error", "msg": "Playwright not installed"}
+
+        if not invader.pool.is_started:
+            await invader.start()
+
+        result = await invader.verify_response(
+            payload=data.get("payload", ""),
+            response=data.get("response", ""),
+            timeout_ms=data.get("timeout_ms", 3000),
+        )
+        return {"status": "success", **result.to_dict()}
+
+    except Exception as e:
+        return {"status": "error", "msg": str(e)}
+
+@app.post("/dom/verify/batch")
+async def dom_verify_batch(data: Dict[str, Any]):
+    """
+    Verify multiple Blaster results concurrently.
+    Receives: { results: [{ payload, response }], timeout_ms? }
+    Returns:  { results: [{ ...original, dom_verified, dom_evidence }] }
+    """
+    try:
+        invader = _get_dom_invader()
+        if not invader.is_available:
+            return {"status": "error", "msg": "Playwright not installed"}
+
+        if not invader.pool.is_started:
+            await invader.start()
+
+        results = data.get("results", [])
+        timeout_ms = data.get("timeout_ms", 3000)
+
+        verified = await invader.batch_verify_responses(results, timeout_ms)
+        return {"status": "success", "results": verified}
+
+    except Exception as e:
+        return {"status": "error", "msg": str(e)}
+
+@app.post("/dom/auth/record")
+async def dom_auth_record(data: Dict[str, Any]):
+    """
+    Start recording an auth flow. Opens a visible browser for user to log in.
+    Receives: { login_url, target_ws_url?, timeout_s? }
+    Returns:  { flow: AuthFlow dict }
+    """
+    try:
+        invader = _get_dom_invader()
+        if not invader.is_available:
+            return {"status": "error", "msg": "Playwright not installed"}
+
+        flow = await invader.record_auth_flow(
+            login_url=data.get("login_url", ""),
+            target_ws_url=data.get("target_ws_url", ""),
+            timeout_s=data.get("timeout_s", 120),
+        )
+        return {"status": "success", "flow": flow}
+
+    except Exception as e:
+        return {"status": "error", "msg": str(e)}
+
+@app.post("/dom/auth/replay")
+async def dom_auth_replay(data: Dict[str, Any]):
+    """
+    Replay a saved auth flow to get fresh tokens.
+    Receives: { flow? } (optional, uses saved flow if omitted)
+    Returns:  { valid, cookies, headers, session_token }
+    """
+    try:
+        invader = _get_dom_invader()
+        if not invader.is_available:
+            return {"status": "error", "msg": "Playwright not installed"}
+
+        if not invader.pool.is_started:
+            await invader.start()
+
+        tokens = await invader.replay_auth_flow(data.get("flow"))
+        return {
+            "status": "success",
+            "valid": tokens.valid,
+            "cookies": tokens.cookies,
+            "headers": tokens.headers,
+            "session_token": tokens.session_token,
+        }
+
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 
@@ -258,6 +470,7 @@ async def interceptor_toggle(data: Dict[str, Any]):
                 fut.set_result({"action": "drop"})
         state.interception_queue.clear()
     return {"status": "success", "interception": state.interception_enabled}
+
 
 @app.post("/interceptor/action")
 async def interceptor_action(data: Dict[str, Any]):
@@ -393,63 +606,199 @@ async def run_scan_task(scan_id: str):
         await sio.emit('scan_error', {'id': scan_id, 'error': str(e)})
         state.scanner = None
         
-async def run_blaster_task(url: str, payloads: List[str], template: str = "", use_spe: bool = False, auth_payload: str = None):
-    """Background task to run payload blaster fuzzing loops."""
-    try:
-        evolver = None
-        if use_spe:
-            try:
-                from .smart_payloads.payload_evolver import PayloadEvolver
-                evolver = PayloadEvolver()
-            except ImportError:
-                pass
-                
-        async with websockets.connect(url, ping_interval=None) as ws:
-            
-            if auth_payload and auth_payload.strip():
-                try:
-                    await ws.send(auth_payload)
-                    await asyncio.sleep(0.5)
-                except Exception as e:
-                    print(f"[!] Blaster auth payload failed: {e}")
+async def run_blaster_task(
+    url: str,
+    payloads: List[str],
+    template: str = "",
+    use_spe: bool = False,
+    auth_payload: str = None,
+    dom_verify: bool = False,
+    auth_flow: Optional[Dict[str, Any]] = None,
+):
+    """
+    Background task to run payload blaster fuzzing loops.
 
-            for p in payloads:
-                if not p.strip(): continue
-                
-                if evolver and len(p) > 2:
-                    import random
-                    if random.random() > 0.3: # 70% chance to mutate
+    New params:
+        dom_verify: If True, pass each successful response through the
+                    DOMInvader XSSVerifier and attach dom_verified/evidence.
+        auth_flow:  Recorded auth flow dict. If the WS connection drops
+                    (token expired), replay the flow headlessly for fresh
+                    tokens and auto-reconnect.
+    """
+    # ── Initialise helpers ───────────────────────────────────────
+    evolver = None
+    if use_spe:
+        try:
+            from .smart_payloads.payload_evolver import PayloadEvolver
+            evolver = PayloadEvolver()
+        except ImportError:
+            pass
+
+    # DOMInvader — start the browser pool once if verification is requested
+    invader = None
+    if dom_verify:
+        try:
+            invader = _get_dom_invader()
+            if invader.is_available and not invader.pool.is_started:
+                await invader.start()
+        except Exception as e:
+            logger.warning(f"DOM Invader init failed: {e}")
+            invader = None
+
+    # ── Helper: build final WS message from template + payload ───
+    def apply_template(p: str) -> str:
+        if template and "§inject§" in template:
+            return template.replace("§inject§", p)
+        return p
+
+    # ── Helper: get extra headers from auth flow tokens ──────────
+    async def get_ws_headers() -> dict:
+        if not auth_flow or not invader:
+            return {}
+        try:
+            tokens = await invader.replay_auth_flow(auth_flow)
+            if tokens.valid:
+                return tokens.headers
+        except Exception as e:
+            logger.warning(f"Auth replay failed: {e}")
+        return {}
+
+    # ── Build initial connection headers ─────────────────────────
+    ws_headers = {}
+    if auth_flow:
+        ws_headers = await get_ws_headers()
+
+    # ── Retry loop — re-connects on auth expiry ──────────────────
+    remaining_payloads = [p for p in payloads if p.strip()]
+    max_reconnects = 3
+    reconnect_count = 0
+    payload_idx = 0
+
+    try:
+        while payload_idx < len(remaining_payloads) and reconnect_count <= max_reconnects:
+            try:
+                connect_kwargs = {"ping_interval": None}
+                if ws_headers:
+                    connect_kwargs["extra_headers"] = ws_headers
+
+                async with websockets.connect(url, **connect_kwargs) as ws:
+                    # Send static auth payload if provided
+                    if auth_payload and auth_payload.strip():
                         try:
-                            p = evolver._mutate(p)
-                        except Exception:
-                            pass
-                            
-                # Apply payload to template if provided
-                if template and "§inject§" in template:
-                    final_packet = template.replace("§inject§", p)
+                            await ws.send(auth_payload)
+                            await asyncio.sleep(0.5)
+                        except Exception as e:
+                            print(f"[!] Blaster auth payload failed: {e}")
+
+                    # Fuzz remaining payloads
+                    while payload_idx < len(remaining_payloads):
+                        p = remaining_payloads[payload_idx]
+                        payload_idx += 1
+
+                        # SPE mutation
+                        if evolver and len(p) > 2:
+                            import random
+                            if random.random() > 0.3:
+                                try:
+                                    p = evolver._mutate(p)
+                                except Exception:
+                                    pass
+
+                        final_packet = apply_template(p)
+
+                        await sio.emit('blaster_progress', {
+                            'payload': final_packet, 'status': 'sending'
+                        })
+                        await asyncio.sleep(0.3)
+
+                        await ws.send(final_packet)
+
+                        try:
+                            resp = await asyncio.wait_for(ws.recv(), timeout=3.0)
+                            resp_str = str(resp)
+
+                            # ── DOM XSS Verification ────────────────
+                            dom_result = {}
+                            if invader and invader.is_available:
+                                try:
+                                    vr = await invader.verify_response(
+                                        payload=final_packet,
+                                        response=resp_str,
+                                        timeout_ms=2500,
+                                    )
+                                    dom_result = {
+                                        "dom_verified": vr.executed,
+                                        "dom_evidence": vr.evidence,
+                                        "dom_technique": vr.technique.value,
+                                    }
+                                    # If confirmed XSS — emit a dedicated event
+                                    if vr.executed:
+                                        await sio.emit('dom_xss_confirmed', {
+                                            "payload": final_packet,
+                                            "evidence": vr.evidence,
+                                            "technique": vr.technique.value,
+                                            "response_snippet": resp_str[:200],
+                                        })
+                                except Exception as e:
+                                    logger.warning(f"DOM verify inline failed: {e}")
+
+                            await sio.emit('blaster_result', {
+                                'payload': final_packet,
+                                'status': 'success',
+                                'length': len(resp_str),
+                                'response': resp_str[:100],
+                                **dom_result,
+                            })
+                            await sio.emit('message_sent', {
+                                'msg': final_packet, 'response': resp_str
+                            })
+
+                        except asyncio.TimeoutError:
+                            await sio.emit('blaster_result', {
+                                'payload': final_packet, 'status': 'timeout',
+                                'length': 0, 'response': 'No response',
+                                'dom_verified': False, 'dom_evidence': '',
+                            })
+                        except Exception as e:
+                            # Connection error mid-fuzz → break to retry
+                            err_str = str(e)
+                            if "ConnectionClosed" in err_str or "1000" in err_str or "1001" in err_str:
+                                # Likely session expired — step back so we retry this payload
+                                payload_idx -= 1
+                                raise
+                            await sio.emit('blaster_result', {
+                                'payload': final_packet, 'status': 'error',
+                                'length': 0, 'response': err_str,
+                            })
+
+            except asyncio.CancelledError:
+                raise
+            except Exception as e:
+                err_str = str(e)
+                # Attempt auth replay and reconnect
+                if auth_flow and reconnect_count < max_reconnects:
+                    reconnect_count += 1
+                    await sio.emit('blaster_result', {
+                        'payload': 'SESSION_EXPIRED',
+                        'status': 'info',
+                        'length': 0,
+                        'response': f'Session expired. Replaying auth flow (attempt {reconnect_count})...',
+                    })
+                    ws_headers = await get_ws_headers()
+                    await asyncio.sleep(1)
                 else:
-                    final_packet = p
-                
-                await sio.emit('blaster_progress', {'payload': final_packet, 'status': 'sending'})
-                await asyncio.sleep(0.5) # rate limit 
-                    
-                await ws.send(final_packet)
-                try:
-                    resp = await asyncio.wait_for(ws.recv(), timeout=3.0)
-                    resp_str = str(resp)
-                    await sio.emit('blaster_result', {'payload': final_packet, 'status': 'success', 'length': len(resp_str), 'response': resp_str[:100]})
-                    await sio.emit('message_sent', {'msg': final_packet, 'response': resp_str})
-                except asyncio.TimeoutError:
-                    await sio.emit('blaster_result', {'payload': final_packet, 'status': 'timeout', 'length': 0, 'response': 'No response'})
-                    await sio.emit('message_sent', {'msg': final_packet, 'response': 'TIMEOUT'})
-                except Exception as e:
-                    await sio.emit('blaster_result', {'payload': final_packet, 'status': 'error', 'length': 0, 'response': str(e)})
-                    await sio.emit('message_sent', {'msg': final_packet, 'response': f'ERROR: {str(e)}'})
+                    await sio.emit('blaster_result', {
+                        'payload': 'CONNECTION ERROR', 'status': 'fatal',
+                        'length': 0, 'response': err_str,
+                    })
+                    break
+
     except asyncio.CancelledError:
         print("[*] Blaster cancelled by user.")
-        await sio.emit('blaster_result', {'payload': 'CANCELLED', 'status': 'error', 'length': 0, 'response': 'Stopped.'})
-    except Exception as e:
-        await sio.emit('blaster_result', {'payload': 'CONNECTION ERROR', 'status': 'fatal', 'length': 0, 'response': str(e)})
+        await sio.emit('blaster_result', {
+            'payload': 'CANCELLED', 'status': 'error',
+            'length': 0, 'response': 'Stopped.',
+        })
     finally:
         await sio.emit('blaster_completed', {'status': 'done'})
 
@@ -1337,6 +1686,170 @@ async def session_delete(data: Dict[str, Any]):
         filepath.unlink()
         return {"status": "success"}
     raise HTTPException(status_code=404, detail="Session not found")
+
+# ═══════════════════════════════════════════════════════════════════
+# Multiplayer: Team Collaboration Routes
+# Delegates all logic to wshawk.team_engine.TeamEngine
+# ═══════════════════════════════════════════════════════════════════
+
+from wshawk.team_engine import TeamEngine
+
+team = TeamEngine()
+
+
+@app.post("/team/create")
+async def team_create(data: Dict[str, Any]):
+    """Create a new team collaboration room."""
+    name = data.get("name", "Operator").strip() or "Operator"
+    target = data.get("target", "")
+    room = team.create_room(name, target)
+    return {"status": "success", "room_code": room.code}
+
+
+@app.post("/team/join")
+async def team_join(data: Dict[str, Any]):
+    """Validate a room code exists (REST pre-check before Socket.IO join)."""
+    code = data.get("room_code", "").strip().upper()
+    room = team.get_room(code)
+    if not room:
+        raise HTTPException(status_code=404, detail="Room not found. Check the room code.")
+    return {
+        "status": "success",
+        "room_code": room.code,
+        "operator_count": room.operator_count,
+        "target": room.target,
+        "created_by": room.created_by,
+    }
+
+
+@app.get("/team/info/{room_code}")
+async def team_info(room_code: str):
+    """Get current team room state."""
+    room = team.get_room(room_code)
+    if not room:
+        raise HTTPException(status_code=404, detail="Room not found")
+    return {"status": "success", **room.info()}
+
+
+@app.post("/team/leave")
+async def team_leave_rest(data: Dict[str, Any]):
+    """Leave a team room (REST fallback when SID is unknown)."""
+    code = data.get("room_code", "").strip().upper()
+    name = data.get("name", "Operator")
+    team.leave_room_by_name(code, name)
+    return {"status": "success"}
+
+
+@app.get("/team/stats")
+async def team_stats():
+    """Diagnostics: active rooms and operator count."""
+    return {"status": "success", **team.stats()}
+
+
+# ── Socket.IO Team Event Wiring ─────────────────────────────────
+
+@sio.on("team_join")
+async def sio_team_join(sid, data):
+    code = data.get("room_code", "").strip().upper()
+    name = data.get("name", "Operator")
+    room, op = team.join_room(code, sid, name)
+    if not room:
+        await sio.emit("team_error", {"error": "Room not found"}, room=sid)
+        return
+
+    await sio.enter_room(sid, room.sio_room)
+    await sio.emit("team_roster", {"operators": room.roster(), "room_code": room.code}, room=room.sio_room)
+
+    activity = {"type": "join", "operator": op.name, "color": op.color, "time": op.joined_at}
+    await sio.emit("team_activity", activity, room=room.sio_room)
+
+    await sio.emit("team_state", {
+        "shared_notes": room.shared_notes,
+        "shared_endpoints": room.shared_endpoints,
+        "target": room.target,
+    }, room=sid)
+
+    print(f"[Team] {name} joined room {room.code} ({room.operator_count} operators)")
+
+
+@sio.on("team_leave")
+async def sio_team_leave(sid, data=None):
+    room, op = team.leave_room(sid)
+    if not room or not op:
+        return
+
+    await sio.leave_room(sid, room.sio_room)
+    await sio.emit("team_roster", {"operators": room.roster(), "room_code": room.code}, room=room.sio_room)
+
+    activity = {"type": "leave", "operator": op.name, "color": op.color, "time": datetime.now().isoformat()}
+    await sio.emit("team_activity", activity, room=room.sio_room)
+    print(f"[Team] {op.name} left room {room.code}")
+
+
+@sio.on("team_notes_update")
+async def sio_team_notes_update(sid, data):
+    result = team.update_notes(sid, data.get("content", ""))
+    if not result:
+        return
+    room, op = result
+    await sio.emit("team_notes_sync", {
+        "content": data.get("content", ""),
+        "cursor_pos": data.get("cursor_pos", 0),
+        "operator": op.name,
+        "color": op.color,
+    }, room=room.sio_room, skip_sid=sid)
+
+
+@sio.on("team_cursor_move")
+async def sio_team_cursor_move(sid, data):
+    result = team.update_cursor(sid, data.get("position"), data.get("tab", "notes"))
+    if not result:
+        return
+    room, op = result
+    await sio.emit("team_cursor_sync", {
+        "sid": sid,
+        "operator": op.name,
+        "color": op.color,
+        "position": data.get("position"),
+        "tab": data.get("tab", "notes"),
+    }, room=room.sio_room, skip_sid=sid)
+
+
+@sio.on("team_endpoint_add")
+async def sio_team_endpoint_add(sid, data):
+    result = team.add_endpoint(sid, data.get("endpoint", {}))
+    if not result:
+        return
+    room, op = result
+    await sio.emit("team_endpoint_sync", {
+        "endpoint": data.get("endpoint", {}),
+        "operator": op.name,
+        "color": op.color,
+    }, room=room.sio_room, skip_sid=sid)
+
+
+@sio.on("team_finding")
+async def sio_team_finding(sid, data):
+    result = team.log_finding(sid, data.get("finding", {}))
+    if not result:
+        return
+    room, entry = result
+    await sio.emit("team_activity", entry.to_dict(), room=room.sio_room)
+
+
+@sio.on("team_scan_event")
+async def sio_team_scan_event(sid, data):
+    result = team.log_scan_event(
+        sid,
+        data.get("scan_type", "unknown"),
+        data.get("target", ""),
+        data.get("status", "started"),
+        data.get("results_count", 0),
+    )
+    if not result:
+        return
+    room, entry = result
+    await sio.emit("team_activity", entry.to_dict(), room=room.sio_room)
 
 
 # ─────────────────────────────────────────────────────────────────────

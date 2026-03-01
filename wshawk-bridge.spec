@@ -1,5 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
-# WSHawk V3.0.2 — PyInstaller spec for the GUI Bridge sidecar binary
+# WSHawk V3.0.3 — PyInstaller spec for the GUI Bridge sidecar binary
 # Bundles the full backend: core scanner, web_pentest toolkit, smart payloads,
 # payload mutator, database manager, and all data files.
 
@@ -45,6 +45,9 @@ a = Analysis(
         'wshawk.plugin_system',
         'wshawk.defensive_validation',
         'wshawk.ai_engine',
+        'wshawk.ai_exploit_engine',        # NEW: Heuristic Auto-Exploit (Highlight-to-Hack)
+        'wshawk.dom_invader',              # NEW: Headless DOM XSS Verifier + Auth Flow Recorder
+        'wshawk.headless_xss_verifier',    # Legacy verifier (kept for compat)
 
         # ── Smart Payload Engine ──
         'wshawk.smart_payloads',
@@ -122,6 +125,19 @@ a = Analysis(
         'cryptography.hazmat.backends',
         'yaml',
         'sqlite3',
+
+        # ── Playwright (optional — graceful fallback if not installed) ────────
+        # PyInstaller won't auto-detect these due to lazy try/except imports.
+        # If playwright is not installed, dom_invader falls back cleanly.
+        'playwright',
+        'playwright.async_api',
+        'playwright._impl._api_types',
+        'playwright._impl._browser',
+        'playwright._impl._browser_context',
+        'playwright._impl._page',
+        'playwright._impl._network',
+        'playwright._impl._dialog',
+        'playwright.sync_api',
     ],
     hookspath=[],
     hooksconfig={},
@@ -135,7 +151,9 @@ a = Analysis(
         'scipy',
         'pytest',
         'pyinstaller',
-        'playwright',
+        # NOTE: playwright is no longer excluded — it's an optional runtime dep
+        # bundled via hiddenimports above. If not installed, dom_invader
+        # will gracefully degrade (HAS_PLAYWRIGHT = False).
     ],
     noarchive=False,
     optimize=0,
