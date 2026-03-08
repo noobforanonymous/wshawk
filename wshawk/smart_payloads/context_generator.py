@@ -3,7 +3,7 @@
 WSHawk Context-Aware Payload Generator
 Generates attack payloads based on server response analysis
 
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 import re

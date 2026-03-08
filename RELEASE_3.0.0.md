@@ -57,5 +57,5 @@ WSHawk V3.0.1 is built to live inside a modern security operations center.
 
 ---
 
-### **Built by Regaan (@noobforanonymous)**
+### **Built by Regaan (@regaan)**
 *Empowering secondary-security researchers and blue teams with enterprise-grade WebSocket auditing.*

@@ -16,7 +16,7 @@ playwright install chromium
 
 ### From Source
 ```bash
-git clone https://github.com/noobforanonymous/wshawk
+git clone https://github.com/regaan/wshawk
 cd wshawk
 pip install -e .
 ```

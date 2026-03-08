@@ -26,7 +26,7 @@ setup(
     description="Professional WebSocket security scanner with real vulnerability verification, session hijacking tests, and CVSS scoring",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/noobforanonymous/wshawk",
+    url="https://github.com/regaan/wshawk",
     packages=find_packages(exclude=["tests", "tests.*", "examples", "examples.*", "docs"]),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -63,8 +63,8 @@ setup(
     },
     keywords="websocket security scanner penetration-testing bug-bounty vulnerability xss sqli session-hijacking cvss playwright oast waf-bypass",
     project_urls={
-        "Bug Reports": "https://github.com/noobforanonymous/wshawk/issues",
-        "Source": "https://github.com/noobforanonymous/wshawk",
-        "Documentation": "https://github.com/noobforanonymous/wshawk/blob/main/README.md",
+        "Bug Reports": "https://github.com/regaan/wshawk/issues",
+        "Source": "https://github.com/regaan/wshawk",
+        "Documentation": "https://github.com/regaan/wshawk/blob/main/README.md",
     },
 )

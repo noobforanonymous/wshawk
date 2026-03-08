@@ -3,7 +3,7 @@
 WSHawk WebSocket Endpoint Discovery Module
 Auto-detect WebSocket endpoints from HTTP targets
 
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 import asyncio

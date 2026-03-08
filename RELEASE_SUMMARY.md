@@ -56,4 +56,4 @@ WSHawk V3.0.2 is built to live inside a modern security operations center.
 
 ---
 
-### **Built by Regaan (@noobforanonymous)**
+### **Built by Regaan (@regaan)**

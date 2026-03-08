@@ -127,7 +127,7 @@ pip install wshawk
 Or install from source:
 
 ```bash
-git clone https://github.com/noobforanonymous/wshawk
+git clone https://github.com/regaan/wshawk
 cd wshawk
 pip install -e .
 ```
@@ -445,8 +445,8 @@ To add new defensive tests:
 
 ## Support
 
-- **GitHub Issues:** https://github.com/noobforanonymous/wshawk/issues
-- **Documentation:** https://github.com/noobforanonymous/wshawk
+- **GitHub Issues:** https://github.com/regaan/wshawk/issues
+- **Documentation:** https://github.com/regaan/wshawk
 - **Email:** regaan48@gmail.com
 
 ---

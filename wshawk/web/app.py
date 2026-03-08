@@ -3,7 +3,7 @@
 WSHawk Web GUI - Flask-based Dashboard & REST API
 SQLite persistence, auth, resilient background scanning
 
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 import asyncio

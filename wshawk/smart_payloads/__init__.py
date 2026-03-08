@@ -1,6 +1,6 @@
 """
 WSHawk Smart Payloads - Context-aware adaptive payload generation
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 from .context_generator import ContextAwareGenerator

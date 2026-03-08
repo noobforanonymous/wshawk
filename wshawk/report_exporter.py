@@ -3,7 +3,7 @@
 WSHawk Multi-Format Report Exporter
 Supports JSON, CSV, and SARIF output for CI/CD integration
 
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 import json
@@ -123,7 +123,7 @@ class ReportExporter:
             'wshawk_report': {
                 'version': '3.0.1',
                 'generated_at': datetime.now().isoformat(),
-                'scanner': 'WSHawk by Regaan (@noobforanonymous)',
+                'scanner': 'WSHawk by Regaan (@regaan)',
                 'format_version': '1.0'
             },
             'scan_info': {
@@ -293,7 +293,7 @@ class ReportExporter:
                         'name': 'WSHawk',
                         'version': '3.0.1',
                         'semanticVersion': '3.0.1',
-                        'informationUri': 'https://github.com/noobforanonymous/wshawk',
+                        'informationUri': 'https://github.com/regaan/wshawk',
                         'organization': 'Rot Hackers',
                         'rules': list(rules.values())
                     }

@@ -141,7 +141,7 @@ jobs:
             pip install wshawk==3.0.1
             ```
 
-            **Full Changelog**: https://github.com/noobforanonymous/wshawk/compare/v3.0.0...${{ github.ref_name }}
+            **Full Changelog**: https://github.com/regaan/wshawk/compare/v3.0.0...${{ github.ref_name }}
           files: |
             artifacts/**/*.exe
             artifacts/**/*.dmg

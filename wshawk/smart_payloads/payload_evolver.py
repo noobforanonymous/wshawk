@@ -3,7 +3,7 @@
 WSHawk Payload Evolver
 Combines and mutates successful payloads to create novel attack strings
 
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 import re

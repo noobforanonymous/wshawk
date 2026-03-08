@@ -1,4 +1,4 @@
 """
 WSHawk Web GUI - Flask-based dashboard
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
