@@ -1,13 +1,25 @@
 # WSHawk — Enterprise-Grade WebSocket Security Scanner & Web Penetration Testing Toolkit
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![PyPI version](https://badge.fury.io/py/wshawk.svg)](https://badge.fury.io/py/wshawk)
-[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Playwright](https://img.shields.io/badge/Playwright-Supported-green.svg)](https://playwright.dev/)
-[![Status: Production](https://img.shields.io/badge/status-production-green.svg)](https://github.com/regaan/wshawk)
-[![Adoption: 900+ Clones](https://img.shields.io/badge/Adoption-900+_clones_(14d)-blueviolet?style=flat&logo=github)](https://github.com/regaan/wshawk/graphs/traffic)
-[![Community: 120+ Devs](https://img.shields.io/badge/Community-120+_Active_Devs-orange?style=flat&logo=community)](https://github.com/regaan/wshawk)
-
+<p align="center">
+  <a href="https://www.python.org/downloads/">
+    <img src="https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python&logoColor=white" />
+  </a>
+  <a href="https://badge.fury.io/py/wshawk">
+    <img src="https://img.shields.io/badge/PyPI-wshawk-blue?style=for-the-badge&logo=pypi&logoColor=white" />
+  </a>
+  <a href="https://www.gnu.org/licenses/agpl-3.0">
+    <img src="https://img.shields.io/badge/License-AGPL--3.0-blue?style=for-the-badge" />
+  </a>
+  <a href="https://playwright.dev/">
+    <img src="https://img.shields.io/badge/Playwright-Supported-green?style=for-the-badge&logo=playwright&logoColor=white" />
+  </a>
+  <a href="https://github.com/regaan/wshawk">
+    <img src="https://img.shields.io/badge/Status-Production-green?style=for-the-badge" />
+  </a>
+ <a href="https://pepy.tech/project/wshawk">
+   <img src="https://img.shields.io/pepy/dt/wshawk?style=for-the-badge&logo=pypi&logoColor=white&label=PyPI%20Downloads&color=blue" alt="PyPI Downloads">
+ </a>
+</p>
 **WSHawk** is an enterprise-grade, open-source WebSocket security scanner built for professional penetration testers and red teams. It performs automated vulnerability assessment over WebSocket connections using an adaptive **Smart Payload Evolution (SPE)** engine with real-time feedback loops and genetic payload mutation. Designed for high-performance environments at the **ROT Independent Security Research Lab**.
 
 Starting with v3.0.4, we've transitioned to the **AGPL-3.0 license** to better protect the project while keeping it open for the community. This release includes the **Headless DOM Invader** powered by Playwright for real browser-based XSS verification and complex SSO auth flow recording/replay. Also includes a **Context-Aware Heuristic Engine** and **WSHawk Browser Companion** for seamless handshake interception.
