@@ -22,7 +22,7 @@ async def main():
         print(f"{Colors.CYAN}╚╩╝╚═╝╩ ╩╩ ╩╚╩╝╩ ╩{Colors.END}")
         print()
         print(f"{Colors.BOLD}Defensive Validation Suite{Colors.END}")
-        print(f"Created by: Regaan (@noobforanonymous)")
+        print(f"Created by: Regaan (@regaan)")
         print("━" * 70)
         print()
         print(f"{Colors.CYAN}Enter WebSocket URL (e.g., ws://example.com or wss://example.com):{Colors.END}")

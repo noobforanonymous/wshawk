@@ -3,7 +3,7 @@
 WSHawk HTTP Resilience Layer
 Retry with exponential backoff, circuit breaker, and rate-limit handling
 
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 import asyncio

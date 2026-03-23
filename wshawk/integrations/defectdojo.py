@@ -3,7 +3,7 @@
 WSHawk DefectDojo Integration
 Push scan results directly to DefectDojo vulnerability management platform
 
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 import json
@@ -351,7 +351,7 @@ class DefectDojoIntegration:
                 'steps_to_reproduce': self._build_reproduction_steps(vuln, scan_info),
                 'mitigation': vuln.get('recommendation', ''),
                 'impact': f"CVSS {vuln.get('cvss_score', 'N/A')} - {vuln.get('cvss_severity', 'Unknown')}",
-                'references': 'https://github.com/noobforanonymous/wshawk',
+                'references': 'https://github.com/regaan/wshawk',
                 'unique_id_from_tool': f"WSHAWK-{i+1:04d}",
                 'vuln_id_from_tool': f"WSHAWK-{vuln.get('type', 'UNK').replace(' ', '-').upper()}",
             }

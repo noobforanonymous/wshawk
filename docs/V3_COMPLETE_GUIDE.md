@@ -435,9 +435,9 @@ A: Increase the rate with `--rate 50` and disable Playwright with `--no-playwrig
 
 WSHawk is a community-driven project. We rely on your feedback to improve our mutation engines and detection signatures.
 
-- **Developer**: Regaan (@noobforanonymous)
+- **Developer**: Regaan (@regaan)
 - **Organization**: Rot Hackers
-- **GitHub**: https://github.com/noobforanonymous/wshawk
+- **GitHub**: https://github.com/regaan/wshawk
 
 ---
 **WSHawk V3.0.1** - *Built by Regaan and for the global security research community.*

@@ -45,7 +45,7 @@ Please give us reasonable time to fix the issue before public disclosure. We'll 
 
 Security patches are released as soon as possible. Subscribe to releases to stay updated:
 - Watch this repository
-- Check the [Releases](https://github.com/noobforanonymous/wshawk/releases) page
+- Check the [Releases](https://github.com/regaan/wshawk/releases) page
 
 ### Out of Scope
 

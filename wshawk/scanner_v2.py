@@ -307,7 +307,7 @@ class WSHawkV2:
         Logger.info("Testing XSS and reflective injection...")
         
         results = []
-        payloads = WSPayloads.get_xss_payloads()[:100]
+        payloads = WSPayloads.get_xss()[:100]
         
         # AI Integration
         if self.use_ai:

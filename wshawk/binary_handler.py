@@ -3,7 +3,7 @@
 WSHawk Binary WebSocket Message Handler
 Support for binary frames, fragmented messages, and protocol-specific formats
 
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 import struct

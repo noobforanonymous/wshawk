@@ -3,7 +3,7 @@
 WSHawk Logging Configuration
 Centralized logging with colors and vulnerability reporting
 
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 import logging

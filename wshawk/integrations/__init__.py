@@ -1,6 +1,6 @@
 """
 WSHawk Integrations - Connect scan results to external platforms
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 from .defectdojo import DefectDojoIntegration

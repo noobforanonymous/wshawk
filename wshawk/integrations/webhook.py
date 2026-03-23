@@ -3,7 +3,7 @@
 WSHawk Webhook Notifier
 Send scan results to Slack, Discord, Teams, or any webhook URL
 
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 import json
@@ -277,7 +277,7 @@ class WebhookNotifier:
                 "text": f"WSHawk V3.0.2 by Regaan • {datetime.now().strftime('%Y-%m-%d %H:%M')}"
             },
             "thumbnail": {
-                "url": "https://github.com/noobforanonymous.png"
+                "url": "https://github.com/regaan.png"
             }
         }
         
@@ -343,7 +343,7 @@ class WebhookNotifier:
                     "@type": "OpenUri",
                     "name": "View WSHawk Repo",
                     "targets": [
-                        {"os": "default", "uri": "https://github.com/noobforanonymous/wshawk"}
+                        {"os": "default", "uri": "https://github.com/regaan/wshawk"}
                     ]
                 }
             ]

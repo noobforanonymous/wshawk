@@ -1,11 +1,11 @@
 {
   "name": "wshawk",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "WSHawk - Advanced WebSocket Security Scanner",
-  "homepage": "https://github.com/noobforanonymous/wshawk",
+  "homepage": "https://github.com/regaan/wshawk",
   "repository": {
     "type": "git",
-    "url": "https://github.com/noobforanonymous/wshawk.git"
+    "url": "https://github.com/regaan/wshawk.git"
   },
   "main": "index.js",
   "scripts": {

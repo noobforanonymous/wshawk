@@ -3,7 +3,7 @@
 WSHawk Configuration Manager
 YAML-based config with env var overrides and secrets support
 
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 import os
@@ -318,7 +318,7 @@ def generate_sample_config(path: str = './wshawk.yaml'):
     if not yaml:
         # Fallback to manual YAML writing
         sample = """# WSHawk Configuration File
-# https://github.com/noobforanonymous/wshawk
+# https://github.com/regaan/wshawk
 
 scanner:
   rate_limit: 10

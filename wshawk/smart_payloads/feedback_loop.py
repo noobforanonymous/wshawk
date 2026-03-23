@@ -3,7 +3,7 @@
 WSHawk Feedback Loop
 Real-time learning from scan responses to adapt attack strategy
 
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 import re

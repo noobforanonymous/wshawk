@@ -1,6 +1,6 @@
 # WSHawk Desktop v3 — Complete Reference Guide
 
-> **Version 3.0.1** · Author: Regaan ([@noobforanonymous](https://github.com/noobforanonymous))
+> **Version 3.0.1** · Author: Regaan ([@regaan](https://github.com/regaan))
 > Advanced WebSocket & Web Application Security Scanner
 
 ---
@@ -140,7 +140,7 @@ sequenceDiagram
 ### From Source
 
 ```bash
-git clone https://github.com/noobforanonymous/wshawk
+git clone https://github.com/regaan/wshawk
 cd wshawk
 
 # Install Python dependencies

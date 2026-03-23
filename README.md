@@ -4,13 +4,13 @@
 [![PyPI version](https://badge.fury.io/py/wshawk.svg)](https://badge.fury.io/py/wshawk)
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Playwright](https://img.shields.io/badge/Playwright-Supported-green.svg)](https://playwright.dev/)
-[![Status: Production](https://img.shields.io/badge/status-production-green.svg)](https://github.com/noobforanonymous/wshawk)
-[![Adoption: 900+ Clones](https://img.shields.io/badge/Adoption-900+_clones_(14d)-blueviolet?style=flat&logo=github)](https://github.com/noobforanonymous/wshawk/graphs/traffic)
-[![Community: 120+ Devs](https://img.shields.io/badge/Community-120+_Active_Devs-orange?style=flat&logo=community)](https://github.com/noobforanonymous/wshawk)
+[![Status: Production](https://img.shields.io/badge/status-production-green.svg)](https://github.com/regaan/wshawk)
+[![Adoption: 900+ Clones](https://img.shields.io/badge/Adoption-900+_clones_(14d)-blueviolet?style=flat&logo=github)](https://github.com/regaan/wshawk/graphs/traffic)
+[![Community: 120+ Devs](https://img.shields.io/badge/Community-120+_Active_Devs-orange?style=flat&logo=community)](https://github.com/regaan/wshawk)
 
 **WSHawk** is an enterprise-grade, open-source WebSocket security scanner built for professional penetration testers and red teams. It performs automated vulnerability assessment over WebSocket connections using an adaptive **Smart Payload Evolution (SPE)** engine with real-time feedback loops and genetic payload mutation. Designed for high-performance environments at the **ROT Independent Security Research Lab**.
 
-Starting with v3.0.4, we've transitioned to the **AGPL-3.0 license** to better protect the project while keeping it open for the community. This release includes the **Headless DOM Invader** powered by Playwright for real browser-based XSS verification and complex SSO auth flow recording/replay. Also includes a **Context-Aware Heuristic Engine** and **WSHawk Browser Companion** for seamless handshake interception.
+Starting with v3.0.5, we've transitioned to the **AGPL-3.0 license** to better protect the project while keeping it open for the community. This release includes the **Headless DOM Invader** powered by Playwright for real browser-based XSS verification and complex SSO auth flow recording/replay. Also includes a **Context-Aware Heuristic Engine** and **WSHawk Browser Companion** for seamless handshake interception.
 
 > [!IMPORTANT]
 > **Full Documentation:**
@@ -159,13 +159,13 @@ playwright install chromium
 
 **Method 1: One-liner (Recommended)**
 ```bash
-brew install --cask https://raw.githubusercontent.com/noobforanonymous/homebrew-tap/main/Casks/wshawk.rb
+brew install --cask https://raw.githubusercontent.com/regaan/homebrew-tap/main/Casks/wshawk.rb
 ```
 
 **Method 2: Stay Updated (Via Tap)**
 ```bash
 # Register the WSHawk tap
-brew tap noobforanonymous/tap
+brew tap regaan/tap
 
 # Install the cask
 brew install --cask wshawk
@@ -177,10 +177,10 @@ WSHawk is available via the official Regaan APT repository.
 
 ```bash
 # Add the WSHawk GPG key
-curl -sSL https://noobforanonymous.github.io/wshawk-repo/wshawk_repo.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/wshawk-archive-keyring.gpg
+curl -sSL https://regaan.github.io/wshawk-repo/wshawk_repo.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/wshawk-archive-keyring.gpg
 
 # Add the WSHawk APT repository
-echo "deb [signed-by=/usr/share/keyrings/wshawk-archive-keyring.gpg] https://noobforanonymous.github.io/wshawk-repo stable main" | sudo tee /etc/apt/sources.list.d/wshawk.list
+echo "deb [signed-by=/usr/share/keyrings/wshawk-archive-keyring.gpg] https://regaan.github.io/wshawk-repo stable main" | sudo tee /etc/apt/sources.list.d/wshawk.list
 
 # Install WSHawk
 sudo apt update && sudo apt install wshawk
@@ -207,7 +207,7 @@ See [Docker Guide](docs/DOCKER.md) for detailed usage.
 ### Build Desktop Application
 
 ```bash
-git clone https://github.com/noobforanonymous/wshawk
+git clone https://github.com/regaan/wshawk
 cd wshawk
 
 # Build Python sidecar binary
@@ -326,7 +326,7 @@ See [Defensive Validation Guide](docs/DEFENSIVE_VALIDATION.md).
 >
 > **Download only from official sources:**
 > - **Website:** [`https://wshawk.rothackers.com`](https://wshawk.rothackers.com)
-> - **GitHub:** [`https://github.com/noobforanonymous/wshawk`](https://github.com/noobforanonymous/wshawk)
+> - **GitHub:** [`https://github.com/regaan/wshawk`](https://github.com/regaan/wshawk)
 > - **PyPI:** `pip install wshawk`
 > - **Docker:** `docker pull rothackers/wshawk`
 
@@ -369,17 +369,17 @@ Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 | Channel | Link |
 |---|---|
-| Issues | [GitHub Issues](https://github.com/noobforanonymous/wshawk/issues) |
+| Issues | [GitHub Issues](https://github.com/regaan/wshawk/issues) |
 | Documentation | [docs/](docs/) |
 | Email | support@rothackers.com |
 
 ---
 
-**WSHawk v3.0.4** — Professional WebSocket Security Scanner & Interception Suite
+**WSHawk v3.0.5** — Professional WebSocket Security Scanner & Interception Suite
 
 ---
 
-### Latest Updates (v3.0.3)
+### Latest Updates (v3.0.5)
 - **DOM Invader**: Headless Playwright engine verifies XSS payloads in a real browser — zero false positives. Confirms `alert()`, `eval()`, DOM mutations, and injected script tags.
 - **Auth Flow Recorder**: Records complex SSO/OAuth login flows in a visible browser, then replays them headlessly to mint fresh tokens during long fuzzing runs.
 - **Auto Session Reconnect**: Payload Blaster detects session expiry and automatically replays the recorded auth flow to reconnect — no manual intervention needed.

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wshawk"
-version = "3.0.4"
+version = "3.0.5"
 authors = [
     {name = "Regaan"}
 ]
@@ -41,9 +41,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/noobforanonymous/wshawk"
-"Bug Reports" = "https://github.com/noobforanonymous/wshawk/issues"
-Source = "https://github.com/noobforanonymous/wshawk"
+Homepage = "https://github.com/regaan/wshawk"
+"Bug Reports" = "https://github.com/regaan/wshawk/issues"
+Source = "https://github.com/regaan/wshawk"
 
 [project.scripts]
 wshawk = "wshawk.__main__:cli"

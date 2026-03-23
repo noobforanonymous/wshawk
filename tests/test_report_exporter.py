@@ -67,7 +67,7 @@ class TestReportExporter(unittest.TestCase):
         self.assertIn('scan_info', report)
         self.assertIn('summary', report)
         self.assertIn('vulnerabilities', report)
-        self.assertEqual(report['wshawk_report']['scanner'], 'WSHawk by Regaan (@noobforanonymous)')
+        self.assertEqual(report['wshawk_report']['scanner'], 'WSHawk by Regaan (@regaan)')
 
     def test_json_vulnerability_count(self):
         path = self.exporter.export(self.sample_vulns, self.scan_info, 'json')

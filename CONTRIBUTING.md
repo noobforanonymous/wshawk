@@ -124,7 +124,7 @@ When reporting bugs, include:
 - Actual behavior
 - Error messages or logs
 
-Use the GitHub issue tracker: https://github.com/noobforanonymous/wshawk/issues
+Use the GitHub issue tracker: https://github.com/regaan/wshawk/issues
 
 ## Security Issues
 

@@ -3,7 +3,7 @@
 """
 WSHawk - WebSocket Security Scanner
 Created: December 2025
-Author: Regaan (@noobforanonymous)
+Author: Regaan (@regaan)
 """
 
 import asyncio
@@ -31,8 +31,8 @@ class Logger:
 ║║║╚═╗╠═╣╠═╣║║║╠╩╗
 ╚╩╝╚═╝╩ ╩╩ ╩╚╩╝╩ ╩
 {Colors.END}
-{Colors.YELLOW}WebSocket Security Scanner V3.0.2{Colors.END}
-{Colors.CYAN}Created by: Regaan (@noobforanonymous){Colors.END}
+{Colors.YELLOW}WebSocket Security Scanner V3.0.5{Colors.END}
+{Colors.CYAN}Created by: Regaan (@regaan){Colors.END}
 {Colors.BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Colors.END}
 """
         print(banner)
@@ -1077,7 +1077,7 @@ class WSHawk:
         
         html += f"""
         <div class="footer">
-            <p><strong>WSHawk v1.0</strong> | Created by <strong>Regaan (@noobforanonymous)</strong></p>
+            <p><strong>WSHawk v1.0</strong> | Created by <strong>Regaan (@regaan)</strong></p>
             <p>Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
         </div>
     </div>

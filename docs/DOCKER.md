@@ -228,9 +228,9 @@ docker run --rm -v /absolute/path/reports:/app/reports rothackers/wshawk ws://ta
 
 ## Support
 
-- **GitHub:** https://github.com/noobforanonymous/wshawk
+- **GitHub:** https://github.com/regaan/wshawk
 - **Docker Hub:** https://hub.docker.com/r/rothackers/wshawk
-- **Issues:** https://github.com/noobforanonymous/wshawk/issues
+- **Issues:** https://github.com/regaan/wshawk/issues
 
 ---
 
