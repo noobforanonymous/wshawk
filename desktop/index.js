@@ -157,7 +157,10 @@ function checkPythonDependency() {
 }
 
 app.whenReady().then(() => {
-    checkPythonDependency();
+    // Only check for system Python in dev mode — packaged builds use
+    // the self-contained wshawk-bridge binary (PyInstaller) which bundles
+    // its own Python interpreter and all pip dependencies.
+    if (!app.isPackaged) checkPythonDependency();
     startPythonSidecar();
     createWindow();
 

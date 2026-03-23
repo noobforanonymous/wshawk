@@ -12,10 +12,19 @@ import json
 import time
 import re
 import os
+import sys
 from datetime import datetime
 from typing import List, Dict, Optional, Any
 from urllib.parse import urlparse
 import ssl
+
+# Force UTF-8 output on Windows to prevent charmap encoding crashes
+if sys.platform == 'win32':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 
 from .logger import setup_logging, get_logger, VULN_LEVEL, SUCCESS_LEVEL, Colors
 
@@ -25,7 +34,8 @@ logger = setup_logging()
 class Logger:
     @staticmethod
     def banner():
-        banner = f"""
+        try:
+            banner = f"""
 {Colors.CYAN}{Colors.BOLD}
 ╦ ╦╔═╗╦ ╦╔═╗╦ ╦╦╔═
 ║║║╚═╗╠═╣╠═╣║║║╠╩╗
@@ -35,7 +45,20 @@ class Logger:
 {Colors.CYAN}Created by: Regaan (@regaan){Colors.END}
 {Colors.BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Colors.END}
 """
-        print(banner)
+            print(banner)
+        except UnicodeEncodeError:
+            # ASCII fallback for terminals that can't render Unicode
+            banner = f"""
+{Colors.CYAN}{Colors.BOLD}
+ _    _ ___ _  _ ____ _    _ _  _
+ |    |  |  |__| |__| |    | |_/
+ |_/|_|  |  |  | |  | |_/|_| | \\_
+{Colors.END}
+{Colors.YELLOW}WebSocket Security Scanner V3.0.5{Colors.END}
+{Colors.CYAN}Created by: Regaan (@regaan){Colors.END}
+{Colors.BLUE}========================================{Colors.END}
+"""
+            print(banner)
     
     @staticmethod
     def info(msg):

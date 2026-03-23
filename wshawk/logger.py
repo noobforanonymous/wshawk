@@ -13,6 +13,15 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+# Force UTF-8 on Windows to prevent charmap encoding crashes
+# when payloads or output contain non-ASCII characters
+if sys.platform == 'win32':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 # Color codes for terminal output
 class Colors:
     HEADER = '\033[95m'
