@@ -701,7 +701,7 @@ class WSHawkV2:
         # Connect
         ws = await self.connect()
         if not ws:
-            return None
+            return []
         
         Logger.success("Connected!")
         

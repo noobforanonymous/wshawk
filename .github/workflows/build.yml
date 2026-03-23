@@ -138,10 +138,10 @@ jobs:
 
             ### Install via pip
             ```bash
-            pip install wshawk==3.0.1
+            pip install wshawk==${{ github.ref_name }}
             ```
 
-            **Full Changelog**: https://github.com/regaan/wshawk/compare/v3.0.0...${{ github.ref_name }}
+            **Full Changelog**: https://github.com/regaan/wshawk/compare/v3.0.5...${{ github.ref_name }}
           files: |
             artifacts/**/*.exe
             artifacts/**/*.dmg
