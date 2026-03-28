@@ -121,7 +121,7 @@ jobs:
           draft: false
           prerelease: false
           generate_release_notes: false
-                    body: |
+          body: |
             ## WSHawk ${{ github.ref_name }}
 
             WSHawk v4.0.1 is a bug-fix release focused on desktop workflow clarity and web testing reliability.
