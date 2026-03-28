@@ -37,7 +37,7 @@ As of v4.0.0, WSHawk ships under the **AGPL-3.0 license** and includes the platf
 
 ## ⚡ Performance & Adoption Benchmarks
 
-- **Current release**: `v4.0.0`
+- **Current release**: `v4.0.1`
 - **Interfaces**: CLI, web dashboard, desktop app, and browser companion
 - **Validation coverage**: `full_stack_realtime_saas`, `socketio_saas`, and `graphql_subscriptions_lab`
 - **Primary focus**: authenticated, stateful, and asynchronous web application testing rather than passive HTTP-only scanning

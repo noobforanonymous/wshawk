@@ -470,6 +470,7 @@ function connectBridge(forceReconnect = false) {
     });
     // Expose on window so Team Mode and other modules can reuse the connection
     window.socket = socket;
+    window.dispatchEvent(new CustomEvent('wshawk:socket-ready', { detail: { socket } }));
 
     socket.on('connect', () => {
         connPill.className = 'connection-status online';
@@ -1050,7 +1051,7 @@ document.getElementById('reqforge-refresh-identities')?.addEventListener('click'
     try {
         await ensurePlatformProject('identity_refresh');
         const identities = await refreshReqForgeIdentities({ announceErrors: true });
-        appendLog('info', `[Platform] Loaded ${identities.length} identity${identities.length === 1 ? '' : 'ies'} into Request Forge.`);
+        appendLog('info', `[Platform] Loaded ${identities.length} identity${identities.length === 1 ? '' : 'ies'} into WS Forge.`);
     } catch (error) {
         appendLog('vuln', `[Platform] Unable to refresh identities: ${error.message}`);
     }

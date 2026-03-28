@@ -1,6 +1,6 @@
 {
   "name": "wshawk",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "WSHawk - Advanced WebSocket Security Scanner",
   "homepage": "https://github.com/regaan/wshawk",
   "repository": {

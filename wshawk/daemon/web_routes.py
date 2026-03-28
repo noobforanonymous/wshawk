@@ -250,6 +250,10 @@ def register_web_routes(ctx: BridgeContext) -> None:
         for finding in result.get("findings", []):
             path = str(finding.get("path", ""))
             status = int(finding.get("status", 0) or 0)
+            variant_paths = [str(item) for item in finding.get("variant_paths", []) if item]
+            variant_note = ""
+            if variant_paths:
+                variant_note = f" Grouped {len(variant_paths)} near-identical variant path(s): {', '.join(variant_paths)}."
             lowered = path.lower()
             if lowered in {"/.env", "/.git/config"}:
                 severity = "high"
@@ -260,7 +264,7 @@ def register_web_routes(ctx: BridgeContext) -> None:
             normalized.append(
                 {
                     "title": f"Exposed path discovered: {path or '/'}",
-                    "detail": f"Directory scanner found {path or '/'} with HTTP {status}.",
+                    "detail": f"Directory scanner found {path or '/'} with HTTP {status}.{variant_note}",
                     "severity": severity,
                     "path": path,
                     "status": status,

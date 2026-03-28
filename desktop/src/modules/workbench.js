@@ -752,7 +752,7 @@ window.sendToForge = function (rowId) {
     if (!data) return;
     document.getElementById('reqforge-req').value = data;
     document.querySelector('.nav-item[data-target="reqforge"]')?.click();
-    appendLog('info', 'Frame sent to Request Forge for manual testing.');
+    appendLog('info', 'Frame sent to WS Forge for manual testing.');
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -809,7 +809,7 @@ window.sendToForge = function (rowId) {
         }
     });
 
-    // Request Forge copy button
+    // WS Forge copy button
     document.getElementById('reqforge-copy-btn')?.addEventListener('click', () => {
         navigator.clipboard.writeText(forgeRes.value).then(() => {
             appendLog('info', 'Response copied to clipboard.');
@@ -1371,7 +1371,7 @@ function toggleGlobalSearch() {
             histResults.slice(0, 5).forEach(h => {
                 html += `<div class="gsearch-item" data-action="gsearch-history" data-row-id="${esc(h.id)}">
                     <div>${esc(truncate(h.data, 70))}</div>
-                    <div class="gsearch-meta">Click to send to Request Forge</div>
+                    <div class="gsearch-meta">Click to send to WS Forge</div>
                 </div>`;
             });
             totalResults += histResults.length;
